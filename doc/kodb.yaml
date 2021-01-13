@@ -1,5 +1,8 @@
 title: "TITLE"
-author: "Anna Stray Rongve\\Knut Magnus Aasrud\\Amund Midtgard Raniseth"
+author: 
+  - Anna Stray Rongve
+  - Knut Magnus Aasrud
+  - Amund Midtgard Raniseth
 date: \today
 
 # Reference equations with parentheses, e.g. '(1)'
