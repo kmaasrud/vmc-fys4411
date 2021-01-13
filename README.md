@@ -1,2 +1,5 @@
-# vmc-fys4411
-Variational Monte Carlo studies of quantum mechanical systems. Part of the course FYS4411 at University of Oslo
+# Variational Monte Carlo studies of quantum mechanical systems
+
+- [Anna Stray Rongve](https://github.com/annasro)
+- [Knut Magnus Aasrud](https://github.com/kmaasrud)
+- [Amund Midtgard Raniseth](https://github.com/amundmr)
