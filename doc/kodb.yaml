@@ -27,3 +27,5 @@ references:
 
 # Reference equations with parentheses, e.g. '(1)'
 eqnos-eqref: True
+# Use numbered sections
+numbersections: True
