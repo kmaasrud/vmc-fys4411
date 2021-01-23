@@ -1,6 +1,8 @@
+// Import Particle struct and make it publicly accessible
 mod particle;
-use particle::Particle;
+pub use particle::Particle;
 
 fn main() {
-    println!("Hello, world!");
+    let boson = Particle::new(&[3., 2., 1.]);
+    println!("{:?}", boson);
 }
