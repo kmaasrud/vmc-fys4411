@@ -1,5 +1,4 @@
 use crate::Particle;
-use rand::Rng;
 
 pub struct System {
     particles: Vec<Particle>,
@@ -15,42 +14,17 @@ impl System {
     }
 }
 
-pub struct MHSampler {
-    curr_step: f64,
-    next_step: f64,
-    acceptance_factor: f64,
-    rand: f64,
-    time: i64,
+pub struct HarmonicTrap  {
+    mass: f64,
+    omega_ho: f64,  //Trap frequency in the perpendicular xy plane
+    omega_z: f64,   //Trap frequency in the z direction
 }
 
-impl MHSampler {
-    fn solve(&mut self, init_step: f64, n: u64) {
-        self.curr_step = init_step;
-        let mut rng = rand::thread_rng(); // Initializing mutable random number generator
-
-        for i in 0..n {
-            self.next_step: f64 = self.gen_rand_state();
-            self.acceptance_factor: f64 = self.acceptance_factor();
-            self.rand: f64 = rng.gen::<f64>(); // Pulling a float between 0 and 1 from the rng thread
-
-            if self.rand < self.acceptance_factor {
-                self.curr_step = self.next_step;
-            } else {
-                //if the random number is above acceptance factor, then we stay!
-                continue;
-            }
-        }
+impl HarmonicTrap {
+    fn spherical(&mut self, r: f64) -> f64 { //Returns V_ext(r) for a spherical harmonic trap [currently 1D]
+        0.5*self.mass*self.omega_ho*self.omega_ho*r*r
     }
-
-    fn gen_rand_state(&self) -> f64 {
-        //Generates next_step according to g(next_step|curr_step)
-
-        212.2 //Example to to avoid error
-    }
-
-    fn acceptance_factor(&self) -> f64 {
-        //Finds acceptance factor
-
-        0.01 //Example to to avoid error
+    fn elliptical(&mut self, r: Vec<f64>) -> f64 { //Returns V_ext(r) for an elliptical harmonic trap
+        0.5*self.mass*(self.omega_ho*self.omega_ho*(r[0]*r[0] + r[1]*r[1])+ self.omega_z*self.omega_z*r[2]*r[2])
     }
 }
