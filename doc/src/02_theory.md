@@ -24,9 +24,20 @@ The index notation used here is described in {@sec:index-notation-for-sums-and-p
 
 For a system of $N$ particles, we use the following trial wave function:
 
-$$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|). $$ {#eq:trial-wavefunction}
+ $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|)$$ {#eq:trial-wavefunction}
 
-Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
+ Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
+
+
+ $$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$ and
+
+ $$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
+   \begin{array}{ll}
+   0 & {|\mathbf{r}_i-\mathbf{r}_j|} \leq {a}\\
+   (1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|}) & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
+  \end{array} $$
+
+
 
 ## Importance sampling
 
@@ -42,23 +53,21 @@ Importance sampling, compared to the brute force Metropolis sampling, sets a bia
 
 
 ## Analytical
+<!-- Rewrite  -->
+For reasons to be pointed out, there is an advantage of finding an analytical expression for the energy of the trail wavefunction(Ref)(local energy). Only studying the case of the Harmonic oscillator potential, discarding the two body potential, by setting the parameter $a = 0$ in (REF: f(...)).  First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles.
 
-<!-- rewrite!! Copied from project description -->
-Want to use the Variational Monte Carlo (VMC) method to evaluate the ground state energy of a trapped, hard sphere Bose gas for different numbers of particles with a specific trail wavefunction (from the Variational method). Implement a trailfunction in a spherical or elliptical harmonic trap in 1-3 dimensions.
-- Something about the wavefunction/ SE.
-A way of solving the many body problem is to introduce the Schrödinger equation.  
-In order to solve the many body problem
-- Why we want to use a trail wavefunction.
-- Explain why an analytical expression reduces potential no. of FLOPS.
-1. The wavefunction(trail)with N atoms
+The simplest Gaussian wavefunction then becomes
+<!-- Simple Gaussian Wavefunction  -->
 
+$$\Psi_T(\mathbf{r_1, r_2,\ldots,r_N, \alpha, \beta}) = \prod_i \exp(-\alpha r_{i}^2) $$
 
-$$\Psi_T(\mathbf{r})=\Psi_T(\mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N,\alpha,\beta)
- =\left[
-    \prod_i g(\alpha,\beta,\mathbf{r}_i)
- \right]
- \left[
-    \prod_{j<k}f(a,|\mathbf{r}_j-\mathbf{r}_k|)
- \right], $$
+For the simplest case, the energy of the Gaussian Wave Function, is given by
 
-3. Local energy
+$$E_L(\mathbf{r})=\frac{1}{\Psi_T(\mathbf{r})}H\Psi_T(\mathbf{r}) \\
+=\frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left(\frac{-\hbar^2}{2m}{\nabla }_{i}^2 +V_{ext}({\mathbf{r}}_i)\right) + \sum_{i<j}^{N} V_{int}({\mathbf{r}}_i,{\mathbf{r}}_j) \right]\Psi_T(\mathbf{r})
+\\ = \frac{1}{\Psi_T(\mathbf{r})}\left[\sum_i^N \left(\frac{-\hbar^2}{2m}{\nabla}_{i}^2 \Psi_T(\mathbf{r}) + V_{ext}({\mathbf{r}}_i) \Psi_T(\mathbf{r})\right) +\sum_{i<j}^{N} V_{int}({\mathbf{r}}_i,{\mathbf{r}}_j)\Psi_T(\mathbf{r}) \right]$$
+
+Intermediate calculation(mellomregning)
+$${\nabla}_{i}^2 \Psi_{T}(\mathbf{r}) = \nabla_{i} \cdot\left[\frac{\partial}{\partial x_{i}}, \frac{\partial}{\partial y_{i}}, \frac{\partial}{\partial z_{i}}\right] \Psi_{T}(\mathbf{r}) \\
+= \nabla_{i} \cdot \left[-2 \alpha x_{i} \Psi_{T}(\mathbf{r}), -2 \alpha y_{i} \Psi_{T}(\mathbf{r}) , -2 \alpha z_{i} \Psi_{T}(\mathbf{r})  \right] \\
+= -2\alpha \Psi_{T}\sum_{d = x,y,z}1 -2\alpha d_{i}^2 $$
