@@ -28,3 +28,6 @@ $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta
 
 Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
 
+## Importance of importance sampling
+Notes:
+- Explain difference between importance sampling and brute force sampling.
