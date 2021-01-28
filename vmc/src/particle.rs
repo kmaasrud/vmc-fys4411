@@ -1,13 +1,13 @@
-/// Struct that represents a particle.
+/// Struct that represents a single particle.
 /// 
 /// # Attributes
 /// 
-/// - `position: Vec<f64>`: The position of the particle, with an arbitrary dimensionality.
-/// - `dimensions: u8`: The dimensionality of `position`.
+/// - `position: Vec<f64>` - The position of the particle, with an arbitrary dimensionality.
+/// - `dimensions: u8` - The dimensionality of `position`.
 #[derive(Debug)]
 pub struct Particle {
     pub position: Vec<f64>,
-    dimensions: u8,
+    pub dimensions: u8,
 }
 
 impl Particle {

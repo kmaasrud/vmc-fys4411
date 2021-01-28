@@ -1,4 +1,0 @@
-\clearpage
-\appendix
-
-# Appendix
