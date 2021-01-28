@@ -32,6 +32,7 @@ trait Metropolis {
 // println!("{}", bf_metro.curr_step);
 // bf_metro.make_step();
 // println!("{}", bf_metro.curr_step);
+// ```
 struct BruteForceMetropolis {
     pub curr_step: f64,
     step_size: f64,
