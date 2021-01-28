@@ -28,6 +28,37 @@ $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta
 
 Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
 
-## Importance of importance sampling
-Notes:
-- Explain difference between importance sampling and brute force sampling.
+## Importance sampling
+
+> For Theory:
+> - Explain difference between importance sampling and brute force sampling.
+> For Practical:
+> - Run calculations for 1, 2 and 3 dim space, WITHOUT repulsive potential.
+> - Study the dependence of the results as a function of the time step $\delta$t
+> - Discuss(compare) results on difference between imp sampl and brute force metropolis.
+
+
+Importance sampling, compared to the brute force Metropolis sampling, sets a bias on the sampling, leading it on a better path. This means that the desired standard deviation is acquired after fewer Monte Carlo cycles.
+
+
+## Analytical
+
+<!-- rewrite!! Copied from project description -->
+Want to use the Variational Monte Carlo (VMC) method to evaluate the ground state energy of a trapped, hard sphere Bose gas for different numbers of particles with a specific trail wavefunction (from the Variational method). Implement a trailfunction in a spherical or elliptical harmonic trap in 1-3 dimensions.
+- Something about the wavefunction/ SE.
+A way of solving the many body problem is to introduce the Schrödinger equation.  
+In order to solve the many body problem
+- Why we want to use a trail wavefunction.
+- Explain why an analytical expression reduces potential no. of FLOPS.
+1. The wavefunction(trail)with N atoms
+
+
+$$\Psi_T(\mathbf{r})=\Psi_T(\mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N,\alpha,\beta)
+ =\left[
+    \prod_i g(\alpha,\beta,\mathbf{r}_i)
+ \right]
+ \left[
+    \prod_{j<k}f(a,|\mathbf{r}_j-\mathbf{r}_k|)
+ \right], $$
+
+3. Local energy
