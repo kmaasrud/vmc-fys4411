@@ -29,7 +29,7 @@ $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta
 Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
 
 
-##Analytical
+## Analytical
 
 <!-- rewrite!! Copied from project description -->
 Want to use the Variational Monte Carlo (VMC) method to evaluate the ground state energy of a trapped, hard sphere Bose gas for different numbers of particles with a specific trail wavefunction (from the Variational method). Implement a trailfunction in a spherical or elliptical harmonic trap in 1-3 dimensions.
