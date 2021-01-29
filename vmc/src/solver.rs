@@ -1,4 +1,5 @@
 use rand::thread_rng;
+use rand::seq::SliceRandom;
 use rand::distributions::{Uniform, Distribution};
 use crate::HarmonicTrap;
 
@@ -7,8 +8,8 @@ trait Metropolis {
     // Samples a new step based on `curr_step`. Does not update
     // the value of `self.curr_step`.
     fn sample(&mut self, curr_step: &f64) -> f64 {
-        let next_step: f64 = self.next_step();
         let mut rng = thread_rng();
+        let next_step: f64 = self.next_step();
         let uniform = Uniform::new(0., 1.);
         
         if uniform.sample(&mut rng) < self.acceptance_factor(next_step) {
@@ -67,7 +68,7 @@ impl Metropolis for BruteForceMetropolis {
     // This is what makes this a brute force method, as `BruteForceMetropolis` only makes
     // a random step in either direction. 
     fn next_step(&self) -> f64 {
-        // Should be either + or -, but won't bother implementing this yet
-        self.curr_step + self.step_size
+        // thread_rng() randomly chooses either `1.` or `-1.`. Don't know if this is the most efficient way, but it should work...
+        self.curr_step + [1.,-1.].choose(&mut thread_rng()).unwrap() * self.step_size
     }
 }
