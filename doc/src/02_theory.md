@@ -25,17 +25,21 @@ The index notation used here is described in {@sec:index-notation-for-sums-and-p
 For a system of $N$ particles, we use the following trial wave function:
 
  $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|)$$ {#eq:trial-wavefunction}
+ where
+
+
+$$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$ and
+
+$$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
+    \begin{array}{ll}
+    0 & {|\mathbf{r}_i-\mathbf{r}_j|} \leq {a}\\
+    (1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|}) & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
+   \end{array} $$
+
+
 
  Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
 
-
- $$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$ and
-
- $$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
-   \begin{array}{ll}
-   0 & {|\mathbf{r}_i-\mathbf{r}_j|} \leq {a}\\
-   (1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|}) & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
-  \end{array} $$
 
 
 
@@ -63,11 +67,76 @@ $$\Psi_T(\mathbf{r_1, r_2,\ldots,r_N, \alpha, \beta}) = \prod_i \exp(-\alpha r_{
 
 For the simplest case, the energy of the Gaussian Wave Function, is given by
 
-$$E_L(\mathbf{r})=\frac{1}{\Psi_T(\mathbf{r})}H\Psi_T(\mathbf{r}) \\
-=\frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left(\frac{-\hbar^2}{2m}{\nabla }_{i}^2 +V_{ext}({\mathbf{r}}_i)\right) + \sum_{i<j}^{N} V_{int}({\mathbf{r}}_i,{\mathbf{r}}_j) \right]\Psi_T(\mathbf{r})
-\\ = \frac{1}{\Psi_T(\mathbf{r})}\left[\sum_i^N \left(\frac{-\hbar^2}{2m}{\nabla}_{i}^2 \Psi_T(\mathbf{r}) + V_{ext}({\mathbf{r}}_i) \Psi_T(\mathbf{r})\right) +\sum_{i<j}^{N} V_{int}({\mathbf{r}}_i,{\mathbf{r}}_j)\Psi_T(\mathbf{r}) \right]$$
+$$
+\begin{aligned}
+E_L(\mathbf{r}) &=  \frac{1}{\Psi_T (\mathbf{r})} H \Psi_T (\mathbf{r})
+= \frac{1}{\Psi_T (\mathbf{r})} \left[ \sum_i^N \left( \frac{-\hbar^2}{2m}
+   \nabla_{i}^2 + V_{ext}({\mathbf{r}}_i)\right)  \right]\Psi_T(\mathbf{r}) \\
+&= \frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left (\frac{-\hbar^2}{2m}
+  \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right) \right]
+  \end{aligned}
+$$
+
 
 Intermediate calculation(mellomregning)
-$${\nabla}_{i}^2 \Psi_{T}(\mathbf{r}) = \nabla_{i} \cdot\left[\frac{\partial}{\partial x_{i}}, \frac{\partial}{\partial y_{i}}, \frac{\partial}{\partial z_{i}}\right] \Psi_{T}(\mathbf{r}) \\
-= \nabla_{i} \cdot \left[-2 \alpha x_{i} \Psi_{T}(\mathbf{r}), -2 \alpha y_{i} \Psi_{T}(\mathbf{r}) , -2 \alpha z_{i} \Psi_{T}(\mathbf{r})  \right] \\
-= -2\alpha \Psi_{T}\sum_{d = x,y,z}1 -2\alpha d_{i}^2 $$
+<!-- Anna don't understand the last step -->
+$$
+\begin{aligned}
+\nabla_{i}^2 \Psi_{T}(\mathbf{r})
+&= \nabla_{i} \cdot\left[\frac{\partial}{\partial x_{i}}, \frac{\partial}{\partial y_{i}},   
+   \frac{\partial}{\partial z_{i}}\right] \Psi_{T}(\mathbf{r}) \\
+&= \nabla_i \cdot \left[\frac{\partial}{\partial x_i} \exp{(-\alpha
+   \mathbf{r}_i^2}),\frac{\partial}{\partial y_i} \exp{(-\alpha \mathbf{r}_i^2}), \frac{\partial}{\partial z_i} \exp{(-\alpha \mathbf{r}_i^2})\right] \\
+&= \nabla_{i} \cdot \left[-2 \alpha x_{i} \exp{(-\alpha \mathbf{r}_{i}^{2}}), -2 \alpha
+   y_{i}  
+   \exp{(-\alpha \mathbf{r}^2_{i}}), -2 \alpha z_{i} \exp{(-\alpha \mathbf{r}_{i}^2})
+   \right] \\
+&= -2 \alpha \left[  \exp{(-\alpha \mathbf{r}^2_{i}})(1 - 2 \alpha x^2_{i}), \exp{(-\alpha
+   \mathbf{r}^2_{i}})(1 - 2 \alpha y^2_{i}), \exp{(-\alpha \mathbf{r}^2_{i}})
+   (1 - 2 \alpha z^2_{i}) \right] \\
+&= -2\alpha \Psi_{T} \left[(1 - 2 \alpha x^2_{i}), (1 - 2 \alpha y^2_{i}),
+   (1 - 2 \alpha  z^2_{i}) \right]\\
+&= -2\alpha \Psi_{T}\sum_{d = x,y,z}1 -2\alpha d_{i}^2 \\
+&= -2\alpha \Psi_{T}(dim - 2 \alpha  \mathbf{r}^2_{i})
+\end{aligned}
+$$
+
+where $dim$ is the dimension of the system (1, 2 or 3)
+The local energy, $E_L$, for the Gaussian wavefunction is then
+$$
+\begin{aligned}
+E_L(\mathbf{r}) &=
+    \frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left (\frac{-\hbar^2}{2m}
+    \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right)  
+    \right]\\
+&=  \frac{1}{\Psi_T(\mathbf{r})}  \left[ \sum_i^N \left(  \frac{\hbar^2 \alpha}{m}  (dim - 2
+    \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_{ho} \mathbf{r}^2_{i} \right) \Psi_T(\mathbf{r}) \right ] \\
+&=  \sum_i^N \left( \frac{\hbar^2 \alpha}{m}  (dim - 2
+    \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_{ho} \mathbf{r}^2_{i} \right)\\
+&=  \frac{\hbar^2 \alpha}{m} \left( dim - {2  \alpha}\right) (1 +   \frac{1}{2} m \omega^2_{ho} ) \sum_i^N \mathbf{r}^2_{i}  
+\end{aligned}
+$$
+
+Simplifying further by setting $\hbar = m = 1$
+
+$$
+E_L(\mathbf{r}) =
+\alpha(dim - 2\alpha)(1+ \frac{1}{2}\omega^2_{ho}) \sum_i^N \mathbf{r}^2_{i}  
+$$
+
+For $\omega^2_{ho} = 1$ it simplifies even further
+
+$$
+E_L(\mathbf{r}) =
+(\alpha \cdot dim  - 3 \alpha^2) \sum_i^N \mathbf{r}^2_{i}  
+$$
+
+###Driftforce
+
+The following expression for the drift force will be used to explanation
+
+$$
+F = \frac{2 \nabla_k \Psi_T(\mathbf{r})}{\Psi_T(\mathbf{r})} = -4 \alpha \mathbf{r}_{k}
+$$
+
+applying the gradient operator to the trail wavefunction is already shown in eq (REF). 
