@@ -1,3 +1,5 @@
+
+
 # Syntax
 
 I'm sure you're both familiar with the common Markdown syntax, and this applies just as well here. Pandoc exports links to the compiled PDF, so I often use them liberally, like [this](https://github.com/kmaasrud/vmc-fys4411). If you want *inline math*, you just write a set of dollar signs, like this: $f(x) = \sin(x)$. Most commonly though, you'll probably want *display math*, which is just as simple to write. Be sure to have a couple of newlines as padding, and just use a double set of dollar signs, like this:

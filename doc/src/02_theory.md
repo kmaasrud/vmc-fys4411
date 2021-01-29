@@ -45,93 +45,48 @@ $$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
 
 ## Importance sampling
 
-> For Theory:
-> - Explain difference between importance sampling and brute force sampling.
-> For Practical:
-> - Run calculations for 1, 2 and 3 dim space, WITHOUT repulsive potential.
-> - Study the dependence of the results as a function of the time step $\delta$t
-> - Discuss(compare) results on difference between imp sampl and brute force metropolis.
+<!-- For Theory:
 
+- Explain difference between importance sampling and brute force sampling.
+ For Practical:
+- Run calculations for 1, 2 and 3 dim space, WITHOUT repulsive potential.
+- Study the dependence of the results as a function of the time step $\delta$t
+- Discuss(compare) results on difference between imp sampl and brute force metropolis. -->
 
 Importance sampling, compared to the brute force Metropolis sampling, sets a bias on the sampling, leading it on a better path. This means that the desired standard deviation is acquired after fewer Monte Carlo cycles.
 
-
 ## Analytical
 <!-- Rewrite  -->
-For reasons to be pointed out, there is an advantage of finding an analytical expression for the energy of the trail wavefunction(Ref)(local energy). Only studying the case of the Harmonic oscillator potential, discarding the two body potential, by setting the parameter $a = 0$ in (REF: f(...)).  First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles.
-
-The simplest Gaussian wavefunction then becomes
+As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function(Ref)(local energy). We only study the harmonic oscillator potential and disregard the two-body potential. This is simply done by setting the parameter $a = 0$ which by {@eq:internal-potential} gives $V_\text{int} = 0$. First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles. The simplest Gaussian wavefunction then becomes:
 <!-- Simple Gaussian Wavefunction  -->
 
-$$\Psi_T(\mathbf{r_1, r_2,\ldots,r_N, \alpha, \beta}) = \prod_i \exp(-\alpha r_{i}^2) $$
+$$\Psi_T(\mathbf{r_1, r_2,\ldots,r_N, \alpha, \beta}) = \prod_i \exp(-\alpha r_{i}^2).$$
 
-For the simplest case, the energy of the Gaussian Wave Function, is given by
+The energy is here given by
 
 $$
 \begin{aligned}
 E_L(\mathbf{r}) &=  \frac{1}{\Psi_T (\mathbf{r})} H \Psi_T (\mathbf{r})
 = \frac{1}{\Psi_T (\mathbf{r})} \left[ \sum_i^N \left( \frac{-\hbar^2}{2m}
-   \nabla_{i}^2 + V_{ext}({\mathbf{r}}_i)\right)  \right]\Psi_T(\mathbf{r}) \\
+   \nabla_{i}^2 + V_{\text{ext}}({\mathbf{r}}_i)\right)  \right]\Psi_T(\mathbf{r}) \\
 &= \frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left (\frac{-\hbar^2}{2m}
-  \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right) \right]
+  \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_\text{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right) \right].
   \end{aligned}
 $$
 
+We simplify $\nabla_i^2\Psi_T$ as shown in {@sec:second-derivative-of-trial-wave-function} to get
 
-Intermediate calculation(mellomregning)
-<!-- Anna don't understand the last step -->
-$$
-\begin{aligned}
-\nabla_{i}^2 \Psi_{T}(\mathbf{r})
-&= \nabla_{i} \cdot\left[\frac{\partial}{\partial x_{i}}, \frac{\partial}{\partial y_{i}},   
-   \frac{\partial}{\partial z_{i}}\right] \Psi_{T}(\mathbf{r}) \\
-&= \nabla_i \cdot \left[\frac{\partial}{\partial x_i} \exp{(-\alpha
-   \mathbf{r}_i^2}),\frac{\partial}{\partial y_i} \exp{(-\alpha \mathbf{r}_i^2}), \frac{\partial}{\partial z_i} \exp{(-\alpha \mathbf{r}_i^2})\right] \\
-&= \nabla_{i} \cdot \left[-2 \alpha x_{i} \exp{(-\alpha \mathbf{r}_{i}^{2}}), -2 \alpha
-   y_{i}  
-   \exp{(-\alpha \mathbf{r}^2_{i}}), -2 \alpha z_{i} \exp{(-\alpha \mathbf{r}_{i}^2})
-   \right] \\
-&= -2 \alpha \left[  \exp{(-\alpha \mathbf{r}^2_{i}})(1 - 2 \alpha x^2_{i}), \exp{(-\alpha
-   \mathbf{r}^2_{i}})(1 - 2 \alpha y^2_{i}), \exp{(-\alpha \mathbf{r}^2_{i}})
-   (1 - 2 \alpha z^2_{i}) \right] \\
-&= -2\alpha \Psi_{T} \left[(1 - 2 \alpha x^2_{i}), (1 - 2 \alpha y^2_{i}),
-   (1 - 2 \alpha  z^2_{i}) \right]\\
-&= -2\alpha \Psi_{T}\sum_{d = x,y,z}1 -2\alpha d_{i}^2 \\
-&= -2\alpha \Psi_{T}(dim - 2 \alpha  \mathbf{r}^2_{i})
-\end{aligned}
-$$
+$$\nabla^2\Psi_t(\mathbf r) = -2\alpha\Psi_T\left(\dim - 2\alpha\mathbf r_i^2\right),$$ {#eq:second-derivative-of-trial-wave-function}
 
-where $dim$ is the dimension of the system (1, 2 or 3)
-The local energy, $E_L$, for the Gaussian wavefunction is then
-$$
-\begin{aligned}
-E_L(\mathbf{r}) &=
-    \frac{1}{\Psi_T(\mathbf{r})} \left[ \sum_i^N \left (\frac{-\hbar^2}{2m}
-    \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right)  
-    \right]\\
-&=  \frac{1}{\Psi_T(\mathbf{r})}  \left[ \sum_i^N \left(  \frac{\hbar^2 \alpha}{m}  (dim - 2
-    \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_{ho} \mathbf{r}^2_{i} \right) \Psi_T(\mathbf{r}) \right ] \\
-&=  \sum_i^N \left( \frac{\hbar^2 \alpha}{m}  (dim - 2
-    \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_{ho} \mathbf{r}^2_{i} \right)\\
-&=  \frac{\hbar^2 \alpha}{m} \left( dim - {2  \alpha}\right) (1 +   \frac{1}{2} m \omega^2_{ho} ) \sum_i^N \mathbf{r}^2_{i}  
-\end{aligned}
-$$
+where $\dim$ is the dimension of the system (1, 2 or 3). Given eq. {@eq:second-derivative-of-trial-wave-function}, we find that the local energy for the Gaussian wavefunction is
 
-Simplifying further by setting $\hbar = m = 1$
+$$ E_L(\mathbf{r}) = \frac{\hbar^2 \alpha}{m} \left( \dim - {2  \alpha}\right) \left(1 + \frac{1}{2} m \omega^2_\text{ho}\right) \sum_i^N \mathbf{r}^2_{i},$$ {#eq:local-energy-gauss}
 
-$$
-E_L(\mathbf{r}) =
-\alpha(dim - 2\alpha)(1+ \frac{1}{2}\omega^2_{ho}) \sum_i^N \mathbf{r}^2_{i}  
-$$
+as shown in {@sec:local-energy-for-gaussian-wave-function}. We can simplify this even further by scaling, namely setting $\hbar = m = \omega_\text{ho}^2 = 1$, which gives us the equation
 
-For $\omega^2_{ho} = 1$ it simplifies even further
+$$E_L(\mathbf{r}) = (\alpha \cdot \dim  - 3 \alpha^2) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
 
-$$
-E_L(\mathbf{r}) =
-(\alpha \cdot dim  - 3 \alpha^2) \sum_i^N \mathbf{r}^2_{i}  
-$$
-
-###Driftforce
+### Drift force
 
 The following expression for the drift force will be used to explanation
 
