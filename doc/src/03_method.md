@@ -23,6 +23,17 @@ Where the letters and symbols mean:
 |y | new position|
 |x |old position
 |DF(x) | Diffusion and Drift at the old possition|
+|D | In AU*: 1/2, from the kinetic energy operator|
 |$\Delta$t | Chosen time-step|
 |$\xi$ | Gaussian random variable |
+\* Atomic Units
 Examples of timesteps giving stable values of the ground state energy is $\Delta t \in[0.001,0.01]$
+
+## Fokker-Planck
+The Fokker-Planck equation is an approximation of the time-dependent probability density $P(x,t)$ which describes isotropic diffusion of the particle.
+
+$$
+\frac{\partial P}{\partial t}=\sum_{i} D \frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}}\left(\frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}}-\mathbf{F}_{\mathbf{i}}\right) P(\mathbf{x}, t)
+$$
+
+$D$ is the diffusion coefficient, and $\mathbf{F}_{\mathbf{i}}$ is the drift velocity of component $i$. The cause of the drift velocity is an external potential, which for us is the magnetic field used to hold the boson gas in place.

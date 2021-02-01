@@ -55,6 +55,83 @@ $$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
 
 Importance sampling, compared to the brute force Metropolis sampling, sets a bias on the sampling, leading it on a better path. This means that the desired standard deviation is acquired after fewer Monte Carlo cycles.
 
+For our quantum mechanical scenario with boson particles in a magnetic trap, the bias has its root in the so-called quantum force. This quantum force pushes the walker (the boson particle) to the regions where the trail wave function is large. It is clear that this yields a faster convergence, compared to the Metropolis algorithm where the walker has the same probability of moving in all directions.
+
+The quantum force $\mathbf{F}$ is given by the formula
+$$
+\mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T},
+$$
+which is derived from the Fokker-Planck equation, using the Langevin equation to generate the next step with Euler's method, and by making the probability density converge to a stationary state. 
+
+### Fokker-Planck
+<!-- Insert some theroy of what fokker-plack is on a general level -->
+For one particle (or walker), the one-dimensional Fokker-Planck equation for a diffusion process is:
+$$
+\frac{\partial P}{\partial t}=D \frac{\partial}{\partial x}\left(\frac{\partial}{\partial x}-F\right) P(x, t)
+$$
+Where $P(x,t)$ is is a time-dependent probability density, $D$ is the diffusion coefficient and $F$ is a drift term which is our case is driven by the quantum force.
+
+### Langevin equation
+<!-- Insert some theroy of what langevin eq is on a general level -->
+The Langevin equation solution gives the position of the walker in the next timestep. The Langevin equation is:
+$$
+\frac{\partial x(t)}{\partial t}=D F(x(t))+\eta
+$$
+Converting this to a function yielding the new position $y$ in a computational manner, we use Euler's method.
+$$
+y=x+D F(x) \Delta t+\xi \sqrt{\Delta t}
+$$
+Where the symbols represent:
+|Variable|Description|
+|---|---|
+|y | New position|
+|x | Current position |
+|DF(x) | Diffusion and Drift at the old possition|
+|D | In AU*: 1/2, from the kinetic energy operator|
+|$\Delta$t | Chosen time-step|
+|$\xi$ | Gaussian random variable |
+\* Atomic Units
+Examples of timesteps giving stable values of the ground state energy is $\Delta t \in[0.001,0.01]$
+
+
+
+
+### Fokker-Planck and Langevin equation in importance sampling
+<!-- Maybe this can be moved to appendix or method?? -->
+In order to use these equations for our importance sampling, we start with the original Fokker-Planck equation. 
+
+After inserting $D$ as the diffusion coefficient and $\mathbf{F}_{\mathbf{i}}$ as component $i$ of the drift velocity, we can make the probability density converge to a stationary state by setting its partial derivative over time to zero.
+
+$$
+\frac{\partial P}{\partial t}=\sum_{i} D \frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}}\left(\frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}}-\mathbf{F}_{\mathbf{i}}\right) P(\mathbf{x}, t)
+$$
+Where then $\frac{\partial P}{\partial t}= 0$, and by expanding the parenthesis and moving the double partial derivative over to the other side, we obtain:
+$$
+\frac{\partial^{2} P}{\partial \mathbf{x}_{\mathbf{i}}^{2}}=P \frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}} \mathbf{F}_{\mathbf{i}}+\mathbf{F}_{\mathbf{i}} \frac{\partial}{\partial \mathbf{x}_{\mathbf{i}}} P
+$$
+By inserting $g(\mathbf{x}) \frac{\partial P}{\partial x}$ for the drift term, $\mathbf{F}$, we get
+$$
+\frac{\partial^{2} P}{\partial \mathbf{x}_{\mathbf{i}}{ }^{2}}=P \frac{\partial g}{\partial P}\left(\frac{\partial P}{\partial \mathbf{x}_{i}}\right)^{2}+P g \frac{\partial^{2} P}{\partial \mathbf{x}_{i}^{2}}+g\left(\frac{\partial P}{\partial \mathbf{x}_{i}}\right)^{2}
+$$
+Where again the left hand side can be set to zero to comply with the fact that at a stationary state, the probability density is the same for all walkers. [THIS MUST BE FALSE??? WHY can we really set this term to zero??]
+
+For this to be solvable, the remaning terms have to cancel each other. This is only possible when $g = P^{-1}$, which gives the aformentioned quantum force, $\mathbf{F},$
+$$
+\mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T}.
+$$
+
+From here, The Green's function is employed as 
+<!-- Maybe here we could insert the basic Greens function and then explain that we exchange for the euler-solved langevin -->
+$$
+G(y, x, \Delta t)=\frac{1}{(4 \pi D \Delta t)^{3 N / 2}} \exp \left(-(y-x-D \Delta t F(x))^{2} / 4 D \Delta t\right)
+$$
+
+Which will be part of the [insert name..], $q(y,x)$ as
+$$
+q(y, x)=\frac{G(x, y, \Delta t)\left|\Psi_{T}(y)\right|^{2}}{G(y, x, \Delta t)\left|\Psi_{T}(x)\right|^{2}}
+$$
+
+
 ## Analytical
 <!-- Rewrite  -->
 As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function(Ref)(local energy). We only study the harmonic oscillator potential and disregard the two-body potential. This is simply done by setting the parameter $a = 0$ which by {@eq:internal-potential} gives $V_\text{int} = 0$. First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles. The simplest Gaussian wavefunction then becomes:
