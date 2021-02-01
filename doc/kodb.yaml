@@ -10,6 +10,7 @@ reference-section-title: "References"
 references:
   - type: article
     id: AasrudRongveRaniseth2019
+    title: "Project 3"
     author:
       - family: Aasrud
         given: K. M.
@@ -21,8 +22,16 @@ references:
       year: 2019
       month: 10
       date: 22
-    title: "Project 3"
     URL: "https://github.com/kmaasrud/gq-mcm-fys3150/blob/master/doc/Project-3_Aasrud-Raniseth-Rongve.pdf"
+    language: en-US
+  - type: book
+    id: Griffiths
+    title: "Introduction to Quantum Mechanics"
+    author:
+      - family: Griffiths
+        given: David. J.
+    issued:
+      year: 2005
     language: en-US
 
 # Reference equations with parentheses, e.g. '(1)'
