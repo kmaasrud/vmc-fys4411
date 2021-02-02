@@ -5,7 +5,8 @@ author:
   - Amund Midtgard Raniseth
 date: \today
 
-# References and bibliography (uses Chicago by default)
+# References and bibliography
+csl: ./assets/ieee.csl #Using IEEE styling 
 reference-section-title: "References"
 references:
   - type: article
