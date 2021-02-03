@@ -37,3 +37,9 @@ $$
 $$
 
 $D$ is the diffusion coefficient, and $\mathbf{F}_{\mathbf{i}}$ is the drift velocity of component $i$. The cause of the drift velocity is an external potential, which for us is the magnetic field used to hold the boson gas in place.
+
+
+
+
+
+

@@ -64,3 +64,8 @@ $$
 &=  \frac{\hbar^2 \alpha}{m} \left( \dim - {2  \alpha}\right) \left(1 +   \frac{1}{2} m \omega^2_\text{ho}\right) \sum_i^N \mathbf{r}^2_{i}.
 \end{aligned}
 $$
+
+
+
+
+

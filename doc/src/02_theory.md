@@ -1,18 +1,16 @@
 # Theory
 
-##Hamiltonian
+## The system in question
 
 <!-- We should describe the task at hand in the Introduction, but here we can express the details of the system in question. -->
 
-The system in question is a hard sphere Bose gas in a potential well. <!-- https://www.kmaasrud.com/brain/bose-gas -->. The system is affected by an external potential - an *elliptical (E) or spherical (S) harmonic trap* - in 1-3 dimensions. This potential, is described by
+The system in question is a hard sphere Bose gas located in a potential well<!-- https://www.kmaasrud.com/brain/bose-gas -->. The potential is an *elliptical harmonic trap*, described for each particle by
 
-$$ V_\text{ext}(\mathbf r)=\Bigg\{
-    \begin{array}{ll}
-    \frac{1}{2} m \omega^2_{\text{ho}}r^2 & {(S)}\\
-    \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z r_z^2\right) & (E)
-   \end{array} $${#eq:external-potential}
+$$V_\text{ext}(\mathbf r) = \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z^2 r_z^2\right).$$ {#eq:external-potential}
 
-$\mathbf r$ describes the position of the particle. In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential:
+Here, $\mathbf r$ is the position of the particle. Note that setting $\omega_\text{ho} = \omega_z$ results in eq. {@eq:external-potential} evaluating to $V_\text{ext}(\mathbf r) = \frac{1}{2}m\omega_\text{ho}^2r^2$, which represents the *spherical* case of the elliptical harmonic trap. As a simplification, we hereby denote the spherical case as (S) and the general elliptical case as (E).
+
+In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential:
 
 $$V_\text{int}(|\mathbf r_i - \mathbf r_j|) = \begin{cases}\infty & |\mathbf r_i - \mathbf r_j| \le a \\ 0 & |\mathbf r_i - \mathbf r_j| > a\end{cases}.$$ {#eq:internal-potential}
 
@@ -20,15 +18,19 @@ Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the fo
 
 $$H = \sum_i^N\left(-\frac{\hbar^2}{2m}\nabla_i^2 + V_\text{ext}(\mathbf r_i)\right) + \sum_{i < j}^N V_\text{int} (|\mathbf r_i - \mathbf r_j|).$$
 
-The index notation used here is described in {@sec:index-notation-for-sums-and-products}. The first term describes the kinetic energy of the system, whereas the to latter describes the abovementioned potentials.  
+The index notation used here is described in {@sec:index-notation-for-sums-and-products}. The term $-\frac{\hbar^2}{2m}\nabla_i^2$ is the operator stemming from the kinetic energy of the system.
+
 
 ### The variational principle
 
-Given this Hamiltonian, we can introduce the concept of a *trial wave function* $\Psi_T(\alpha)$. This is a normalized ansatz to the ground state wave function parametrized by the parameter(s) $\alpha$. This gives us a way of deploying the *variational principle* by varying said parameter $\alpha$ to our needs. We know that for any normalized function $\Psi_T$, the expected energy is higher than the ground state energy [proved in @Griffiths on p. 293-294]. So
+Given this Hamiltonian, we can introduce the concept of a *trial wave function* $\Psi_T(\alpha)$. This is a normalized ansatz to the ground state wave function parametrized by the parameter(s) $\alpha$. This gives us a way of deploying the *variational principle* by varying said parameter $\alpha$ to our needs:
+
+We know that for any normalized function $\Psi_T$, the expected energy is higher than the ground state energy (as proved in [@Griffiths] on p. 293-294), viz.
 
 $$ \langle E(\alpha) \rangle = \langle \Psi_T(\alpha) | H | \Psi_T(\alpha)\rangle \ge E_0 = \langle \Psi_0 | H | \Psi_0\rangle. $$ {#eq:variational-principle}
 
-Thus minimizing over $\alpha$ will give an approximation of the true ground state (perhaps even an accurate answer).
+Thus, minimizing over $\alpha$ will give an approximation of the true ground state (perhaps even an accurate answer).
+
 
 ### Wave function of the system
 
@@ -36,23 +38,17 @@ Thus minimizing over $\alpha$ will give an approximation of the true ground stat
 
 For the abovementioned system, containing $N$ particles, we use the following trial wave function:
 
- $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|)$$ {#eq:trial-wavefunction}
- where
+$$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|)$$ {#eq:trial-wavefunction}
 
+where
 
-$$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$ and
+$$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$
 
-$$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
-    \begin{array}{ll}
-    0 & {|\mathbf{r}_i-\mathbf{r}_j|} \leq {a}\\
-    1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|} & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
-   \end{array} $$
+and
 
+$$ f(a,|\mathbf r_i-\mathbf r_j|) = \begin{cases} 0 & |\mathbf r_i-\mathbf r_j| \le a \\ 1-\frac{a}{|\mathbf r_i-\mathbf r_j|} & {|\mathbf r_i-\mathbf r_j|} > a \end{cases}. $$
 
-
- Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
-
-
+Once again, note the index notation explained in {@sec:index-notation-for-sums-and-products}.
 
 
 ## Importance sampling
@@ -75,6 +71,7 @@ $$
 $$
 which is derived from the Fokker-Planck equation, using the Langevin equation to generate the next step with Euler's method, and by making the probability density converge to a stationary state.
 
+
 ### Fokker-Planck
 <!-- Insert some theroy of what fokker-plack is on a general level -->
 For one particle (or walker), the one-dimensional Fokker-Planck equation for a diffusion process is:
@@ -82,6 +79,7 @@ $$
 \frac{\partial P}{\partial t}=D \frac{\partial}{\partial x}\left(\frac{\partial}{\partial x}-F\right) P(x, t)
 $$
 Where $P(x,t)$ is is a time-dependent probability density, $D$ is the diffusion coefficient and $F$ is a drift term which is our case is driven by the quantum force.
+
 
 ### Langevin equation
 <!-- Insert some theroy of what langevin eq is on a general level -->
@@ -104,8 +102,6 @@ Where the symbols represent:
 |$\xi$ | Gaussian random variable |
 \* Atomic Units
 Examples of timesteps giving stable values of the ground state energy is $\Delta t \in[0.001,0.01]$
-
-
 
 
 ### Fokker-Planck and Langevin equation in importance sampling
@@ -175,6 +171,7 @@ as shown in {@sec:local-energy-for-gaussian-wave-function}. We can simplify this
 
 $$E_L(\mathbf{r}) = (\alpha \cdot \dim  - 3 \alpha^2) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
 
+
 ### Drift force
 
 The following expression for the drift force will be used to explanation
@@ -184,3 +181,9 @@ F = \frac{2 \nabla_k \Psi_T(\mathbf{r})}{\Psi_T(\mathbf{r})} = -4 \alpha \mathbf
 $$
 
 applying the gradient operator to the trail wavefunction is already shown (appendix: Second derivative of trial wave function).
+
+
+
+
+
+
