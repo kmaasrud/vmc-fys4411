@@ -1,14 +1,18 @@
 # Theory
 
-## The system described
+##Hamiltonian
 
 <!-- We should describe the task at hand in the Introduction, but here we can express the details of the system in question. -->
 
-The system in question is a hard sphere Bose gas<!-- https://www.kmaasrud.com/brain/bose-gas -->. The system is affected by an external potential - an *elliptical harmonic trap* - that is described for each particle by the following equation:
+The system in question is a hard sphere Bose gas in a potential well. <!-- https://www.kmaasrud.com/brain/bose-gas -->. The system is affected by an external potential - an *elliptical (E) or spherical (S) harmonic trap* - in 1-3 dimensions. This potential, is described by
 
-$$V_\text{ext}(\mathbf r) = \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z r_z^2\right).$$ {#eq:external-potential}
+$$ V_\text{ext}(\mathbf r)=\Bigg\{
+    \begin{array}{ll}
+    \frac{1}{2} m \omega^2_{\text{ho}}r^2 & {(S)}\\
+    \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z r_z^2\right) & (E)
+   \end{array} $${#eq:external-potential}
 
-$\mathbf r$ describes the position of the particle. Note that setting $\omega_\text{ho} = \omega_z$ results in eq. {@eq:external-potential} evaluating to $V_\text{ext}(\mathbf r) = \frac{1}{2}m\omega_\text{ho}^2r^2$, which represents the *spherical* case of the elliptical harmonic trap. In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential:
+$\mathbf r$ describes the position of the particle. In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential:
 
 $$V_\text{int}(|\mathbf r_i - \mathbf r_j|) = \begin{cases}\infty & |\mathbf r_i - \mathbf r_j| \le a \\ 0 & |\mathbf r_i - \mathbf r_j| > a\end{cases}.$$ {#eq:internal-potential}
 
@@ -16,7 +20,7 @@ Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the fo
 
 $$H = \sum_i^N\left(-\frac{\hbar^2}{2m}\nabla_i^2 + V_\text{ext}(\mathbf r_i)\right) + \sum_{i < j}^N V_\text{int} (|\mathbf r_i - \mathbf r_j|).$$
 
-The index notation used here is described in {@sec:index-notation-for-sums-and-products}.
+The index notation used here is described in {@sec:index-notation-for-sums-and-products}. The first term describes the kinetic energy of the system, whereas the to latter describes the abovementioned potentials.  
 
 ### The variational principle
 
@@ -41,7 +45,7 @@ $$ g(\alpha,\beta,\mathbf{r}_i)= \exp{[-\alpha(x_i^2+y_i^2+\beta z_i^2)]}.$$ and
 $$ f(a,|\mathbf{r}_i-\mathbf{r}_j|)=\Bigg\{
     \begin{array}{ll}
     0 & {|\mathbf{r}_i-\mathbf{r}_j|} \leq {a}\\
-    (1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|}) & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
+    1-\frac{a}{|\mathbf{r}_i-\mathbf{r}_j|} & {|\mathbf{r}_i-\mathbf{r}_j|} > {a}.
    \end{array} $$
 
 
@@ -69,7 +73,7 @@ The quantum force $\mathbf{F}$ is given by the formula
 $$
 \mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T},
 $$
-which is derived from the Fokker-Planck equation, using the Langevin equation to generate the next step with Euler's method, and by making the probability density converge to a stationary state. 
+which is derived from the Fokker-Planck equation, using the Langevin equation to generate the next step with Euler's method, and by making the probability density converge to a stationary state.
 
 ### Fokker-Planck
 <!-- Insert some theroy of what fokker-plack is on a general level -->
@@ -106,7 +110,7 @@ Examples of timesteps giving stable values of the ground state energy is $\Delta
 
 ### Fokker-Planck and Langevin equation in importance sampling
 <!-- Maybe this can be moved to appendix or method?? -->
-In order to use these equations for our importance sampling, we start with the original Fokker-Planck equation. 
+In order to use these equations for our importance sampling, we start with the original Fokker-Planck equation.
 
 After inserting $D$ as the diffusion coefficient and $\mathbf{F}_{\mathbf{i}}$ as component $i$ of the drift velocity, we can make the probability density converge to a stationary state by setting its partial derivative over time to zero.
 
@@ -128,7 +132,7 @@ $$
 \mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T}.
 $$
 
-From here, The Green's function is employed as 
+From here, The Green's function is employed as
 <!-- Maybe here we could insert the basic Greens function and then explain that we exchange for the euler-solved langevin -->
 $$
 G(y, x, \Delta t)=\frac{1}{(4 \pi D \Delta t)^{3 N / 2}} \exp \left(-(y-x-D \Delta t F(x))^{2} / 4 D \Delta t\right)
@@ -179,4 +183,4 @@ $$
 F = \frac{2 \nabla_k \Psi_T(\mathbf{r})}{\Psi_T(\mathbf{r})} = -4 \alpha \mathbf{r}_{k}
 $$
 
-applying the gradient operator to the trail wavefunction is already shown in eq (REF). 
+applying the gradient operator to the trail wavefunction is already shown (appendix: Second derivative of trial wave function).

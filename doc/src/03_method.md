@@ -1,5 +1,5 @@
 # Method
-
+##Variational Monte Carlo
 ## Importance sampling
 With importance sampling, the walk in the coordinate space will be biased by the trail wave function.(hvis jeg bare forsto hva jeg skreiv nå..) We will base our approach on the Fokker-Planck and Langevin equations, which is used for trajectory generation in the coordinate space. (Er dette for mye kopiert fra [Importance Sampling](http://compphysics.github.io/ComputationalPhysics2/doc/pub/week3/html/week3.html)?)
 
