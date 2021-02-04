@@ -1,10 +1,10 @@
 use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
 
-// Trait for Metropolis samplers. 
+/// Trait for Metropolis samplers. 
 trait Metropolis {
-    // Samples a new step based on `curr_step`. Does not update
-    // the value of `self.curr_step`.
+    /// Evaluates whether or not a step should be takeng, based on the
+    /// current curr_step and next_step. Returns a Boolean.
     fn do_change(&mut self) -> bool {
         let mut rng = thread_rng();
         let uniform = Uniform::new(0., 1.);
@@ -21,18 +21,8 @@ trait Metropolis {
     fn next_step(&mut self);
 }
 
-// Struct for representing a brute force Metropolis algorithm.
-// Implements the Metropolis trait.
-// 
-// ## Example
-// 
-// ```
-// let mut bf_metro = BruteForceMetropolis::new(0.5);
-// bf_metro.curr_step = vec![1.0, 2.4, 0.6];
-// println!("{}", bf_metro.curr_step);
-// bf_metro.step();
-// println!("{}", bf_metro.curr_step);
-// ```
+/// Struct for representing a brute force Metropolis algorithm.
+/// Implements the Metropolis trait.
 pub struct BruteForceMetropolis {
     // `curr_step` describes the N particles with D dimensions as a N * D dimensional vector.
     // This is computationally preferrable and allows for more general code. Do keep this in mind.
@@ -42,7 +32,7 @@ pub struct BruteForceMetropolis {
 }
 
 impl BruteForceMetropolis {
-    // Makes a new `BruteForceMetropolis` struct based on a step size.
+    /// Makes a new `BruteForceMetropolis` struct based on a step size.
     fn new(step_size: f64) -> Self {
         // Initialize with random `curr_step`. Just setting empty for now, so the vector needs to be filled.
         Self{ curr_step: vec![], next_step: vec![], step_size: step_size, }
@@ -51,8 +41,8 @@ impl BruteForceMetropolis {
 }
 
 impl Metropolis for BruteForceMetropolis {
-    // Makes a new step based on `curr_step`. Also updates
-    // the value of `self.curr_step`.
+    /// Makes a new step based on `curr_step`. Also updates
+    /// the value of `self.curr_step`.
     fn step(&mut self) -> &Vec<f64> {
         self.next_step();
         if self.do_change() {
@@ -61,8 +51,7 @@ impl Metropolis for BruteForceMetropolis {
             &self.next_step
         }
     }
-    // Calculates the acceptance factor based on the current step (stored in the struct) and the next step. 
-    // TODO: This could perhaps actually be implemented as part of the trait.
+    /// Calculates the acceptance factor based on the current step (stored in the struct) and the next step. 
     fn acceptance_factor(&self) -> f64 {
         // TODO: We need WaveFunction structs, the below is just random rubbish now
         let wave_function_old: f64 = self.curr_step.iter().sum();
@@ -75,8 +64,8 @@ impl Metropolis for BruteForceMetropolis {
         hastings_ratio.min(1.)
     }
     
-    // This is what makes this a brute force method, as `BruteForceMetropolis` only makes
-    // a random step in either direction. 
+    /// This is what makes this a brute force method, as `BruteForceMetropolis` only makes
+    /// a random step in either direction. 
     fn next_step(&mut self) {
         // thread_rng() randomly chooses either `1.` or `-1.`. Don't know if this is the most efficient way, but it should work...
         let uniform = Uniform::new(0., 1.);
