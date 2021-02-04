@@ -16,6 +16,7 @@ trait Metropolis {
         }
     }
     
+    fn step(&mut self) -> &Vec<f64>;
     fn acceptance_factor(&self) -> f64;
     fn next_step(&mut self);
 }
@@ -47,6 +48,9 @@ impl BruteForceMetropolis {
         Self{ curr_step: vec![], next_step: vec![], step_size: step_size, }
     }
 
+}
+
+impl Metropolis for BruteForceMetropolis {
     // Makes a new step based on `curr_step`. Also updates
     // the value of `self.curr_step`.
     fn step(&mut self) -> &Vec<f64> {
@@ -57,9 +61,6 @@ impl BruteForceMetropolis {
             &self.next_step
         }
     }
-}
-
-impl Metropolis for BruteForceMetropolis {
     // Calculates the acceptance factor based on the current step (stored in the struct) and the next step. 
     // TODO: This could perhaps actually be implemented as part of the trait.
     fn acceptance_factor(&self) -> f64 {
