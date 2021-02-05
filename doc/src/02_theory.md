@@ -141,6 +141,7 @@ $$
 
 
 ## Analytical
+###Local energy simple Gaussian wave function
 <!-- Rewrite  -->
 As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function(Ref)(local energy). We only study the harmonic oscillator potential and disregard the two-body potential. This is simply done by setting the parameter $a = 0$ which by {@eq:internal-potential} gives $V_\text{int} = 0$. First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles. The simplest Gaussian wavefunction then becomes:
 <!-- Simple Gaussian Wavefunction  -->
@@ -163,18 +164,22 @@ We simplify $\nabla_i^2\Psi_T$ as shown in {@sec:second-derivative-of-trial-wave
 
 $$\nabla^2\Psi_t(\mathbf r) = -2\alpha\Psi_T\left(\dim - 2\alpha\mathbf r_i^2\right),$$ {#eq:second-derivative-of-trial-wave-function}
 
-where $\dim$ is the dimension of the system (1, 2 or 3). Given eq. {@eq:second-derivative-of-trial-wave-function}, we find that the local energy for the Gaussian wavefunction is
+where $\dim$ is the dimension of the system (1, 2 or 3). Given eq. {@eq:second-derivative-of-trial-wave-function}, we find that the local energy for N particles in the case of the simple Gaussian wavefunction is
 
-$$ E_L(\mathbf{r}) = \frac{\hbar^2 \alpha}{m} \left( \dim - {2  \alpha}\right) \left(1 + \frac{1}{2} m \omega^2_\text{ho}\right) \sum_i^N \mathbf{r}^2_{i},$$ {#eq:local-energy-gauss}
+$$ E_L(\mathbf{r}) = \frac{\hbar^2 }{m} \alpha N \dim +  \left( \frac{1}{2} m \omega^2_\text{ho} - 2 \alpha^2\right)  \sum_i^N \mathbf{r}^2_{i},$$ {#eq:local-energy-gauss}
 
-as shown in {@sec:local-energy-for-gaussian-wave-function}. We can simplify this even further by scaling, namely setting $\hbar = m = \omega_\text{ho}^2 = 1$, which gives us the equation
+as shown in {@sec:local-energy-for-gaussian-wave-function}. We can simplify this even further by scaling, namely setting $\hbar = m = 1$, which gives us the equation
 
-$$E_L(\mathbf{r}) = (\alpha \cdot \dim  - 3 \alpha^2) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
+$$E_L(\mathbf{r}) = N\alpha  \dim  + \left(\frac{1}{2} m \omega^2_\text{ho} - 2 \alpha^2\right) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
+
+An even simpler analytic expression is obtained by setting $\omega_{\text{ho}} = 1$ and taking the derivate of the local energy with respect to $r_i$,  giving $\alpha= 0.5$.
+
+$$E_L = \frac{N \dim}{2}$$
 
 
 ### Drift force
 
-The following expression for the drift force will be used to explanation
+The following expression for the drift force will be used to **explanation**
 
 $$
 F = \frac{2 \nabla_k \Psi_T(\mathbf{r})}{\Psi_T(\mathbf{r})} = -4 \alpha \mathbf{r}_{k}
@@ -182,8 +187,53 @@ $$
 
 applying the gradient operator to the trail wavefunction is already shown (appendix: Second derivative of trial wave function).
 
+##Local energy for full wavefunction
+<!-- Find the equivalent expressions for the harmonic oscillator part in one, two and three dimensions with \beta = 1 -->
+With $\beta \neq 0$ and $\text{a} > 0$ the wave function becomes a bit more complicated as the potential/Gaussian can be  can now be elliptical  and the wave function contains the Jastrow factor.  Difficult to find an analytical expression for the derivate of the trail wave function.
+
+ $$
+ E_L(\mathbf{r}) \frac{1}{\Psi_T(\mathbf{r})}\sum_i^{N}\nabla_i^2\Psi_T(\mathbf{r}),
+ $$
+
+Rewriting the full wavefunction
+
+$$
+\Psi_T(\mathbf{r})=\Psi_T(\mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N,\alpha,\beta)
+=\left[
+    \prod_i g(\alpha,\beta,\mathbf{r}_i)
+\right]
+\left[
+    \prod_{j<k}f(a,|\mathbf{r}_j-\mathbf{r}_k|)
+\right],
+$$
+
+to the following
+
+$$
+\Psi_T(\mathbf{r})=\left[
+    \prod_i^N \phi(\mathbf{r}_i)
+\right]
+\exp{\left(\sum_{i<j}u(r_{ij})\right)}
+$$
+
+where  
+$$r_{ij} = |r_i - r_j|$$
+$$u(r_{ij}) = \ln f(r_{ij})$$
+$$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i) $$
+
+
+The first derivative for the k'th particle then is a bit tricky to calculate, so the result will be presented her while the full calculation is in **REF APPENDIX**. The analytical expression becomes
+
+$$
+\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_k)} \right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) + \left[\prod^N_i\phi(\mathbf{r}_i)\right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) \sum^N_{l\ne k } \nabla_k (r_{kl}),
+$$
+
+
+<!-- For APPENDIX -->
 
 
 
 
+The second derivative:
 
+The Laplacian is obtained

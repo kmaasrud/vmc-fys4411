@@ -54,18 +54,12 @@ E_L(\mathbf{r}) =
     \right],
 $$
 
+
 and using the result from {@sec:second-derivative-of-trial-wave-function}, this results in:
-    
+
 $$
 \begin{aligned} E_L (\mathbf r) &=  \frac{1}{\Psi_T(\mathbf{r})}  \left[ \sum_i^N \left(  \frac{\hbar^2 \alpha}{m}  (\dim - 2
     \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_\text{ho} \mathbf{r}^2_{i} \right) \Psi_T(\mathbf{r}) \right ]\\
-&=  \sum_i^N \left( \frac{\hbar^2 \alpha}{m}  (\dim - 2
-    \alpha  \mathbf{r}^2_{i} ) + \frac{1}{2} m \omega^2_\text{ho} \mathbf{r}^2_{i} \right)\\
-&=  \frac{\hbar^2 \alpha}{m} \left( \dim - {2  \alpha}\right) \left(1 +   \frac{1}{2} m \omega^2_\text{ho}\right) \sum_i^N \mathbf{r}^2_{i}.
+&= \frac{\hbar^2 }{m} \alpha N \dim +  \left( \frac{1}{2} m \omega^2_\text{ho} - 2 \alpha^2\right)  \sum_i^N \mathbf{r}^2_{i}
 \end{aligned}
 $$
-
-
-
-
-
