@@ -141,7 +141,7 @@ $$
 
 
 ## Analytical
-###Local energy simple Gaussian wave function
+### Local energy simple Gaussian wave function
 <!-- Rewrite  -->
 As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function(Ref)(local energy). We only study the harmonic oscillator potential and disregard the two-body potential. This is simply done by setting the parameter $a = 0$ which by {@eq:internal-potential} gives $V_\text{int} = 0$. First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles. The simplest Gaussian wavefunction then becomes:
 <!-- Simple Gaussian Wavefunction  -->
@@ -195,7 +195,7 @@ With $\beta \neq 0$ and $\text{a} > 0$ the wave function becomes a bit more comp
  E_L(\mathbf{r}) \frac{1}{\Psi_T(\mathbf{r})}\sum_i^{N}\nabla_i^2\Psi_T(\mathbf{r}),
  $$
 
-Rewriting the full wavefunction
+Rewriting the full wave function
 
 $$
 \Psi_T(\mathbf{r})=\Psi_T(\mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N,\alpha,\beta)
@@ -219,7 +219,7 @@ $$
 where  
 $$r_{ij} = |r_i - r_j|$$
 $$u(r_{ij}) = \ln f(r_{ij})$$
-$$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i) $$
+$$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i)$$
 
 
 The first derivative for the k'th particle then is a bit tricky to calculate, so the result will be presented her while the full calculation is in **REF APPENDIX**. The analytical expression becomes
