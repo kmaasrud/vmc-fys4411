@@ -23,6 +23,8 @@ The index notation used here is described in {@sec:index-notation-for-sums-and-p
 
 ### The variational principle
 
+Here is some more text.
+
 Given this Hamiltonian, we can introduce the concept of a *trial wave function* $\Psi_T(\alpha)$. This is a normalized ansatz to the ground state wave function parametrized by the parameter(s) $\alpha$. This gives us a way of deploying the *variational principle* by varying said parameter $\alpha$ to our needs:
 
 We know that for any normalized function $\Psi_T$, the expected energy is higher than the ground state energy (as proved in [@Griffiths] on p. 293-294), viz.

@@ -1,11 +1,3 @@
 # Method
 
 ## Variational Monte Carlo
-
-
-
-
-
-
-
-
