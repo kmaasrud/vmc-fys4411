@@ -4,28 +4,32 @@
 /// 
 /// - `position: Vec<f64>` - The position of the particle, with an arbitrary dimensionality.
 /// - `dimensions: u8` - The dimensionality of `position`.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Particle {
     pub position: Vec<f64>,
-    pub dimensions: u8,
+    pub dim: usize,
 }
 
 impl Particle {
-    /// Creates a new Particle based on its initial position. Takes in
-    /// a slice of `f64`s (`&[f64]`) and converts it to `Vec<f64>`.
-    /// The dimensionality is found based on the initial position.
+    /// Creates a new particle with a given dimensionality.
+    /// The particle's initial position is set to 0.
     /// 
     /// # Examples
     /// 
     /// Basic usage:
     /// 
     /// ```
-    /// let boson = Particle::new(&[1., 2., 3.])
+    /// let boson = Particle::new(3)
     /// ```
-    pub fn new(initial_position: &[f64]) -> Particle {
+    pub fn new(dim: usize) -> Particle {
         Particle{
-            position: initial_position.to_vec(),
-            dimensions: initial_position.len() as u8,
+            position: vec![0.; dim],
+            dim: dim,
         }
+    }
+    
+    /// Computes the sum of each coordinate squared
+    pub fn squared_sum(&self) -> f64 {
+        self.position.iter().map(|x| x.powi(2)).sum()
     }
 }

@@ -2,13 +2,16 @@
 mod particle;
 mod solver;
 mod system;
+mod wavefunction;
 pub use particle::Particle;
 pub use system::System;
-pub use system::HarmonicTrap;
 pub use solver::BruteForceMetropolis;
+pub use wavefunction::WaveFunction;
 
 
 fn main() {
-    let boson = Particle::new(&[3., 2., 1.]);
-    println!("{:?}", boson);
+    let mut boson = Particle::new(3);
+    boson.position = vec![2., 8., 1.];
+    println!("The following boson: {:?}", boson);
+    println!("Has the following squared sum: {} (nice)", boson.squared_sum());
 }
