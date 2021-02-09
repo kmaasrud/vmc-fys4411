@@ -230,8 +230,36 @@ $$
 
 
 <!-- For APPENDIX -->
+####Gradient and Laplacian for trail wave function general case
+#####Gradient
+Rewriting the wave function to
 
+$$
+\Psi_T(\mathbf{r})=\left[
+    \prod_i^N \phi(\mathbf{r}_i)
+\right]
+\exp{\left(\sum_{i<j}u(r_{ij})\right)}
+$$
 
+where $r_{ij} = |r_i - r_j|$ and we set $u(r_{ij}) = \ln f(r_{ij})$. Lastly $g(\alpha, \beta,\mathbf{r}_i)$ is redefined to the following function
+
+$$
+\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i).
+$$
+
+For convenience
+
+$$\prod_i^N \phi(\mathbf{r}_i) = \Psi_1$$
+
+and  
+
+$$\exp{\left(\sum_{i<j}u(r_{ij})\right)} = \Psi_2 $$
+
+The firs derivative is given my the product rule.
+
+$$
+\nabla_k \Psi_T(\mathbf{r}) =
+$$
 
 
 The second derivative:
