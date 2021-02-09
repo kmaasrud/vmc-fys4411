@@ -187,7 +187,7 @@ $$
 
 applying the gradient operator to the trail wavefunction is already shown (appendix: Second derivative of trial wave function).
 
-##Local energy for full wavefunction
+## Local energy for full wavefunction
 <!-- Find the equivalent expressions for the harmonic oscillator part in one, two and three dimensions with \beta = 1 -->
 With $\beta \neq 0$ and $\text{a} > 0$ the wave function becomes a bit more complicated as the potential/Gaussian can be  can now be elliptical  and the wave function contains the Jastrow factor.  Difficult to find an analytical expression for the derivate of the trail wave function.
 
@@ -225,43 +225,5 @@ $$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \
 The first derivative for the k'th particle then is a bit tricky to calculate, so the result will be presented her while the full calculation is in **REF APPENDIX**. The analytical expression becomes
 
 $$
-\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_k)} \right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) + \left[\prod^N_i\phi(\mathbf{r}_i)\right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) \sum^N_{l\ne k } \nabla_k (r_{kl}),
+\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) + \left[\prod^N_i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) \sum^N_{l\ne k } \nabla_ k (r_ {kl}),
 $$
-
-
-<!-- For APPENDIX -->
-####Gradient and Laplacian for trail wave function general case
-#####Gradient
-Rewriting the wave function to
-
-$$
-\Psi_T(\mathbf{r})=\left[
-    \prod_i^N \phi(\mathbf{r}_i)
-\right]
-\exp{\left(\sum_{i<j}u(r_{ij})\right)}
-$$
-
-where $r_{ij} = |r_i - r_j|$ and we set $u(r_{ij}) = \ln f(r_{ij})$. Lastly $g(\alpha, \beta,\mathbf{r}_i)$ is redefined to the following function
-
-$$
-\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i).
-$$
-
-For convenience
-
-$$\prod_i^N \phi(\mathbf{r}_i) = \Psi_1$$
-
-and  
-
-$$\exp{\left(\sum_{i<j}u(r_{ij})\right)} = \Psi_2 $$
-
-The firs derivative is given my the product rule.
-
-$$
-\nabla_k \Psi_T(\mathbf{r}) =
-$$
-
-
-The second derivative:
-
-The Laplacian is obtained

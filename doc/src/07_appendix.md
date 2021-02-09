@@ -63,3 +63,65 @@ $$
 &= \frac{\hbar^2 }{m} \alpha N \dim +  \left( \frac{1}{2} m \omega^2_\text{ho} - 2 \alpha^2\right)  \sum_i^N \mathbf{r}^2_{i}
 \end{aligned}
 $$
+
+
+<!-- For APPENDIX -->
+#### Gradient and Laplacian for trail wave function general case
+##### Gradient
+Rewriting the wave function to
+
+$$
+\Psi_T(\mathbf{r})=\left[
+    \prod_i^N \phi(\mathbf{r}_i)
+\right]
+\exp{\left(\sum_{i<j}u(r_{ij})\right)}
+$$
+
+where $r_{ij} = |r_i - r_j|$ and we set $u(r_{ij}) = \ln f(r_{ij})$. Lastly $g(\alpha, \beta,\mathbf{r}_i)$ is redefined to the following function
+
+$$
+\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i).
+$$
+
+For convenience
+
+$$ \Psi_1 (\mathbf{r}_{i})= \prod_i^N \phi(\mathbf{r}_i)$$
+
+and  
+
+$$\Psi_2 (\mathbf{r}_ {ij}) = \exp{\left(\sum_{i<j}u(r_{ij})\right)}$$
+
+where $\Psi_1$  and $\Psi_2$ is the one-body and correlated part of the wave function, respectively. Both parts have simple dependency of the k'th particle. $\Psi_1$ is a product of one-body wave functions with only one factor dependent of $\mathbf{r}_k$ and $\Psi_2$ is $\mathbf{r}_k$ - dependent for the pairs $\sum _{i\ne k} u(\mathbf{r} _{ik})$.  Hence the first derivatives becomes
+
+$$
+\nabla_k \Psi_1(\mathbf{r}) = \left[\prod_ {i\ne k}^N \phi(\mathbf{r}_i) \right] \nabla_k \phi(\mathbf{r}_k)
+$$
+
+
+$$
+\nabla_k \Psi_2(\mathbf{r}_ {ij}) = \exp {\left (\sum_ {i<j}u(r_{ij})\right)}  \sum_ {i \ne k} \nabla_k  u(\mathbf{r}_{ik})
+$$
+
+Giving the first derivate of the trail wave function
+
+$$
+\nabla_k \Psi_T(\mathbf{r}) = \nabla_k \phi(\mathbf{r}_ k) \left [\prod_ {i\ne k}^N \phi(\mathbf{r}_ i) \right] \exp {\left (\sum_ {i<j}u(r_{ij})\right)} \\ +
+ \prod_i^N \phi (\mathbf{r}_ i) \exp{ \left( \sum_{i<j} u(r_{ij}) \right)}  \sum_ {i \ne k} \nabla_k  u(\mathbf{r}_{ik})
+$$
+
+##### Laplacian
+The Laplacian of the wacefunction needs to be evaluated in order to calculate
+
+$$
+\frac{1}{\Psi_T(\mathbf {r})} \nabla_k \nabla_k \Psi_T(\mathbf{r})
+$$
+
+The last part, $\nabla_k \Psi_T(\mathbf{r})$ is calculated in the section above / equation (**REFERANCE**). Next step is then to calculate
+
+<!-- Check this!  -->
+$$
+\nabla_k \nabla_k \Psi_T(\mathbf{r}) = \nabla_k \left( \nabla_k \phi(\mathbf{r}_ k) \left [\prod_ {i\ne k}^N \phi(\mathbf{r}_ i) \right] \exp {\left (\sum_ {j<m}u(r_{jm})\right)} \\
+ +\prod_i^N \phi (\mathbf{r}_ i) \exp{ \left( \sum_{j<m} u(r_{jm}) \right)}  \sum_ {l \ne k} \nabla_k  u(\mathbf{r}_{kl}) \right) \\
+= \prod_ {i\ne k}^N \left[ \nabla_k^2 \phi(\mathbf{r}_k) \exp{\left(\sum _{j<m} u(r _{jm})\right)} + \nabla_k \phi(\mathbf{r_k}) \cdot  \nabla_k \exp{\left( \sum _{j < m} u(r _{jm})\right)} \right] \\ + \nabla_k \prod_i \phi (\mathbf{r}_i) \exp{\left (\sum _{j<m} u(r _{jm})\right)}\sum _{l \ne k} \nabla_k u(r _{kl}) \\+
+\nabla_k \exp{\left(\sum _{j < m} u(r _{jm})\right)}\prod_i \phi(\mathbf{r}_i) \sum _{l \ne k} \nabla_k u(r _{kl}) + \nabla_k \sum _{l \ne k} \nabla_k u (r _{kl}) \prod_i \phi (\mathbf{r}_i) \exp{\sum _{j < m} u (r _{jm})}
+$$
