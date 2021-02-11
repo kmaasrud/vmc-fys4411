@@ -1,6 +1,7 @@
 use crate::Particle;
 
 pub trait WaveFunction {
+    fn evaluate(&self) -> f64;
     fn laplace(&self, particles: &Vec<Particle>) -> f64;
     fn gradient(&self, i_particle: usize) -> Vec<f64>;
     // Here I'm just going by what @Schoyen has done, let's see if it works
