@@ -1,10 +1,11 @@
+use rand::prelude::random;
 use crate::Particle;
 use crate::WaveFunction;
 
 pub struct System<T: WaveFunction> {
-    particles: Vec<Particle>,
-    dimensionality: usize,
-    wavefunction: T
+    pub particles: Vec<Particle>,
+    pub dimensionality: usize,
+    pub wavefunction: T
 }
 
 impl<T> System<T> where T: WaveFunction {
@@ -14,6 +15,15 @@ impl<T> System<T> where T: WaveFunction {
             dimensionality: dim,
             wavefunction: wavefunction,
         }
+    }
+
+    pub fn random_particle_change(&self, step_size: f64) -> Vec<Particle> {
+        let mut new_particles = self.particles.clone();
+        let i = random::<usize>() % self.particles.len();
+        for d in 0..new_particles[i].dim {
+            new_particles[i].position[d] += 2. * (random::<f64>() - 0.5) * step_size;
+        }
+        new_particles
     }
 }
 
