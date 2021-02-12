@@ -120,8 +120,41 @@ The last part, $\nabla_k \Psi_T(\mathbf{r})$ is calculated in the section above 
 
 <!-- Check this!  -->
 $$
-\nabla_k \nabla_k \Psi_T(\mathbf{r}) = \nabla_k \left( \nabla_k \phi(\mathbf{r}_ k) \left [\prod_ {i\ne k}^N \phi(\mathbf{r}_ i) \right] \exp {\left (\sum_ {j<m}u(r_{jm})\right)} \\
- +\prod_i^N \phi (\mathbf{r}_ i) \exp{ \left( \sum_{j<m} u(r_{jm}) \right)}  \sum_ {l \ne k} \nabla_k  u(\mathbf{r}_{kl}) \right) \\
-= \prod_ {i\ne k}^N \left[ \nabla_k^2 \phi(\mathbf{r}_k) \exp{\left(\sum _{j<m} u(r _{jm})\right)} + \nabla_k \phi(\mathbf{r_k}) \cdot  \nabla_k \exp{\left( \sum _{j < m} u(r _{jm})\right)} \right] \\ + \nabla_k \prod_i \phi (\mathbf{r}_i) \exp{\left (\sum _{j<m} u(r _{jm})\right)}\sum _{l \ne k} \nabla_k u(r _{kl}) \\+
+\nabla_k \nabla_k \Psi_T(\mathbf{r}) = \nabla_k \left( \nabla_k \phi(\mathbf{r}_ k) \left [\prod_ {i\ne k} \phi(\mathbf{r}_ i) \right] \exp {\left (\sum_ {j<m}u(r_{jm})\right)} \\
+ +\prod_i \phi (\mathbf{r}_ i) \exp{ \left( \sum_{j<m} u(r_{jm}) \right)}  \sum_ {l \ne k} \nabla_k  u(\mathbf{r}_{kl}) \right) \\
+= \prod_ {i\ne k} \left[ \nabla_k^2 \phi(\mathbf{r}_k) \exp{\left(\sum _{j<m} u(r _{jm})\right)} + \nabla_k \phi(\mathbf{r_k}) \cdot  \nabla_k \exp{\left( \sum _{j < m} u(r _{jm})\right)} \right] \\ + \nabla_k \prod_i \phi (\mathbf{r}_i) \exp{\left (\sum _{j<m} u(r _{jm})\right)}\sum _{l \ne k} \nabla_k u(r _{kl}) \\+
 \nabla_k \exp{\left(\sum _{j < m} u(r _{jm})\right)}\prod_i \phi(\mathbf{r}_i) \sum _{l \ne k} \nabla_k u(r _{kl}) + \nabla_k \sum _{l \ne k} \nabla_k u (r _{kl}) \prod_i \phi (\mathbf{r}_i) \exp{\sum _{j < m} u (r _{jm})}
+$$
+
+In order to avoid writing long calculations, the three main gradients are calculated below. The last of the three following expressions/equations is a bit more of a hazard to calculate. First the product rule is used. Then a rule for the gradient is applied where the gradient of a unit vector is 2 divided by its magnitude. $u'$ is parallel to the unit vector, hence their product becomes a scalar, the second derivate of $u$.
+
+$$
+\nabla_k
+\exp{\left(\sum_{j <m}{u(r_{jm}}\right)} = \exp{\left(\sum_{j <m}{u(r_{jm}}\right)} \sum_{l \ne k}{\nabla_k u(r_{kl})}
+$$
+
+$$
+\nabla_k \prod_i \phi(\mathbf{r}_i) = \prod _{i \ne k} \phi(\mathbf{r}_i) \nabla_k \phi(\mathbf {r}_k)
+$$
+
+$$\nabla_k \sum_{l \ne k}{\nabla_k u(r_{kl})} = \sum_{l \ne k}{\nabla_k \left(\frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk})\right)} \\
+= \sum _{l\ne k}\left(\nabla_k \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk}) + \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} \nabla_k u'(r _{lk}) \right) \\
+= \sum _{l\ne k} \frac{2}{r _{lk}} + u''(r _{lk})
+$$
+
+
+Finally the Laplacian can be calculated, by reintroducing the fraction $\frac{1}{\Psi_T(\mathbf{r})}$
+
+$$
+\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) =  \frac{\prod_{i \ne k} \phi(\mathbf{r}_i)}{\prod _{i} \phi(\mathbf{r}_i)} \left(\nabla^2_k \phi(\mathbf{r}_k) + \nabla_k \phi(\mathbf{r}_k \sum _{l\ne k}\nabla_k u(r _{kl})\right)  + \left( \frac{\nabla_k \phi(\mathbf{r}_i)}{\phi(\mathbf{r}_i)} \sum _{l \ne k} \nabla_k u(r _{kl})\right) \\ + \sum _{l \ne k} \nabla_k u(r _{kl})  + \sum _{j \ne k} \nabla_k u(r _{kj}) + \nabla_k  \sum _{l \ne k} \nabla_k u(r _{kl})
+$$
+
+The second and third terms are the same. Two of the terms are shown in the calculations above and $\nabla_k u(r_{kl})$ is the unit vector multiplied with the derivate of a scalar. Then, finally we have the full, right expression
+
+
+$$
+\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) = \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}}u'(r _{lk}) + \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} u'(r _{lk}) \\+ \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}}  u'(r _{jk})  u'(r _{lk}) + \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
 $$
