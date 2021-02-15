@@ -1,12 +1,12 @@
 # Theory
 
-The numerical simulations to be run are based on the following quantum mechanical system.  
+The numerical simulations to be run are based on the following quantum mechanical system.
 
 ## Wave function
 
 <!-- Here we need to either describe how we arrived at this, or cite Morten -->
 
-The following trail wave function, for $N$ particles, will be implemented to describe the system described in the introduction.  
+The following trail wave function, for $N$ particles, will be implemented to describe the system described in the introduction.
 
 $$\Psi_T(\mathbf r_1, ..., \mathbf r_N, \alpha, \beta) = \prod_i g(\alpha, \beta, \mathbf r_i) \prod_{j < k}f(a, |\mathbf r_j - \mathbf r_k|)$$ {#eq:trial-wavefunction}
 
@@ -20,7 +20,7 @@ $$ f(a,|\mathbf r_i-\mathbf r_j|) = \begin{cases} 0 & |\mathbf r_i-\mathbf r_j| 
 
 The index notation explained in {@sec:index-notation-for-sums-and-products}.
 
-Simplifications of the trail wave function can be useful in order to reduce the number of floating point operations. An analytical expression is also convenient for comparison with the numerical calculations.  
+Simplifications of the trail wave function can be useful in order to reduce the number of floating point operations. An analytical expression is also convenient for comparison with the numerical calculations.
 
 However, first it is necessary to introduce the Hamiltonian of the system.
 
@@ -120,7 +120,7 @@ $$
 \exp{\left(\sum_{i<j}u(r_{ij})\right)}
 $$
 
-where  
+where
 $$r_{ij} = |r_i - r_j|$$
 $$u(r_{ij}) = \ln f(r_{ij})$$
 $$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i)$$
