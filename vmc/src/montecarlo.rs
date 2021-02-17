@@ -6,7 +6,6 @@ use crate::solver::System;
 pub struct MonteCarlo {
 }
 
-
 trait MonteCarlo {
     fn step<T>(
             &self, 
