@@ -224,45 +224,51 @@ $$
 $$
 
 where
-$$r_{ij} = |r_i - r_j|$$
-$$u(r_{ij}) = \ln f(r_{ij})$$
-$$\phi(\mathbf{r}_i) = \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i)$$
+
+$$
+\begin{aligned}
+\phi(\mathbf{r}_i) &= \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i) \\ \\
+u(r_{ij}) &= \ln f(r_{ij}) \\ \\
+r_{ij} &= |r_i - r_j|
+\end{aligned}
+$$
+
 
 
 The first derivative for the k'th particle then is a bit tricky to calculate, so the result will be presented her while the full calculation is in **REF APPENDIX**. The analytical expression becomes
 
 $$
-\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) + \left[\prod^N_i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N_{j<m} u(r_{jm})\right) \sum^N_{l\ne k } \nabla_ k (r_ {kl}),
+\begin{aligned} 
+\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N _{j<m} u(r _{jm})\right) \\ \left[\prod^N _i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N _ {j<m} u(r _ {jm})\right) \sum^N _ {l\ne k } \nabla_ k (r_ {kl}),
+\end{aligned} 
 $$
+
 
 The Laplacian is derived in **REF APPENDIX** resulting in the following analytical expression
 
+$$
+\begin{aligned}
+\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) &= \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}}u'(r _{lk})\\
+&+ \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} u'(r _{lk}) \\
+&+ \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}}  u'(r _{jk})  u'(r _{lk}) \\
+&+ \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
+\end{aligned}
+$$
 
-$$
-\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) = \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}}u'(r _{lk}) + \sum _{j\ne k}\sum _{l\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} u'(r _{lk}) \\ + \sum _{j\ne k}\sum _{l\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}}  u'(r _{jk})  u'(r _{lk}) + \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
-$$
 
 Where
 
-
 $$
-\frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} = -2\alpha \left[
+\begin{aligned}
+\frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} &= -2\alpha \left[
 \begin{matrix}
 x_k^2 \\ y_k^2 \\ \beta z_k^2
-\end{matrix}\right],
-$$
-
-$$
-\frac{\nabla_k^2 \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} = 2\alpha (2\alpha)[x_k^2 + y_k^2 + \beta^2z_k^2] - 2 - \beta),
-$$
-
-$$
-u'(r_{ij}) = \frac{r_{ij}}{r_{ij}-a}, \quad \text{for}  \quad r_{ij}  > a,
-$$
-
-$$
-u''(r_{ij}) = \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad r_{ij}  > a,
+\end{matrix}\right], \\ \\
+\frac{\nabla_k^2 \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} &= 2\alpha (2\alpha)[x_k^2 + y_k^2 + \beta^2z_k^2] - 2 - \beta),\\ \\
+u'(r_{ij}) &= \frac{r_{ij}}{r_{ij}-a}, \quad \text{for}  \quad r_{ij}  > a, \\ \\
+u''(r_{ij}) &= \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad r_{ij}  > a,
+\end{aligned}
 $$
