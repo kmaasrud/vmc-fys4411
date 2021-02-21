@@ -12,3 +12,6 @@ Cargo.lock
 
 # Ctags
 **/rusty-tags.vi
+
+# Visual Studio Code
+.vscode/*
