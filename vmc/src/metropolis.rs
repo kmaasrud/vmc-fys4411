@@ -3,7 +3,7 @@ use rand::distributions::{Uniform, Distribution};
 use crate::{System, WaveFunction, Particle};
 
 /// Trait for Metropolis samplers.
-trait Metropolis {
+pub trait Metropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult;
     // This'll probably need more generalization, but works for now
     fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
@@ -11,7 +11,7 @@ trait Metropolis {
     }
 }
 
-enum MetropolisResult {
+pub enum MetropolisResult {
     Accepted(f64),
     Rejected,
 }

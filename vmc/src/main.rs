@@ -1,12 +1,12 @@
-// Import structs and make them publicly accessible
 mod particle;
-mod solver;
+mod metropolis;
 mod system;
 mod wavefunction;
 mod hamiltonian;
+mod montecarlo;
 pub use particle::Particle;
 pub use system::System;
-pub use solver::BruteForceMetropolis;
+pub use metropolis::{Metropolis, MetropolisResult};
 pub use wavefunction::WaveFunction;
 
 

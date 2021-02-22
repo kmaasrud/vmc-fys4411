@@ -1,32 +1,16 @@
-use crate::particle::Particle;
-use crate::wavefunction::WaveFunction;
-use crate::solver::System;
+use crate::System;
+use crate::WaveFunction;
+use crate::{Metropolis, MetropolisResult};
 
+fn monte_carlo<T: Metropolis, V: WaveFunction>(n: usize, sys: &mut System<V>, metro: &mut T) -> f64 {
+    let mut result: f64 = 0.;
 
-pub struct MonteCarlo {
-}
-
-trait MonteCarlo {
-    fn step<T>(
-            &self, 
-            wavefunction: &T, 
-            particle: &mut Particle,
-            step_size: f64) -> bool where T: WaveFunction;
-}
-
-
-
-impl MonteCarlo for BruteForceMetropolis{
-    fn step<T>(
-        &self, 
-        wavefunction: &T, 
-        particle: &mut Particle,
-        step_size: f64) -> bool 
-        
-    where 
-        T: WaveFunction, {
-      let old_wavefunc = wavefunction.evaluate(&particle);
-      let p_index = random::<usize>() % particle.len();
-      println!(p_index);
+    // Just some gibberish for now, but the general structure holds
+    for _ in 0..n {
+        match metro.step(sys) {
+            MetropolisResult::Accepted(val) => result += val,
+            MetropolisResult::Rejected => result += 1.,
+        }
     }
+    result
 }
