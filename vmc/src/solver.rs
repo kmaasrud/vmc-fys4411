@@ -4,19 +4,16 @@ use crate::{System, WaveFunction, Particle};
 
 /// Trait for Metropolis samplers.
 trait Metropolis {
-    fn do_change<T: WaveFunction>(&mut self, sys: &System<T>) -> bool {
-        let mut rng = thread_rng();
-        let uniform = Uniform::new(0., 1.);
-
-        if uniform.sample(&mut rng) < self.acceptance_factor(sys) {
-            true
-        } else {
-            false
-        }
+    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult;
+    // This'll probably need more generalization, but works for now
+    fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
+        (old_val / new_val).min(1.)
     }
+}
 
-    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>);
-    fn acceptance_factor<T: WaveFunction>(&mut self, sys: &System<T>) -> f64;
+enum MetropolisResult {
+    Accepted(f64),
+    Rejected,
 }
 
 /// Struct for representing a brute force Metropolis algorithm.
@@ -34,20 +31,19 @@ impl BruteForceMetropolis {
 }
 
 impl Metropolis for BruteForceMetropolis {
-    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) {
-        if !self.do_change(sys) {
-            sys.particles = self.next_step.clone();
-        }
-    }
+    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
+        let mut rng = thread_rng();
+        let uniform = Uniform::new(0., 1.);
 
-    fn acceptance_factor<T: WaveFunction>(&mut self, sys: &System<T>) -> f64 {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         self.next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&self.next_step);
 
-        let hastings_ratio: f64 = wf_new.powi(2) / wf_old.powi(2);
-
-        // Return hastings ratio if it is smaller than 1, else 1
-        hastings_ratio.min(1.)
+        if uniform.sample(&mut rng) < self.acceptance_factor(wf_old.powi(2), wf_new.powi(2)) {
+            sys.particles = self.next_step.clone();
+            MetropolisResult::Accepted(wf_new)
+        } else {
+            MetropolisResult::Rejected
+        }
     }
 }
