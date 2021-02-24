@@ -16,7 +16,7 @@ fn monte_carlo<T: Metropolis, V: WaveFunction>(n: usize, sys: &mut System<V>, me
     // should be pretty straight forward.
     let v: f64 = 1.;
 
-    for _ in 0..n {
+    for _ in 1..n {
         match metro.step(sys) {
             MetropolisResult::Accepted(val) => {
                 result += val;
