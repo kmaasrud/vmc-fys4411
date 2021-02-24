@@ -7,12 +7,11 @@ mod montecarlo;
 pub use particle::Particle;
 pub use system::System;
 pub use metropolis::{Metropolis, MetropolisResult};
-pub use wavefunction::WaveFunction;
+pub use wavefunction::{WaveFunction, GaussianWaveFunction};
 
 
 fn main() {
-    let mut boson = Particle::new(3);
-    boson.position = vec![2., 8., 1.];
-    println!("The following boson: {:?}", boson);
-    println!("Has the following squared sum: {} (nice)", boson.squared_sum());
+    let wf: GaussianWaveFunction = GaussianWaveFunction::new(0.5);
+    let test_system: System<GaussianWaveFunction> = System::distributed(5, 3, wf, 2.);
+    println!("{:#?}", test_system);
 }

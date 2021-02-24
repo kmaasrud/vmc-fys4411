@@ -12,12 +12,13 @@ pub trait WaveFunction {
 
 
 // TODO: Docstring
+#[derive(Debug)]
 pub struct GaussianWaveFunction {
     alpha: f64,
 }
 
 impl GaussianWaveFunction {
-    fn new(alpha: f64) -> Self {
+    pub fn new(alpha: f64) -> Self {
         GaussianWaveFunction { alpha: alpha, }
     }
 }

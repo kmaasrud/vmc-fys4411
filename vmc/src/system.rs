@@ -3,6 +3,7 @@ use rand::distributions::{Uniform, Distribution};
 use crate::Particle;
 use crate::WaveFunction;
 
+#[derive(Debug)]
 pub struct System<T: WaveFunction> {
     pub particles: Vec<Particle>,
     pub dimensionality: usize,
@@ -24,6 +25,7 @@ impl<T> System<T> where T: WaveFunction {
         let mut sys: System<T> = System::new(n_particles, dim, wavefunction);
 
         for i in 0..sys.particles.len() {
+            // Overlapping particles could be a problem...
             let mut particle = Particle::new(dim);
             particle.position = particle.position.iter().map(|x| x + spread * uniform.sample(&mut rng)).collect();
             sys.particles[i] = particle;
