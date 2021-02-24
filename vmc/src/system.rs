@@ -1,4 +1,5 @@
-use rand::prelude::random;
+use rand::{prelude::random, thread_rng};
+use rand::distributions::{Uniform, Distribution};
 use crate::Particle;
 use crate::WaveFunction;
 
@@ -15,6 +16,20 @@ impl<T> System<T> where T: WaveFunction {
             dimensionality: dim,
             wavefunction: wavefunction,
         }
+    }
+
+    pub fn distributed(n_particles: usize, dim: usize, wavefunction: T, spread: f64) -> Self {
+        let mut rng = thread_rng();
+        let uniform = Uniform::new(-1., 1.);
+        let mut sys: System<T> = System::new(n_particles, dim, wavefunction);
+
+        for i in 0..sys.particles.len() {
+            let mut particle = Particle::new(dim);
+            particle.position = particle.position.iter().map(|x| x + spread * uniform.sample(&mut rng)).collect();
+            sys.particles[i] = particle;
+        }
+
+        sys
     }
 
     pub fn random_particle_change(&self, step_size: f64) -> Vec<Particle> {
