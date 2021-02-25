@@ -1,6 +1,6 @@
 use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
-use crate::{System, WaveFunction, Particle};
+use crate::{System, WaveFunction};
 
 /// Trait for Metropolis samplers.
 pub trait Metropolis {
@@ -19,14 +19,13 @@ pub enum MetropolisResult {
 /// Struct for representing a brute force Metropolis algorithm.
 /// Implements the Metropolis trait.
 pub struct BruteForceMetropolis {
-    next_step: Vec<Particle>,
     step_size: f64,
 }
 
 impl BruteForceMetropolis {
     /// Makes a new `BruteForceMetropolis` struct based on a step size.
     fn new(step_size: f64) -> Self {
-        Self{ next_step: vec![], step_size: step_size, }
+        Self{ step_size: step_size, }
     }
 }
 
@@ -36,11 +35,11 @@ impl Metropolis for BruteForceMetropolis {
         let uniform = Uniform::new(0., 1.);
 
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
-        self.next_step = sys.random_particle_change(self.step_size);
-        let wf_new: f64 = sys.wavefunction.evaluate(&self.next_step);
+        let next_step = sys.random_particle_change(self.step_size);
+        let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
 
         if uniform.sample(&mut rng) < self.acceptance_factor(wf_old.powi(2), wf_new.powi(2)) {
-            sys.particles = self.next_step.clone();
+            sys.particles = next_step.clone();
             MetropolisResult::Accepted(wf_new)
         } else {
             MetropolisResult::Rejected
