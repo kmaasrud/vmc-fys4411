@@ -38,7 +38,9 @@ impl Metropolis for BruteForceMetropolis {
         let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
 
-        if uniform.sample(&mut rng) < self.acceptance_factor(wf_old.powi(2), wf_new.powi(2)) {
+        let acc_factor = self.acceptance_factor(wf_old.powi(2), wf_new.powi(2));
+
+        if uniform.sample(&mut rng) < acc_factor {
             sys.particles = next_step.clone();
             MetropolisResult::Accepted(wf_new)
         } else {
