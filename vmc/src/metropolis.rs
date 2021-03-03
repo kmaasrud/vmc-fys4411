@@ -70,7 +70,7 @@ impl Metropolis for ImportanceMetropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         // Here we need lots of different shit
-        let next_step = sys.quantum_force_particle_change(self.step_size);
+        let next_step = sys.quantum_force_particle_change(self.step_size, T);
         //let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
 

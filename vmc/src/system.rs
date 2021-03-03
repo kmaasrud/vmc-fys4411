@@ -1,16 +1,19 @@
-use rand::{prelude::random, thread_rng};
-use rand::distributions::{Uniform, Distribution};
 use crate::Particle;
 use crate::WaveFunction;
+use rand::distributions::{Distribution, Uniform};
+use rand::{prelude::random, thread_rng};
 
 #[derive(Debug)]
 pub struct System<T: WaveFunction> {
     pub particles: Vec<Particle>,
     pub dimensionality: usize,
-    pub wavefunction: T
+    pub wavefunction: T,
 }
 
-impl<T> System<T> where T: WaveFunction {
+impl<T> System<T>
+where
+    T: WaveFunction,
+{
     pub fn new(n_particles: usize, dim: usize, wavefunction: T) -> Self {
         System {
             particles: vec![Particle::new(dim); n_particles],
@@ -27,7 +30,11 @@ impl<T> System<T> where T: WaveFunction {
         for i in 0..sys.particles.len() {
             // Overlapping particles could be a problem...
             let mut particle = Particle::new(dim);
-            particle.position = particle.position.iter().map(|x| x + spread * uniform.sample(&mut rng)).collect();
+            particle.position = particle
+                .position
+                .iter()
+                .map(|x| x + spread * uniform.sample(&mut rng))
+                .collect();
             sys.particles[i] = particle;
         }
 
@@ -43,13 +50,19 @@ impl<T> System<T> where T: WaveFunction {
         new_particles
     }
 
-    //  This func is called from metropolis.rs:ImportanceMetropolis in order to 
+    //  This func is called from metropolis.rs:ImportanceMetropolis in order to
     //  do one step (change the particle system) WITH SAMPLING BIAS: the quantum force.
-    pub fn quantum_force_particle_change(&self, step_size: f64) -> Vec<Particle>{ // Takes self (the particle system), and a step size, returns vector with particle system at next eventual step.
-        let mut new_particles = self.particles.clone();     // Clones last particle step in order to change it
-        let i = random::<usize>() % self.particles.len();   // Picks one random particle to do the change for
-        for d in 0..new_particles[i].dim {                  // Loop over its dimensions and change each of it a random value between -1 and 1 multiplied by stepsize.
-            new_particles[i].position[d] += 2. * (random::<f64>() - 0.5) * step_size;
+    pub fn quantum_force_particle_change(&self, step_size: f64, wavefunction: T) -> Vec<Particle> {
+        // Takes self (the particle system), and a step size, returns vector with particle system at next eventual step.
+        let mut rng = thread_rng(); //Uniform rng needed for langevin
+        let uniform = Uniform::new(-1., 1.);
+        let mut new_particles = self.particles.clone(); // Clones last particle step in order to change it
+        let i = random::<usize>() % self.particles.len(); // Picks one random particle to do the change for
+        let quantum_force: Vec<f64> = wavefunction.quantum_force(new_particles[i]);                                                  //  Using langevin to determine next particle pos
+        for d in 0..new_particles[i].dim {
+            // Loop over its dimensions and do Langevin equation
+            new_particles[i].position[d] += 0.5 * quantum_force[d] * step_size
+                    + uniform.sample(&mut rng) * step_size.sqrt(); // 0.5 is the D constant.
         }
         new_particles
     }
