@@ -42,6 +42,17 @@ impl<T> System<T> where T: WaveFunction {
         }
         new_particles
     }
+
+    //  This func is called from metropolis.rs:ImportanceMetropolis in order to 
+    //  do one step (change the particle system) WITH SAMPLING BIAS: the quantum force.
+    pub fn quantum_force_particle_change(&self, step_size: f64) -> Vec<Particle>{ // Takes self (the particle system), and a step size, returns vector with particle system at next eventual step.
+        let mut new_particles = self.particles.clone();     // Clones last particle step in order to change it
+        let i = random::<usize>() % self.particles.len();   // Picks one random particle to do the change for
+        for d in 0..new_particles[i].dim {                  // Loop over its dimensions and change each of it a random value between -1 and 1 multiplied by stepsize.
+            new_particles[i].position[d] += 2. * (random::<f64>() - 0.5) * step_size;
+        }
+        new_particles
+    }
 }
 
 // pub struct HarmonicTrap  {
