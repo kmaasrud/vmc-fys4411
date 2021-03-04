@@ -12,6 +12,6 @@ pub use wavefunction::{WaveFunction, GaussianWaveFunction};
 
 fn main() {
     let wf: GaussianWaveFunction = GaussianWaveFunction::new(0.5);
-    let test_system: System<GaussianWaveFunction> = System::distributed(5, 3, wf, 2.);
+    let test_system: System<GaussianWaveFunction> = System::distributed(1, 3, wf, 2.);
     println!("{:#?}", test_system);
 }
