@@ -45,11 +45,22 @@ impl WaveFunction for GaussianWaveFunction {
     }
 
     //  Takes input particle, find quantum force by evaluating its wavefunction
-    fn quantum_force(&self, particle: Particle) -> Vec<f64> {
-        //Iterates over positions(should be wf dims), while doing the maths on each elements, before collecting to similar vec
-        particle.position.iter().map(|x| 2. /x * x).collect() // NOT WORKING
-        //We need a nabla operator between the x'es
-        //We dont actually find the QF now, we just iterate the positions, not the wavefunction for different dims..
+    fn quantum_force(&self, particle: Particle, particles: &Vec<Particle>) -> Vec<f64> {
+        //Loop over all other particles in order to calculate quantum force felt from all of them.
+        //THIS SHOULD BE PARALELLIZED
+        for otherparticle in particles {
+            //Radius: Distance between the chosen particle, and all the others.
+            let mut r: f64
+            for i in 0..particle.dim {
+                r += (otherparticle.position[i]-particle.position[i]).powi(2)
+            }
+            r = r.sqrt()
+
+            let mut deno: f64 = 1.0/(1+self.beta*r)
+            let mut qforce: Vec<f64> = -2*particle.position*self.alpha*(particle.position-otherparticle.position)*deno*deno/r
+        }
+        //After this loop, all qforce vectors should be summed to create the total quantum force.
+        //MORE: https://compphysics.github.io/ComputationalPhysics2/doc/pub/week4/html/week4-reveal.html slide 11
     }
     //  Takes the input particle + quantum_force, inserts in greens func and returns
     fn greens(&self, particle: Particle, particles: &Vec<Particle>, step_size: f64) -> f64 {
