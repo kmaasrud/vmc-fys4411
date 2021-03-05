@@ -1,4 +1,4 @@
-use rand::thread_rng;
+use rand::{prelude::random, thread_rng};
 use rand::distributions::{Uniform, Distribution};
 use crate::{System, WaveFunction};
 
@@ -70,11 +70,12 @@ impl Metropolis for ImportanceMetropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         // Here we need lots of different shit
-        let next_step = sys.quantum_force_particle_change(self.step_size, T);
+        let particle_id = random::<usize>() % sys.particles.len(); // Picks one random particle to do the change for
+        let next_step = sys.quantum_force_particle_change(self.step_size, sys.wavefunction, particle_id);
         //let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
 
-        let acc_factor = 1.;
+        let acc_factor:f64 = sys.wavefunction.greens(sys.particles.len(), &next_step[particle_id], &sys.particles[particle_id], &next_step[particle_id].qforce, self.step_size);
 
         // The below should behave the same
         if Self::hastings_check(acc_factor) {

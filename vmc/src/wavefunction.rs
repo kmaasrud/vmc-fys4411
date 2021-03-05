@@ -8,8 +8,8 @@ pub trait WaveFunction {
     fn drift_force(&self, particle: Particle) -> Vec<f64> {
         self.gradient(particle).iter().map(|x| x * 2.).collect()
     }
-    fn quantum_force(&self, particle: Particle, particles: &Vec<Particle>) -> Vec<f64>;
-    fn greens(&self, particle: Particle, particles: &Vec<Particle>, step_size: f64) -> f64;
+    fn quantum_force(&self, particle: &Particle, particles: &Vec<Particle>) -> Vec<f64>;
+    fn greens(&self, n_particles: usize, particle: &Particle, new_particle: &Particle, qforce: &Vec<f64>, step_size: f64) -> f64;
 }
 
 
@@ -46,13 +46,13 @@ impl WaveFunction for GaussianWaveFunction {
     }
 
     //  Takes input particle, find quantum force by evaluating its wavefunction
-    fn quantum_force(&self, particle: Particle, particles: &Vec<Particle>) -> Vec<f64> {
+    fn quantum_force(&self, particle: &Particle, particles: &Vec<Particle>) -> Vec<f64> {
         //Loop over all other particles in order to calculate quantum force felt from all of them.
         //THIS SHOULD BE PARALELLIZED
         let mut r: f64;
         let mut deno: f64;
-        let mut qforce: Vec<f64>;
-        for i in 0..particle.dim {qforce.push(0.)} //Creating vector elements for all the dimensions
+        let mut qforce: Vec<f64> = Vec::new();
+        for _ in 0..particle.dim {qforce.push(0.)} //Creating vector elements for all the dimensions
 
         for otherparticle in particles {
             //Radius: Distance between the chosen particle, and all the others.
@@ -72,8 +72,13 @@ impl WaveFunction for GaussianWaveFunction {
         qforce
     }
     //  Takes the input particle + quantum_force, inserts in greens func and returns
-    fn greens(&self, particle: Particle, particles: &Vec<Particle>, step_size: f64) -> f64 {
-        let langevin_part: Vec<f64> = * exp(-(y-x));
-        1./((4. * 3.14*0.5*step_size).powf(3.*(particles.len() as f64)/2.)) 
+    fn greens(&self, n_particles: usize, particle: &Particle, new_particle: &Particle, qforce: &Vec<f64>, step_size: f64) -> f64 {
+        let mut langevin_part: f64 = 0.;
+        for i in 0..particle.dim { //This is a vector sum + scalar product
+            langevin_part += (new_particle.position[i]-particle.position[i]-qforce[i]*0.5*step_size).powi(2);
+        }
+        langevin_part /= -4.*0.5*step_size;
+        
+        1./((4. * 3.14*0.5*step_size).powf(3.*(n_particles as f64)/2.)) * langevin_part.exp()
     }
 }
