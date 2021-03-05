@@ -8,7 +8,7 @@ pub trait WaveFunction {
     fn drift_force(&self, particle: Particle) -> Vec<f64> {
         self.gradient(particle).iter().map(|x| x * 2.).collect()
     }
-    fn quantum_force(&self, particle: Particle) -> Vec<f64>;
+    fn quantum_force(&self, particle: Particle, particles: &Vec<Particle>) -> Vec<f64>;
     fn greens(&self, particle: Particle, particles: &Vec<Particle>, step_size: f64) -> f64;
 }
 
@@ -17,11 +17,12 @@ pub trait WaveFunction {
 #[derive(Debug)]
 pub struct GaussianWaveFunction {
     alpha: f64,
+    beta: f64,
 }
 
 impl GaussianWaveFunction {
     pub fn new(alpha: f64) -> Self {
-        GaussianWaveFunction { alpha: alpha, }
+        GaussianWaveFunction { alpha: alpha, beta: alpha}
     }
 }
 
@@ -48,23 +49,31 @@ impl WaveFunction for GaussianWaveFunction {
     fn quantum_force(&self, particle: Particle, particles: &Vec<Particle>) -> Vec<f64> {
         //Loop over all other particles in order to calculate quantum force felt from all of them.
         //THIS SHOULD BE PARALELLIZED
+        let mut r: f64;
+        let mut deno: f64;
+        let mut qforce: Vec<f64>;
+        for i in 0..particle.dim {qforce.push(0.)} //Creating vector elements for all the dimensions
+
         for otherparticle in particles {
             //Radius: Distance between the chosen particle, and all the others.
-            let mut r: f64
+            r = 0.;
             for i in 0..particle.dim {
-                r += (otherparticle.position[i]-particle.position[i]).powi(2)
+                r += (otherparticle.position[i]-particle.position[i]).powi(2);
             }
-            r = r.sqrt()
+            r = r.sqrt();
+            deno = 1.0/(1.+self.beta*r);
 
-            let mut deno: f64 = 1.0/(1+self.beta*r)
-            let mut qforce: Vec<f64> = -2*particle.position*self.alpha*(particle.position-otherparticle.position)*deno*deno/r
+            for i in 0..particle.dim {
+                qforce[i] += -2.*particle.position[i]*self.alpha*(particle.position[i]-otherparticle.position[i])*deno*deno/r;
+            }
         }
         //After this loop, all qforce vectors should be summed to create the total quantum force.
         //MORE: https://compphysics.github.io/ComputationalPhysics2/doc/pub/week4/html/week4-reveal.html slide 11
+        qforce
     }
     //  Takes the input particle + quantum_force, inserts in greens func and returns
     fn greens(&self, particle: Particle, particles: &Vec<Particle>, step_size: f64) -> f64 {
-        let langevin_part: Vec<f64> = * exp(-(y-x))
+        let langevin_part: Vec<f64> = * exp(-(y-x));
         1./((4. * 3.14*0.5*step_size).powf(3.*(particles.len() as f64)/2.)) 
     }
 }

@@ -58,7 +58,8 @@ where
         let uniform = Uniform::new(-1., 1.);
         let mut new_particles = self.particles.clone(); // Clones last particle step in order to change it
         let i = random::<usize>() % self.particles.len(); // Picks one random particle to do the change for
-        let quantum_force: Vec<f64> = wavefunction.quantum_force(new_particles[i]);                                                  //  Using langevin to determine next particle pos
+        let quantum_force: Vec<f64> = wavefunction.quantum_force(new_particles[i], &new_particles);
+        
         for d in 0..new_particles[i].dim {
             // Loop over its dimensions and do Langevin equation
             new_particles[i].position[d] += 0.5 * quantum_force[d] * step_size
