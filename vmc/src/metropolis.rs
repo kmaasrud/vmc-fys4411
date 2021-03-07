@@ -68,17 +68,21 @@ impl ImportanceMetropolis {
 
 impl Metropolis for ImportanceMetropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
-        let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
-        // Here we need lots of different shit
-        let next_step = sys.random_particle_change(self.step_size);
-        let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
+        // TODO: Here we need lots of different shit
+        let (next_step, i) = sys.quantum_force_particle_change(self.step_size);
 
-        let acc_factor = 1.;
+        // Greens below
+        let mut langevin_part: f64 = 0.;
+        for j in 0..sys.particles[i].dim { // This is a vector sum + scalar product
+            langevin_part += (next_step[i].position[j] - sys.particles[i].position[j] - next_step[i].qforce[j] * 0.5 * self.step_size).powi(2);
+        }
+        langevin_part /= -2. * self.step_size;
 
-        // The below should behave the same
+        let acc_factor: f64 = 1. / ((2. * 3.14 * self.step_size).powf(1.5 * (sys.particles.len() as f64) )) * langevin_part.exp();
+
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step.clone();
-            MetropolisResult::Accepted(wf_new)
+            MetropolisResult::Accepted(sys.wavefunction.evaluate(&next_step))
         } else {
             MetropolisResult::Rejected
         }

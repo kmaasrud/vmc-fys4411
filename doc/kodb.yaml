@@ -1,12 +1,12 @@
 title: "Variational Monte Carlo studies of quantum mechanical systems (WIP title)"
-author: 
+author:
   - Anna Stray Rongve
   - Knut Magnus Aasrud
   - Amund Midtgard Raniseth
 date: \today
 
 # References and bibliography
-csl: ./assets/ieee.csl #Using IEEE styling 
+csl: ./assets/ieee.csl #Using IEEE styling
 reference-section-title: "References"
 references:
   - type: article
