@@ -38,17 +38,19 @@ impl Particle {
     pub fn squared_sum_scaled_z(&self, lambda: &f64) -> f64 {
         self.position[0].powi(2) + self.position[1].powi(2) + lambda * self.position[2].powi(2)
     }
-    //  Takes input particle, find quantum force by evaluating its wavefunction
+
+    // Takes input particle, find quantum force by evaluating its wavefunction
+    // QUESTION: Is this fn dead and replaced by WaveFunction::quantum_force?
     pub fn quantum_force(&self, particles: &Vec<Particle>) -> Vec<f64> {
-        //Loop over all other particles in order to calculate quantum force felt from all of them.
-        //THIS SHOULD BE PARALELLIZED
+        // Loop over all other particles in order to calculate quantum force felt from all of them.
+        // TODO: THIS SHOULD BE PARALELLIZED
         let mut r: f64;
         let mut deno: f64;
         let mut qforce: Vec<f64> = Vec::new();
         for _ in 0..self.dim {qforce.push(0.)} //Creating vector elements for all the dimensions
 
         for otherparticle in particles {
-            //Radius: Distance between the chosen particle, and all the others.
+            // Radius: Distance between the chosen particle, and all the others.
             r = 0.;
             for i in 0..self.dim {
                 r += (otherparticle.position[i]-self.position[i]).powi(2);
@@ -60,8 +62,8 @@ impl Particle {
                 qforce[i] += -2.*self.position[i]*self.alpha*(self.position[i]-otherparticle.position[i])*deno*deno/r;
             }
         }
-        //After this loop, all qforce vectors should be summed to create the total quantum force.
-        //MORE: https://compphysics.github.io/ComputationalPhysics2/doc/pub/week4/html/week4-reveal.html slide 11
+        // After this loop, all qforce vectors should be summed to create the total quantum force.
+        // MORE: https://compphysics.github.io/ComputationalPhysics2/doc/pub/week4/html/week4-reveal.html slide 11
         qforce
     }
 }
