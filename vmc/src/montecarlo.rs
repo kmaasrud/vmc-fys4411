@@ -7,7 +7,7 @@ use crate::{System, WaveFunction, Metropolis, MetropolisResult, Hamiltonian};
 /// - n: usize -- The number of Monte Carlo cycles to perform
 /// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
-fn monte_carlo<T, V, W>(n: usize, sys: &mut System<V, W>, metro: &mut T) -> f64
+pub fn monte_carlo<T, V, W>(n: usize, sys: &mut System<V, W>, metro: &mut T) -> f64
 where T: Metropolis, V: WaveFunction, W: Hamiltonian {
     let mut result: f64 = 0.;
     let mut prev_val: f64 = sys.wavefunction.evaluate(&sys.particles);

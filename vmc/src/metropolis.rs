@@ -30,7 +30,7 @@ pub struct BruteForceMetropolis {
 
 impl BruteForceMetropolis {
     /// Makes a new `BruteForceMetropolis` struct based on a step size.
-    fn new(step_size: f64) -> Self {
+    pub fn new(step_size: f64) -> Self {
         Self { step_size: step_size, }
     }
 }
@@ -45,7 +45,7 @@ impl Metropolis for BruteForceMetropolis {
 
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step.clone();
-            MetropolisResult::Accepted(wf_new)
+            MetropolisResult::Accepted(sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles))
         } else {
             MetropolisResult::Rejected
         }
@@ -82,7 +82,7 @@ impl Metropolis for ImportanceMetropolis {
 
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step.clone();
-            MetropolisResult::Accepted(sys.wavefunction.evaluate(&next_step))
+            MetropolisResult::Accepted(sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles))
         } else {
             MetropolisResult::Rejected
         }
