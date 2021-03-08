@@ -1,30 +1,26 @@
-use crate::System;
-use crate::WaveFunction;
-use crate::{Metropolis, MetropolisResult};
+use crate::{System, WaveFunction, Metropolis, MetropolisResult, Hamiltonian};
 
 /// Does Monte Carlo integration over the WaveFunction of a System, using a given Metropolis
 /// algorithm.
 ///
 /// **Parameters**:
 /// - n: usize -- The number of Monte Carlo cycles to perform
-/// - sys: &mut System<V: WaveFunction> -- Reference to a System struct containing a WaveFunction
+/// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
-fn monte_carlo<T: Metropolis, V: WaveFunction>(n: usize, sys: &mut System<V>, metro: &mut T) -> f64 {
+fn monte_carlo<T, V, W>(n: usize, sys: &mut System<V, W>, metro: &mut T) -> f64
+where T: Metropolis, V: WaveFunction, W: Hamiltonian {
     let mut result: f64 = 0.;
-    let mut prev: f64 = sys.wavefunction.evaluate(&sys.particles);
-    // Not sure how we should define the interval, and thus not sure how to calculate v, but this
-    // should be pretty straight forward.
-    let v: f64 = 1.;
+    let mut prev_val: f64 = sys.wavefunction.evaluate(&sys.particles);
 
     for _ in 1..n {
         match metro.step(sys) {
             MetropolisResult::Accepted(val) => {
                 result += val;
-                prev = val;
+                prev_val = val;
             },
-            MetropolisResult::Rejected => result += prev,
+            MetropolisResult::Rejected => result += prev_val,
         }
     }
 
-    v * result / (n as f64)
+    result / (n as f64)
 }

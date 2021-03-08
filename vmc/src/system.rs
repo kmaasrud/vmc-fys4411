@@ -1,28 +1,31 @@
 use crate::Particle;
 use crate::WaveFunction;
+use crate::Hamiltonian;
 use rand::distributions::{Distribution, Uniform};
 use rand::{prelude::random, thread_rng};
 
 #[derive(Debug)]
-pub struct System<T: WaveFunction> {
+pub struct System<T: WaveFunction, V: Hamiltonian> {
     pub particles: Vec<Particle>,
     pub dimensionality: usize,
     pub wavefunction: T,
+    pub hamiltonian: V,
 }
 
-impl<T> System<T> where T: WaveFunction {
-    pub fn new(n_particles: usize, dim: usize, wavefunction: T) -> Self {
+impl<T, V> System<T, V> where T: WaveFunction, V: Hamiltonian {
+    pub fn new(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: V) -> Self {
         System {
             particles: vec![Particle::new(dim); n_particles],
             dimensionality: dim,
             wavefunction: wavefunction,
+            hamiltonian: hamiltonian,
         }
     }
 
-    pub fn distributed(n_particles: usize, dim: usize, wavefunction: T, spread: f64) -> Self {
+    pub fn distributed(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: V, spread: f64) -> Self {
         let mut rng = thread_rng();
         let uniform = Uniform::new(-1., 1.);
-        let mut sys: System<T> = System::new(n_particles, dim, wavefunction);
+        let mut sys: System<T, V> = System::new(n_particles, dim, wavefunction, hamiltonian);
 
         for i in 0..sys.particles.len() {
             // Overlapping particles could be a problem...
