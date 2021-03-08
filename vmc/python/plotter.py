@@ -31,7 +31,7 @@ def ploting(x,y, dim, particles, label, xlabel, ylabel, title):
     #legend
     plt.legend(loc = 'upper right', prop = {'size':14}, frameon = False)
     plt.rc('font', size=10)
-    plt.rc('axes', titlesize=20)
+    plt.rc('axes', titlesize=12)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -57,7 +57,7 @@ def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     plt.ylabel(r"$\langle E \rangle$")
     plt.legend(loc = 'upper left', prop = {'size':10}, frameon = False)
     plt.rc('font', size = 10)
-    plt.rc('axes', titlesize = 20)
+    plt.rc('axes', titlesize = 15)
     plt.savefig(FIG_DIR + f'dummy_{dim}D_{particles}_particles_error.png') 
     return fig
 #usage
