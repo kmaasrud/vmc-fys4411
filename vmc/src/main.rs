@@ -11,17 +11,23 @@ pub use wavefunction::{WaveFunction, GaussianWaveFunction};
 pub use hamiltonian::{Hamiltonian, HarmonicOscillator};
 use montecarlo::monte_carlo;
 
+use std::time:: Instant;
+
+
 
 fn main() {
-    let alpha = 0.5;
+    let alpha = 0.2;
     let mc_cycles = 1_000_000;
-    let n_particles = 10;
+    let n_particles = 10 ;
     let dimensions = 3;
     let step_size = 0.1;
-
+    
+    let start = Instant::now();
     let wf: GaussianWaveFunction = GaussianWaveFunction::new(alpha);
     let ham: HarmonicOscillator = HarmonicOscillator::elliptical(0.5, 1.);
     let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(n_particles, dimensions, wf, ham, 0.1);
     let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
-    println!("{}", monte_carlo(mc_cycles, &mut test_system, &mut metro));
+    println!("{}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
+    let duration = start.elapsed();
+    println!("{:?}",duration);
 }
