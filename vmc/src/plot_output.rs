@@ -1,32 +1,44 @@
-extern crate csv;
-#[macro_use]
-extern crate serde_derive;
-/* 
-csv = "1.1"
-serde_derive = "1.0" */
+use std::fs::{File, OpenOptions};
+use std::path::Path;
 
-use std::error::Error;
-use std::io;
-use std::process;
+use std::io::{BufWriter, Write};
 
-#[derive(Debug, Sterialize)]
+fn main() {
+    
+    let energy = 200;
+    let energy2 = 500;
+    let alpha_list = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    let header = "Alpha,Energy,Energy2,Variance,AcceptRatio,ElapesdTime\n";
 
-struct Record{
-    dim:            usize,
-    particle:       usize,
-    alpha:          f32,
-    energy:         f64,
-    energy2:        f64,
-    variance:       f64,
-    accept_ratio:   f64,
-    ellapsed_time:  i32,
+    let dim_list = vec![1,2,3];
+    let particle_list = vec![1,10,100,500];
+
+    for dim in &dim_list.iter() {
+        for particle in &particle_list.iter(){
+            for i in &alpha_list.iter(){
+                let data = format!("{},{},{}\n", energy, energy2, alpha_list[i]);
+                let path = format!("./python/dummydata/dummy_{}D_{}_particles.csv", dim[0], particles[0]);
+                //let path = format!("./python/data/{}D_{}_particles.csv", dim[0], particles[0]);
+
+            }
+            
+
+        }
+    }
+
+    
+    let f = OpenOptions::new()
+                        .read(true)
+                        .write(true)
+                        .create(true)
+                        .open(path)
+                        .expect("Unable to open file");
+    let mut f = BufWriter::new(f);
+    f.write_all(header.as_bytes()).expect("Unable to write to file");
+    f.write_all(data.as_bytes()).expect("Unable to write data");
 
 }
 
-
-fn write_to_csv() -> Result<(), Box<Error>> {
-    let mut writer = csv::Reader::from_reader(io::stdin());
-}
 
 /* let particle_list: Vec<usize> =  vec![2, 10, 100, 500];
 let dim_list: Vec<usize> =  vec![1, 3, 3];
