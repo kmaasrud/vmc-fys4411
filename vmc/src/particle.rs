@@ -36,7 +36,14 @@ impl Particle {
     }
 
     pub fn squared_sum_scaled_z(&self, lambda: &f64) -> f64 {
-        self.position[0].powi(2) + self.position[1].powi(2) + lambda * self.position[2].powi(2)
+        match self.dim {
+            1 => self.position[0].powi(2),
+            2 => self.position[0].powi(2) + self.position[1].powi(2),
+            3 =>  self.position[0].powi(2) + self.position[1].powi(2) + lambda * self.position[2].powi(2),
+            _ => panic!("Dimension should be 1, 2 or 3.")
+
+        }
+        //self.position[0].powi(2) + self.position[1].powi(2) + lambda * self.position[2].powi(2)
     }
 
     // Takes input particle, find quantum force by evaluating its wavefunction
