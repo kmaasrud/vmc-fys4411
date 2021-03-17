@@ -67,7 +67,7 @@ Simplifying the trial wave function can prove useful, in order to reduce the num
 
 Importance sampling, compared to the brute force Metropolis sampling, sets a bias on the sampling, leading it on a better path. This means that the desired standard deviation is acquired after fewer Monte Carlo cycles.
 
-For our quantum mechanical scenario with boson particles in a magnetic trap, the bias has its root in the so-called quantum force. This quantum force pushes the walker (the boson particle) to the regions where the trail wave function is large. It is clear that this yields a faster convergence, compared to the Metropolis algorithm where the walker has the same probability of moving in all directions.
+For our quantum mechanical scenario with boson particles in a magnetic trap, the bias has its root in the so-called quantum force. This quantum force pushes the walker (the boson particle) to the regions where the trail wave function is large. It is clear that this yields a faster convergence compared to the Metropolis algorithm, where the walker has the same probability of moving in all directions.
 
 The quantum force $\mathbf{F}$ is given by the formula
 $$
@@ -82,7 +82,7 @@ For one particle (or walker), the one-dimensional Fokker-Planck equation for a d
 $$
 \frac{\partial P}{\partial t}=D \frac{\partial}{\partial x}\left(\frac{\partial}{\partial x}-F\right) P(x, t)
 $$
-Where $P(x,t)$ is is a time-dependent probability density, $D$ is the diffusion coefficient and $F$ is a drift term which is our case is driven by the quantum force.
+Where $P(x,t)$ is a time-dependent probability density, $D$ is the diffusion coefficient and $F$ is a drift term which in our case is driven by the quantum force.
 
 
 ### Langevin equation
@@ -239,7 +239,7 @@ The first derivative for the k'th particle then is a bit tricky to calculate, so
 
 $$
 \begin{aligned} 
-\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N _{j<m} u(r _{jm})\right) \\ \left[\prod^N _i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N _ {j<m} u(r _ {jm})\right) \sum^N _ {l\ne k } \nabla_ k (r_ {kl}),
+\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ 4k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N _{j<m} u(r _{jm})\right) \\ \left[\prod^N _i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N _ {j<m} u(r _ {jm})\right) \sum^N _ {l\ne k } \nabla_ k (r_ {kl}),
 \end{aligned} 
 $$
 
@@ -272,3 +272,17 @@ u'(r_{ij}) &= \frac{r_{ij}}{r_{ij}-a}, \quad \text{for}  \quad r_{ij}  > a, \\ \
 u''(r_{ij}) &= \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad r_{ij}  > a,
 \end{aligned}
 $$
+
+
+## The repulsive interaction
+
+Using an elliptic trap with repulsive interaction, we set $a/a_{ho} = 0.0043$ and change the length to units of $a_{ho}$: $r \rightarrow r/a_{ho}$. The energy is set to units of $\hbar \omega_{ho}$. This changes the original hamiltonian in equation {@eq:hamiltonian} by changing the potential for the elliptical harmonic trap from equation {@eq:external-potential}.
+Since $a_{ho} \equiv (\hbar/m\omega_{ho})^{1/2}$:
+
+$$ V_\text{ext}(\mathbf r/a_{ho}) = \frac{1}{2}m\left(\omega_\text{ho}^2 \frac{m\omega_{ho}}{\hbar} (r_x^2 + r_y^2) + \omega_z^2 \frac{m\omega_{ho}}{\hbar} r_z^2\right) $$
+
+$$ V_\text{ext}(\mathbf r/a_{ho}) = \frac{1}{2}m \frac{m\omega_{ho}}{\hbar} \left(\omega_\text{ho}^2  (r_x^2 + r_y^2) + \omega_z^2 r_z^2\right) $$
+
+
+$$ H = \sum_i^N\left(-\frac{\hbar^2}{2m}\nabla_i^2 + V_\text{ext}(\mathbf r_i)\right) + \sum_{i < j}^N V_\text{int} (|\mathbf r_i - \mathbf r_j|) $$
+
