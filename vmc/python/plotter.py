@@ -4,7 +4,7 @@ import pandas as pd
 
 
 #global variables
-DATA_DIR = './data/'
+DATA_DIR = './dummydata/'
 FIG_DIR = './fig/'
 plt.style.use('Solarize_Light2')
 
@@ -46,7 +46,7 @@ def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     fig = plt.figure()
     plt.errorbar(x_n + 0.005, y_n, err_n, label = 'numerical',
                 capsize= 4,
-                fmt="")
+                fmt=".")
 
     plt.errorbar(x_a - 0.005, y_a, err_a, label = 'analytical', 
                  capsize= 4,
@@ -64,24 +64,30 @@ def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
 dim = 1
 particles = 100
 
+
 dir_data_dummy_a = DATA_DIR + f"dummy_{dim}D_{particles}_particles_ana.csv"
-dir_data_dummy_n = DATA_DIR + f"dummy_{dim}D_{particles}_particles_num.csv"
+
+dim = 1
+particles = 1
+dir_data_dummy_n = DATA_DIR + f"experiment_{dim}D_{particles}_particles_num.csv"
 
 #dataframes
 df_a = pd.read_csv(dir_data_dummy_a)
+
 df_n = pd.read_csv(dir_data_dummy_n)
 
 x_n = df_n["Alpha"]
 y_n = df_n["Energy"]
 err_n = np.sqrt(df_n['Variance'])
 
-x_a = df_n["Alpha"]
-y_a = df_n["Energy"]
-err_a = np.sqrt(df_n['Variance'])
+x_a = df_a["Alpha"]
+y_a = df_a["Energy"]
+err_a = np.sqrt(df_a['Variance'])
 
 #plotting
 plotter1 = ploting(x_n, y_n, dim, particles, 'some lable', 'x', 'y','some_title')
-
+dim = 1
+particles = 100
 plotter2 = plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles)
 
 
