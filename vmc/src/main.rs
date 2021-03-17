@@ -23,7 +23,8 @@ fn main() {
     //let n_particles = 1 ;
     //let dimensions = 1;
     let step_size = 1.0;
-    let mc_cycles = 1_000_00;
+    let mc_cycles = 100_000;
+    
 
 
     let alpha_list = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
