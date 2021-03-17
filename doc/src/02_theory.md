@@ -128,13 +128,13 @@ $$
 \mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T}.
 $$
 
-From here, The Green's function is employed as
+From here, The Green's function is deployed as
 <!-- Maybe here we could insert the basic Greens function and then explain that we exchange for the euler-solved langevin -->
 $$
-G(y, x, \Delta t)=\frac{1}{(4 \pi D \Delta t)^{3 N / 2}} \exp \left(-(y-x-D \Delta t F(x))^{2} / 4 D \Delta t\right)
+G(y, x, \Delta t)=\frac{1}{(4 \pi D \Delta t)^{3 N / 2}} \exp \left(\frac{-(y-x-D \Delta t F(x))^{2}}{ 4 D \Delta t}\right)
 $$
 
-Which will be part of the [insert name..], $q(y,x)$ as
+Which will be part of the proposal distribution, $q(y,x)$ as
 $$
 q(y, x)=\frac{G(x, y, \Delta t)\left|\Psi_{T}(y)\right|^{2}}{G(y, x, \Delta t)\left|\Psi_{T}(x)\right|^{2}}
 $$
