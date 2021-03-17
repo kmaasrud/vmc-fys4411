@@ -35,3 +35,9 @@ impl Hamiltonian for HarmonicOscillator {
         self.omega / 2. * squared_position_sum
     }
 }
+
+//impl RepulsiveHamiltonian for HarmonicOscillator {
+//    fn kinetic<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
+//        -self.omega / 2. * wf.laplace(&particles)
+//    }
+//}
