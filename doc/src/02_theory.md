@@ -1,20 +1,24 @@
 # Theory
 
-The system in question is a hard sphere Bose gas located in a potential well<!-- https://www.kmaasrud.com/brain/bose-gas -->. The potential is an *elliptical harmonic trap*, described for each particle by
+The system in question is a hard sphere Bose gas located in a potential well. The potential is an *elliptical harmonic trap*, described for each particle by
 
 $$V_\text{ext}(\mathbf r) = \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z^2 r_z^2\right).$$ {#eq:external-potential}
 
 Here, $\mathbf r$ is the position of the particle. Note that setting $\omega_\text{ho} = \omega_z$ results in eq. {@eq:external-potential} evaluating to $V_\text{ext}(\mathbf r) = \frac{1}{2}m\omega_\text{ho}^2r^2$, which represents the *spherical* case of the elliptical harmonic trap. As a simplification, we hereby denote the spherical case as (S) and the general elliptical case as (E).
 
-In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential:
+In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential[@Project1]:
 
 $$V_\text{int}(|\mathbf r_i - \mathbf r_j|) = \begin{cases}\infty & |\mathbf r_i - \mathbf r_j| \le a \\ 0 & |\mathbf r_i - \mathbf r_j| > a\end{cases}.$$ {#eq:internal-potential}
 
-Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the following two-body Hamiltonian:<!-- Do we need to derive this? -->
+Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the following two-body Hamiltonian:
 
 $$H = \sum_i^N\left(-\frac{\hbar^2}{2m}\nabla_i^2 + V_\text{ext}(\mathbf r_i)\right) + \sum_{i < j}^N V_\text{int} (|\mathbf r_i - \mathbf r_j|).$$ {#eq:hamiltonian}
 
-The term $-\frac{\hbar^2}{2m}\nabla_i^2$ stems from the kinetic energy of the system and the index notation used is described in {@sec:index-notation-for-sums-and-products}.
+The term $-\frac{\hbar^2}{2m}\nabla_i^2$ stems from the kinetic energy of the system and the index notation used is described in {@sec:index-notation-for-sums-and-products}. By scaling into length units of $a_\text{ho}$ and energy units of $\hbar\omega_\text{ho}$, this equation is further simplified into:
+
+$$ H = \frac{1}{2}\sum_i^N \left(-\nabla_i^2 + r_{x, i}^2 + r_{y, i}^2 + \gamma^2 r_{z, i}^2\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|) .$$ {#eq:scaled_ham}
+
+The derivation of {@eq:scaled_ham} is explained in {@sec:scaled_ham}.
 
 ## The variational principle
 
