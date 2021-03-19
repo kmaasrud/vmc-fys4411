@@ -45,6 +45,7 @@ fn main() {
     let header = "Alpha,Energy,Energy2,Variance,AcceptRatio,ElapesdTime\n";
     
     let start = Instant::now();
+
     let cpus = 1; //num_cpus::get();
     let pool = ThreadPool::new(cpus as u8);
     for _ in 0..cpus {
@@ -52,8 +53,8 @@ fn main() {
         let plc = particle_list.clone();
         pool.execute(move ||run_sim(alc.clone(), plc.clone(), variance, accept_ratio, header, start, step_size, mc_cycles));
     }
-    //run_sim(alpha_list, particle_list, variance, accept_ratio, header, start, step_size, mc_cycles);
-    println!("All cores now executing, calling join and waiting for end");
+
+    println!("All {} cores now executing, waiting for them to finish", cpus);
     pool.join_all();
 
     println!("Total time spent: {:?}", start.elapsed());
@@ -67,50 +68,54 @@ fn run_sim(alpha_list: Vec<f64>, particle_list:Vec<usize>, variance:i32, accept_
     for dim in 1..=3{
         //println!("dim: {}",dim);
 
-        for particle in particle_list.iter(){
-            println!("Calculating: dim: {}, n_part {}, {:?}",dim, particle, std::thread::current().id());
+        for n_particles in particle_list.iter(){
+            println!("Calculating: dim: {}, n_part {}, {:?}",dim, n_particles, std::thread::current().id());
             //dummypath
-            //let path = format!("./data/dummydata/dummy_{}D_{}_particles.csv", dim, particle);
+            //let path = format!("./data/dummydata/dummy_{}D_{}_particles.csv", dim, n_particles);
             //path for analytical results
-            //let path = format!("./data/analytic/experiment_{}D_{}_particles_ana.csv", dim, particle);
+            //let path = format!("./data/analytic/experiment_{}D_{}_particles_ana.csv", dim, n_particles);
             //path numerical results
             
-            let f = OpenOptions::new()
-            let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num_{:?}.csv", dim, n, std::thread::current().id());
-            let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num_{:?}.csv", dim, n, std::thread::current().id());
-            let f_ile = OpenOptions::new()
+            let path = format!("./data/numeric/{:?}/", std::thread::current().id());
+            if std::path::Path::new(&path).exists() == false {
+                std::fs::create_dir_all(path).expect("Can't create folder");
+            }
+            let filepath = format!("./data/numeric/{:?}/experiment_{}D_{}_n_part.csv", std::thread::current().id(), dim, n_particles );
+            //let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num_{:?}.csv", dim, n_particles, std::thread::current().id());
+            //let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num_{:?}.csv", dim, n_particles, std::thread::current().id());
+            let file = OpenOptions::new()
                         .read(true)
                         .append(true)
                         .create(true)
-                        .open(path)
+                        .open(filepath)
                         .expect("Unable to open file");
-            let mut f = BufWriter::new(f_ile);
-            let mut f_ana = BufWriter::new(f_ile);
+            //let file_ana = OpenOptions::new().read(true).append(true).create(true).open(path_ana).expect("Unable to open file");
+            let mut f = BufWriter::new(file);
+            //let mut f_ana = BufWriter::new(file_ana);
             
             f.write_all(header.as_bytes()).expect("Unable to write data"); 
-            f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
+            //f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
 
 
             for alpha in alpha_list.iter(){
                 let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
                 let ham: HarmonicOscillator = HarmonicOscillator::elliptical(1.0, 1.0);
-                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*n, dim, wf, ham, 0.1);
+                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*n_particles, dim, wf, ham, 0.1);
                 let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
                 //println!("Energy from monte carlo calculations {}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
                 let energy2 = energy.powi(2);
 
-                let energy_ana = local_energy_analytical(alpha, dim, &test_system.particles);
-                let energy2_ana = energy_ana.powi(2);
+                //let energy_ana = local_energy_analytical(alpha, dim, &test_system.particles);
+                //let energy2_ana = energy_ana.powi(2);
 
                 let duration = start.elapsed();
                 //println!("Time used in seconds {:?} = {:?} min",duration, duration/60);
-                let duration = start.elapsed();
                 let data = format!("{},{},{},{},{},{:?}\n", alpha, energy, energy2, variance, accept_ratio, duration);
-                let data_ana = format!("{},{},{},{},{},{:?}\n", alpha, energy_ana, energy2_ana, variance, accept_ratio, duration);
+                //let data_ana = format!("{},{},{},{},{},{:?}\n", alpha, energy_ana, energy2_ana, variance, accept_ratio, duration);
                 
                 f.write_all(data.as_bytes()).expect("Unable to write data");
-                f_ana.write_all(data_ana.as_bytes()).expect("Unable to write data");
+                //f_ana.write_all(data_ana.as_bytes()).expect("Unable to write data");
             }
         }
     }

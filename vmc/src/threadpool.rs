@@ -19,9 +19,9 @@ impl ThreadPool {
                     Ok(work) => work,
                     Err(_) => break,
                 };
-                println!("Start {:?}", std::thread::current().id());
+                //println!("Start {:?}", std::thread::current().id());
                 work();
-                println!("End{:?}", std::thread::current().id());
+                //println!("End{:?}", std::thread::current().id());
                 break;
             });
             handles.push(handle);
