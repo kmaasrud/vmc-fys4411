@@ -25,11 +25,7 @@ fn main() {
     let step_size = 1.0;
     let mc_cycles = 100_000;
     
-
-
     let alpha_list = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    let dim_list =1..=3 ;
-    let particle_list = vec![1,10,100,500];
 
     let variance = 1;
     let accept_ratio = 1;
@@ -38,18 +34,18 @@ fn main() {
     
     let start = Instant::now();
 
-    for dim in dim_list{
+    for dim in 1..=3 {
         println!("dim: {}",dim);
 
-        for particle in particle_list.iter(){
-            println!("particle: {}",particle);
+        for n in [1, 10, 100, 500].iter() {
+            println!("Number of particles: {}", n);
             //dummypath
             //let path = format!("./data/dummydata/dummy_{}D_{}_particles.csv", dim, particle);
             //path for analytical results
             //let path = format!("./data/analytic/experiment_{}D_{}_particles_ana.csv", dim, particle);
             //path numerical results
-            let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num.csv", dim, particle);
-            let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num.csv", dim, particle);
+            let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num.csv", dim, n);
+            let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num.csv", dim, n);
             let f_ile = OpenOptions::new()
                         .read(true)
                         .append(true)
@@ -63,17 +59,15 @@ fn main() {
             f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
 
             for alpha in alpha_list.iter(){
-                
-
                 let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
                 let ham: HarmonicOscillator = HarmonicOscillator::elliptical(1.0, 1.0);
-                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*particle, dim, wf, ham, 0.1);
+                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*n, dim, wf, ham, 0.1);
                 let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
                 //println!("Energy from monte carlo calculations {}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
                 let energy2 = energy.powi(2);
 
-                let energy_ana = local_energy_analytical(alpha, particle, dim,  particles: &Vec<Particle>);
+                let energy_ana = local_energy_analytical(alpha, dim, &test_system.particles);
                 let energy2_ana = energy_ana.powi(2);
 
                 let duration = start.elapsed();
@@ -84,9 +78,6 @@ fn main() {
                 
                 f.write_all(data.as_bytes()).expect("Unable to write data");
                 f_ana.write_all(data_ana.as_bytes()).expect("Unable to write data");
-
-
-
             }
         }
     }

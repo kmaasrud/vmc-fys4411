@@ -2,9 +2,9 @@ use crate::particle::Particle;
 
 
 //local energy for simple gaussian wavefunction
-pub fn local_energy_analytical(alpha: &f64, n_particles: &usize, dim: usize,  particles: &Vec<Particle>)  -> f64{
+pub fn local_energy_analytical(alpha: &f64, dim: usize,  particles: &Vec<Particle>)  -> f64{
     let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-    let energy =  (*alpha as f64) * (*n_particles as f64) * (dim as f64) + (0.5  - 2. * (*alpha as f64).powf(2.)) * (squared_position_sum as f64);
+    let energy =  (*alpha as f64) * (particles.len() as f64) * (dim as f64) + (0.5  - 2. * (*alpha as f64).powf(2.)) * (squared_position_sum as f64);
     return energy
 }
 //driftforce
