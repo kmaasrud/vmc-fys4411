@@ -4,7 +4,7 @@ mod system;
 mod wavefunction;
 mod hamiltonian;
 mod montecarlo;
-mod analytical;
+
 pub use particle::Particle;
 pub use system::System;
 pub use metropolis::{Metropolis, MetropolisResult, BruteForceMetropolis};
@@ -29,7 +29,7 @@ fn main() {
 
     let alpha_list = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     let dim_list =1..=3 ;
-    let particle_list = vec![1,10,100];
+    let particle_list = vec![1,10,100,500];
 
     let variance = 1;
     let accept_ratio = 1;
@@ -75,9 +75,6 @@ fn main() {
                 let duration = start.elapsed();
                 let data = format!("{},{},{},{},{},{:?}\n", alpha, energy, energy2, variance, accept_ratio, duration);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
-
-
-                
 
             }
         }
