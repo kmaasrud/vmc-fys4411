@@ -20,8 +20,6 @@ use std::time:: Instant;
 
 extern crate num_cpus;
 
-use std::sync::atomic::{AtomicUsize, Ordering};
-
 use std::fs::OpenOptions;
 use std::io::{BufWriter, Write};
 
@@ -31,7 +29,7 @@ fn main() {
     //let n_particles = 1 ;
     //let dimensions = 1;
     let step_size = 1.0;
-    let total_mc_cycles = 100_000;
+    let total_mc_cycles = 10_000;
     
 
 
