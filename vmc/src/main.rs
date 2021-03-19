@@ -63,7 +63,6 @@ fn main() {
             f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
 
             for alpha in alpha_list.iter(){
-                
 
                 let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
                 let ham: HarmonicOscillator = HarmonicOscillator::elliptical(1.0, 1.0);
@@ -73,7 +72,7 @@ fn main() {
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
                 let energy2 = energy.powi(2);
 
-                let energy_ana = local_energy_analytical(alpha, particle, dim,  particles: &Vec<Particle>);
+                let energy_ana = local_energy_analytical(alpha, dim, particles);
                 let energy2_ana = energy_ana.powi(2);
 
                 let duration = start.elapsed();
