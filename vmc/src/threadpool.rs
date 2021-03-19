@@ -9,29 +9,28 @@ pub struct ThreadPool {
 
 impl ThreadPool {
     pub fn new(num_threads: u8) -> Self {
-        let (sender, reciever) = channel::<Box<dyn Fn() + Send>>();
-        let reciever = Arc::new(Mutex::new(reciever));
-        let mut handles: Vec<std::thread::JoinHandle<()>> = vec![];
-        for _ in 0..num_threads {
-            let clone = reciever.clone();
-            let handle = std::thread::spawn(move || loop {
-                let work = match clone.lock().unwrap().recv(){
+        let (sender, receiver) = channel::<Box<dyn Fn() + Send>>(); //Spawn a sender and receiver in order to pass instructions to threads, these has to be boxed, and cointain the trait Send in order to be able to send, dyn Fn is because the function to send must be dynamic.
+        let reciever = Arc::new(Mutex::new(receiver));              //Make a mutex (which gives explicit access for muting, maybe not needed?) and then in an Arc, letting all threads access it.
+        let mut handles: Vec<std::thread::JoinHandle<()>> = vec![]; //Init vector of thread handles, also called workers.
+        for _ in 0..num_threads {                                   //Looping over threads
+            let clone = reciever.clone();                           //The receiver needs to be cloned in order to let the next thread in the loop clone it again
+            let handle = std::thread::spawn(move || loop {          //This block basically spawns the thread, move means moving ownerhsip of all inside thread.
+                let work = match clone.lock().unwrap().recv(){      //Defining the work, if Ok, then good, if Err, break the thread.
                     Ok(work) => work,
                     Err(_) => break,
                 };
                 //println!("Start {:?}", std::thread::current().id());
-                work();
-                //println!("End{:?}", std::thread::current().id());
-                break;
+                work();                                             //Doing the work
+                break;                                              //Kill thread when done
             });
-            handles.push(handle);
+            handles.push(handle);                                   //This is ofc done before work() is completed, so the handle is added to vec of handles!
         }
 
-        Self { handles, sender }
+        Self { handles, sender }                                    //Returning self in order to grab it from execute() and join_all()
     }
 
-    pub fn execute<T: Fn() + Send + 'static>(&self, work: T) { //Only borrow self in order to not "spend it" when the function is used somewhere else
-        self.sender.send(Box::new(work)).unwrap();
+    pub fn execute<T: Fn() + Send + 'static>(&self, work: T) {      //Only borrow self in order to not "spend it" when the function is used somewhere else
+        self.sender.send(Box::new(work)).unwrap();                  //Sends workload to the worker
     } 
 
     pub fn join_all(self) {
