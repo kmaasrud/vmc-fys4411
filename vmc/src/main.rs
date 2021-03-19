@@ -11,7 +11,7 @@ pub use metropolis::{Metropolis, MetropolisResult, BruteForceMetropolis};
 pub use wavefunction::{WaveFunction, GaussianWaveFunction};
 pub use hamiltonian::{Hamiltonian, HarmonicOscillator};
 use montecarlo::monte_carlo;
-
+use analytical::local_energy_analytical;
 use std::time:: Instant;
 
 
@@ -49,16 +49,18 @@ fn main() {
             //let path = format!("./data/analytic/experiment_{}D_{}_particles_ana.csv", dim, particle);
             //path numerical results
             let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num.csv", dim, particle);
-            
-            let f = OpenOptions::new()
+            let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num.csv", dim, particle);
+            let f_ile = OpenOptions::new()
                         .read(true)
                         .append(true)
                         .create(true)
                         .open(path)
                         .expect("Unable to open file");
-            let mut f = BufWriter::new(f);
+            let mut f = BufWriter::new(f_ile);
+            let mut f_ana = BufWriter::new(f_ile);
             
             f.write_all(header.as_bytes()).expect("Unable to write data"); 
+            f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
 
             for alpha in alpha_list.iter(){
                 
@@ -70,24 +72,22 @@ fn main() {
                 //println!("Energy from monte carlo calculations {}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
                 let energy2 = energy.powi(2);
+
+                let energy_ana = local_energy_analytical(alpha, particle, dim,  particles: &Vec<Particle>);
+                let energy2_ana = energy_ana.powi(2);
+
                 let duration = start.elapsed();
                 //println!("Time used in seconds {:?} = {:?} min",duration, duration/60);
                 let duration = start.elapsed();
                 let data = format!("{},{},{},{},{},{:?}\n", alpha, energy, energy2, variance, accept_ratio, duration);
+                let data_ana = format!("{},{},{},{},{},{:?}\n", alpha, energy_ana, energy2_ana, variance, accept_ratio, duration);
+                
                 f.write_all(data.as_bytes()).expect("Unable to write data");
+                f_ana.write_all(data_ana.as_bytes()).expect("Unable to write data");
+
+
 
             }
         }
     }
-
-
-
-
-    
-
-
-
-
-
-
 }
