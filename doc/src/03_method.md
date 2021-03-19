@@ -56,3 +56,10 @@ Fixed parameters ( to only have one variational paramter):
 Boson diamter: $\frac{a}{a_{ho}} = ??$
 
  $\gamma = \beta = ...$
+
+
+## Auto-vectorization
+Auto-vectorization in Rust is almost as easy as in C++, and can be applied by setting ```RUSTFLAGS = "-C opt-level=3 -C target-cpu=native"``` in the *Cargo.toml* file, which basically inputs the parameters to the compiler at compiletime. The first flag tells the compiler to run all possible optimizations. Setting *opt-level=2* is the same as running the alias *-O* which only runs some optimizations cite: [[https://doc.rust-lang.org/rustc/codegen-options/index.html#opt-level]]. *target-cpu* tells the compiler which cpu to compile specific code for. By inserting *native*, the compiler will compile for the cpu the compiler is run at. cite:[[https://doc.rust-lang.org/rustc/codegen-options/index.html#target-cpu]]
+
+However, simple loops like ```for i in 0..n``` will not be properly vectorized due to the fact that the compiler cannot guarantee that the length of the loop is within bounds of the slice iterated over. The easiest way to ensure that this does not happen is to use an interator. If this cannot be done, hinting to LLVM the length of the slice would also eliminate the bound checks. An example is to define the slice as
+```let x = &x[0..n];```

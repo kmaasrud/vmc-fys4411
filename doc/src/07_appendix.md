@@ -17,7 +17,7 @@ For products and sums, the following convention is used:
 
 $$\sum_{i <j}^N = \sum_{i=1}^N \sum_{j=i+1}^N,\quad \text{or}\quad \prod_{i <j}^N = \prod_{i=1}^N \prod_{j=i+1}^N$$
 
-## Intermediate calculations
+## Calculations
 
 ### Second derivative of trial wave function
 
@@ -65,9 +65,10 @@ $$
 $$
 
 
-<!-- For APPENDIX -->
-#### Gradient and Laplacian for trail wave function general case
-##### Gradient
+### Gradient and Laplacian for trial wave function general case
+
+#### Gradient {.unnumbered}
+
 Rewriting the wave function to
 
 $$
@@ -109,22 +110,23 @@ $$
  \prod_i^N \phi (\mathbf{r}_ i) \exp{ \left( \sum_{i<j} u(r_{ij}) \right)}  \sum_ {i \ne k} \nabla_k  u(\mathbf{r}_{ik})
 $$
 
-##### Laplacian
+#### Laplacian {.unnumbered}
+
 The Laplacian of the wacefunction needs to be evaluated in order to calculate
 
 $$
 \frac{1}{\Psi_T(\mathbf {r})} \nabla_k \nabla_k \Psi_T(\mathbf{r})
 $$
 
-The last part, $\nabla_k \Psi_T(\mathbf{r})$ is calculated in the section above / equation (**REFERANCE**). Next step is then to calculate
+The last part, $\nabla_k \Psi_T(\mathbf{r})$ is calculated in the section above / equation (**Reference here**). Next step is then to calculate
 
 <!-- Check this!  -->
-$$
-\nabla_k \nabla_k \Psi_T(\mathbf{r}) = \nabla_k \left( \nabla_k \phi(\mathbf{r}_ k) \left [\prod_ {i\ne k} \phi(\mathbf{r}_ i) \right] \exp {\left (\sum_ {j<m}u(r_{jm})\right)} \\
- +\prod_i \phi (\mathbf{r}_ i) \exp{ \left( \sum_{j<m} u(r_{jm}) \right)}  \sum_ {l \ne k} \nabla_k  u(\mathbf{r}_{kl}) \right) \\
-= \prod_ {i\ne k} \left[ \nabla_k^2 \phi(\mathbf{r}_k) \exp{\left(\sum _{j<m} u(r _{jm})\right)} + \nabla_k \phi(\mathbf{r_k}) \cdot  \nabla_k \exp{\left( \sum _{j < m} u(r _{jm})\right)} \right] \\ + \nabla_k \prod_i \phi (\mathbf{r}_i) \exp{\left (\sum _{j<m} u(r _{jm})\right)}\sum _{l \ne k} \nabla_k u(r _{kl}) \\+
-\nabla_k \exp{\left(\sum _{j < m} u(r _{jm})\right)}\prod_i \phi(\mathbf{r}_i) \sum _{l \ne k} \nabla_k u(r _{kl}) + \nabla_k \sum _{l \ne k} \nabla_k u (r _{kl}) \prod_i \phi (\mathbf{r}_i) \exp{\sum _{j < m} u (r _{jm})}
-$$
+\begin{align*}
+\nabla_k \nabla_k \Psi_T(\mathbf{r}) = &\nabla_k \bigg( \nabla_k \phi(\mathbf r_k) \left [\prod_{i\ne k} \phi(\mathbf r_i) \right] \exp{\left (\sum_{j<m}u(r_{jm})\right)} \\
+ &+ \prod_i \phi (\mathbf r_i) \exp{\left(\sum_{j<m} u(r_{jm}) \right)}  \sum_{l \ne k} \nabla_k  u(\mathbf r_{kl}) \bigg) \\
+\nabla_k \nabla_k \Psi_T(\mathbf r) = &\prod_{i\ne k} \left[ \nabla_k^2 \phi(\mathbf r_k) \exp{\left(\sum_{j<m} u(r_{jm})\right)} + \nabla_k \phi(\mathbf r_k) \cdot  \nabla_k \exp{\left( \sum_{j < m} u(r_{jm})\right)} \right] \\ &+ \nabla_k \prod_i \phi (\mathbf r_i) \exp{\left (\sum _{j<m} u(r_{jm})\right)}\sum_{l \ne k} \nabla_k u(r_{kl}) \\ &+
+\nabla_k \exp{\left(\sum_{j < m} u(r_{jm})\right)}\prod_i \phi(\mathbf{r}_i) \sum_{l \ne k} \nabla_k u(r_{kl}) \\ &+ \nabla_k \sum_{l \ne k} \nabla_k u (r_{kl}) \prod_i \phi (\mathbf{r}_i) \exp{\sum_{j < m} u (r_{jm})}
+\end{align*}
 
 In order to avoid writing long calculations, the three main gradients are calculated below. The last of the three following expressions/equations is a bit more of a hazard to calculate. First the product rule is used. Then a rule for the gradient is applied where the gradient of a unit vector is 2 divided by its magnitude. $u'$ is parallel to the unit vector, hence their product becomes a scalar, the second derivate of $u$.
 
@@ -137,24 +139,45 @@ $$
 \nabla_k \prod_i \phi(\mathbf{r}_i) = \prod _{i \ne k} \phi(\mathbf{r}_i) \nabla_k \phi(\mathbf {r}_k)
 $$
 
-$$\nabla_k \sum_{l \ne k}{\nabla_k u(r_{kl})} = \sum_{l \ne k}{\nabla_k \left(\frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk})\right)} \\
-= \sum _{l\ne k}\left(\nabla_k \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk}) + \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} \nabla_k u'(r _{lk}) \right) \\
-= \sum _{l\ne k} \frac{2}{r _{lk}} + u''(r _{lk})
-$$
+\begin{align*}
+\nabla_k \sum_{l \ne k}{\nabla_k u(r_{kl})} &= \sum_{l \ne k}{\nabla_k \left(\frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk})\right)} \\ &= \sum _{l\ne k}\left(\nabla_k \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} u'(r _{lk}) + \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}} \nabla_k u'(r _{lk}) \right) \\ &= \sum _{l\ne k} \frac{2}{r _{lk}} + u''(r _{lk})
+\end{align*}
 
 
 Finally the Laplacian can be calculated, by reintroducing the fraction $\frac{1}{\Psi_T(\mathbf{r})}$
 
-$$
-\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) =  \frac{\prod_{i \ne k} \phi(\mathbf{r}_i)}{\prod _{i} \phi(\mathbf{r}_i)} \left(\nabla^2_k \phi(\mathbf{r}_k) + \nabla_k \phi(\mathbf{r}_k \sum _{l\ne k}\nabla_k u(r _{kl})\right)  + \left( \frac{\nabla_k \phi(\mathbf{r}_i)}{\phi(\mathbf{r}_i)} \sum _{l \ne k} \nabla_k u(r _{kl})\right) \\ + \sum _{l \ne k} \nabla_k u(r _{kl})  + \sum _{j \ne k} \nabla_k u(r _{kj}) + \nabla_k  \sum _{l \ne k} \nabla_k u(r _{kl})
-$$
+\begin{align*}
+\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) = &\frac{\prod_{i \ne k} \phi(\mathbf{r}_i)}{\prod _{i} \phi(\mathbf{r}_i)} \left(\nabla^2_k \phi(\mathbf{r}_k) + \nabla_k \phi(\mathbf{r}_k \sum _{l\ne k}\nabla_k u(r _{kl})\right)  + \left( \frac{\nabla_k \phi(\mathbf{r}_i)}{\phi(\mathbf{r}_i)} \sum _{l \ne k} \nabla_k u(r _{kl})\right) \\ &+ \sum _{l \ne k} \nabla_k u(r _{kl})  + \sum _{j \ne k} \nabla_k u(r _{kj}) + \nabla_k  \sum _{l \ne k} \nabla_k u(r _{kl})
+\end{align*}
 
-The second and third terms are the same. Two of the terms are shown in the calculations above and $\nabla_k u(r_{kl})$ is the unit vector multiplied with the derivate of a scalar. Then, finally we have the full, right expression
+The second and third terms are the same. Two of the terms are shown in the calculations above and $\nabla_k u(r_{kl})$ is the unit vector multiplied with the derivate of a scalar. Then we have the final expression
 
 
-$$
-\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) = \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}}u'(r _{lk}) + \sum _{j\ne k}\sum _{l\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} u'(r _{lk}) \\+ \sum _{j\ne k}\sum _{l\ne k}
-\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}}  u'(r _{jk})  u'(r _{lk}) + \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
-$$
+\begin{align*}
+\frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) = &\frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}}u'(r _{lk}) \\ &+ \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} u'(r _{lk}) + \sum _{j\ne k}\sum _{l\ne k}
+\frac{\mathbf{r}_j - \mathbf {r}_k}{\mathbf{r} _{jk}} \frac{\mathbf{r}_l - \mathbf {r}_k}{\mathbf{r} _{lk}}  u'(r _{jk})  u'(r _{lk}) \\ &+ \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
+\end{align*}
+
+### Scaling of repulsion Hamiltonian {#sec:scaled_ham}
+
+We have the initial expression for the Hamiltonian, {@eq:hamiltonian}. Inserting {@eq:external-potential}, we get:
+
+$$ H = \frac{1}{2}\sum_i^N \left(-\frac{\hbar^2}{m}\nabla^2_i + m\left(\omega_\text{ho}^2 (r_{x, i}^2 + r_{y, i}^2) + \omega_z^2 r_{z, i}^2\right)\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|) .$$
+
+We now introduce the scaled length unit $r' = \frac{r}{a_\text{ho}}$ which in turn leads to $\nabla^{\prime 2}_i = a_\text{ho}^2\nabla_i^2$.
+
+$$ H = \frac{1}{2}\sum_i^N \left(-\frac{\hbar^2}{ma_\text{ho}^2}\nabla^{\prime 2}_i  + ma_\text{ho}^2\left(\omega_\text{ho}^2(r_{x, i}^{\prime 2} + r_{y, i}^{\prime 2}) + \omega_z^2 r_{z, i}^{\prime 2}\right)\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|)$$
+
+Inserting the definition of $a_\text{ho} = \frac{\hbar}{m\omega_\text{ho}}$, we get
+
+$$ H = \frac{1}{2}\sum_i^N \left(-\hbar\omega_\text{ho}\nabla^{\prime 2}_i  + \hbar\omega_\text{ho}\left((r_{x, i}^{\prime 2} + r_{y, i}^{\prime 2}) + \frac{\omega_z^2}{\omega_\text{ho}^2} r_{z, i}^{\prime 2}\right)\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|), $$
+
+$$ H = \frac{\hbar\omega_\text{ho}}{2}\sum_i^N \left(-\nabla^{\prime 2}_i  + (r_{x, i}^{\prime 2} + r_{y, i}^{\prime 2}) + \gamma^2 r_{z, i}^{\prime 2})\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|), $$
+
+where $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. We lastly reorganize the above to obtain a scaled Hamiltonian $H' = \frac{H}{\hbar\omega_\text{ho}}$ and also make sure to scale the function $V_\text{int}\rightarrow V'_\text{int}$ by transitioning from $a\rightarrow a' = \frac{a}{a_\text{ho}}$.
+
+$$ H' = \frac{1}{2}\sum_i^N \left(-\nabla_i^{\prime 2} + r_{x, i}^{\prime 2} + r_{y, i}^{\prime 2} + \gamma^2 r_{z, i}^{\prime 2}\right) + \sum_{i<j}^N V'_\text{int}(|\mathbf r'_i - \mathbf r'_j|) .$$ {#eq:scaled_ham_appendix}
+
+By ensuring that we used scaled length units of $r' = \frac{r}{a_\text{ho}}$ and scaled energy units of $E' = \frac{E}{\hbar\omega_\text{ho}}$, equation {@eq:scaled_ham_appendix} holds. For simplification, we will not use the primed notation outside this derivation.
