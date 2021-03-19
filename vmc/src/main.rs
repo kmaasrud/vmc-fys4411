@@ -31,7 +31,7 @@ fn main() {
     //let n_particles = 1 ;
     //let dimensions = 1;
     let step_size = 1.0;
-    let mc_cycles = 1_000;
+    let total_mc_cycles = 100_000;
     
 
 
@@ -46,7 +46,9 @@ fn main() {
     
     let start = Instant::now();
 
-    let cpus = 1; //num_cpus::get();
+    let cpus = num_cpus::get();
+    let mc_cycles:usize = total_mc_cycles / cpus;
+    println!("{}", mc_cycles);
     let pool = ThreadPool::new(cpus as u8);
     for _ in 0..cpus {
         let alc = alpha_list.clone();
