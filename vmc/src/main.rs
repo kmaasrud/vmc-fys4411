@@ -5,6 +5,7 @@ mod wavefunction;
 mod hamiltonian;
 mod montecarlo;
 mod threadpool;
+mod analytical;
 
 pub use particle::Particle;
 pub use system::System;
@@ -13,9 +14,9 @@ pub use wavefunction::{WaveFunction, GaussianWaveFunction};
 pub use hamiltonian::{Hamiltonian, HarmonicOscillator};
 use montecarlo::monte_carlo;
 use threadpool::ThreadPool;
+use analytical::local_energy_analytical;
 
 use std::time:: Instant;
-
 
 extern crate num_cpus;
 
@@ -73,35 +74,43 @@ fn run_sim(alpha_list: Vec<f64>, particle_list:Vec<usize>, variance:i32, accept_
             //path for analytical results
             //let path = format!("./data/analytic/experiment_{}D_{}_particles_ana.csv", dim, particle);
             //path numerical results
-            let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num_{:?}.csv", dim, particle, std::thread::current().id());
             
-
             let f = OpenOptions::new()
+            let path = format!("./data/non_paralell/numeric/experiment_{}D_{}_particles_num_{:?}.csv", dim, n, std::thread::current().id());
+            let path_ana = format!("./data/non_paralell/analytic/experiment_{}D_{}_particles_num_{:?}.csv", dim, n, std::thread::current().id());
+            let f_ile = OpenOptions::new()
                         .read(true)
                         .append(true)
                         .create(true)
                         .open(path)
                         .expect("Unable to open file");
-            let mut f = BufWriter::new(f);
-
+            let mut f = BufWriter::new(f_ile);
+            let mut f_ana = BufWriter::new(f_ile);
             
             f.write_all(header.as_bytes()).expect("Unable to write data"); 
+            f_ana.write_all(header.as_bytes()).expect("Unable to write data"); 
 
 
             for alpha in alpha_list.iter(){
-
                 let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
                 let ham: HarmonicOscillator = HarmonicOscillator::elliptical(1.0, 1.0);
-                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*particle, dim, wf, ham, 0.1);
+                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*n, dim, wf, ham, 0.1);
                 let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
                 //println!("Energy from monte carlo calculations {}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
                 let energy2 = energy.powi(2);
+
+                let energy_ana = local_energy_analytical(alpha, dim, &test_system.particles);
+                let energy2_ana = energy_ana.powi(2);
+
                 let duration = start.elapsed();
                 //println!("Time used in seconds {:?} = {:?} min",duration, duration/60);
                 let duration = start.elapsed();
                 let data = format!("{},{},{},{},{},{:?}\n", alpha, energy, energy2, variance, accept_ratio, duration);
+                let data_ana = format!("{},{},{},{},{},{:?}\n", alpha, energy_ana, energy2_ana, variance, accept_ratio, duration);
+                
                 f.write_all(data.as_bytes()).expect("Unable to write data");
+                f_ana.write_all(data_ana.as_bytes()).expect("Unable to write data");
             }
         }
     }
