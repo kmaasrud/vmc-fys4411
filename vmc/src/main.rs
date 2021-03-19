@@ -4,7 +4,7 @@ mod system;
 mod wavefunction;
 mod hamiltonian;
 mod montecarlo;
-
+mod analytical;
 pub use particle::Particle;
 pub use system::System;
 pub use metropolis::{Metropolis, MetropolisResult, BruteForceMetropolis};
