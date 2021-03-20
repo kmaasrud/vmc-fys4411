@@ -4,7 +4,6 @@ use crate::Hamiltonian;
 use rand::distributions::{Distribution, Uniform};
 use rand::{prelude::random, thread_rng};
 
-#[derive(Debug)]
 pub struct System<T: WaveFunction> {
     pub particles: Vec<Particle>,
     pub dimensionality: usize,

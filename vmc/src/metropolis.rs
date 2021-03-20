@@ -9,6 +9,7 @@ pub enum MetropolisResult {
 
 /// Trait for Metropolis samplers.
 pub trait Metropolis {
+    fn new(step_size: f64) -> Self;
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult;
     // This'll probably need more generalization, but works for now
     fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
@@ -28,14 +29,12 @@ pub struct BruteForceMetropolis {
     step_size: f64,
 }
 
-impl BruteForceMetropolis {
+impl Metropolis for BruteForceMetropolis {
     /// Makes a new `BruteForceMetropolis` struct based on a step size.
-    pub fn new(step_size: f64) -> Self {
+    fn new(step_size: f64) -> Self {
         Self { step_size: step_size, }
     }
-}
 
-impl Metropolis for BruteForceMetropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         let next_step = sys.random_particle_change(self.step_size);
@@ -59,14 +58,12 @@ pub struct ImportanceMetropolis {
     step_size: f64,
 }
 
-impl ImportanceMetropolis {
+impl Metropolis for ImportanceMetropolis {
     /// Makes a new `ImportanceMetropolis` struct based on a step size.
     fn new(step_size: f64)  -> Self {
         Self { step_size: step_size, }
     }
-}
 
-impl Metropolis for ImportanceMetropolis {
     fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         // TODO: Here we need lots of different shit
         let (next_step, i) = sys.quantum_force_particle_change(self.step_size);
