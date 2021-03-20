@@ -1,4 +1,4 @@
-use crate::{System, WaveFunction, Metropolis, MetropolisResult, Hamiltonian};
+use crate::{System, WaveFunction, Metropolis, MetropolisResult};
 
 /// Does Monte Carlo integration over the WaveFunction of a System, using a given Metropolis
 /// algorithm.
@@ -7,8 +7,7 @@ use crate::{System, WaveFunction, Metropolis, MetropolisResult, Hamiltonian};
 /// - n: usize -- The number of Monte Carlo cycles to perform
 /// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
-pub fn monte_carlo<T, V, W>(n: usize, sys: &mut System<V, W>, metro: &mut T) -> f64
-where T: Metropolis, V: WaveFunction, W: Hamiltonian {
+pub fn monte_carlo<T: Metropolis, V: WaveFunction>(n: usize, sys: &mut System<V>, metro: &mut T) -> f64 {
     let mut result: f64 = 0.;
     let mut prev_val: f64 = sys.wavefunction.evaluate(&sys.particles);
 

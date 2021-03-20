@@ -5,15 +5,15 @@ use rand::distributions::{Distribution, Uniform};
 use rand::{prelude::random, thread_rng};
 
 #[derive(Debug)]
-pub struct System<T: WaveFunction, V: Hamiltonian> {
+pub struct System<T: WaveFunction> {
     pub particles: Vec<Particle>,
     pub dimensionality: usize,
     pub wavefunction: T,
-    pub hamiltonian: V,
+    pub hamiltonian: Hamiltonian,
 }
 
-impl<T, V> System<T, V> where T: WaveFunction, V: Hamiltonian {
-    pub fn new(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: V) -> Self {
+impl<T> System<T> where T: WaveFunction, {
+    pub fn new(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: Hamiltonian) -> Self {
         System {
             particles: vec![Particle::new(dim); n_particles],
             dimensionality: dim,
@@ -22,10 +22,10 @@ impl<T, V> System<T, V> where T: WaveFunction, V: Hamiltonian {
         }
     }
 
-    pub fn distributed(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: V, spread: f64) -> Self {
+    pub fn distributed(n_particles: usize, dim: usize, wavefunction: T, hamiltonian: Hamiltonian, spread: f64) -> Self {
         let mut rng = thread_rng();
         let uniform = Uniform::new(-1., 1.);
-        let mut sys: System<T, V> = System::new(n_particles, dim, wavefunction, hamiltonian);
+        let mut sys: System<T> = System::new(n_particles, dim, wavefunction, hamiltonian);
 
         for i in 0..sys.particles.len() {
             // Overlapping particles could be a problem...
@@ -73,18 +73,3 @@ impl<T, V> System<T, V> where T: WaveFunction, V: Hamiltonian {
         (new_particles, i)
     }
 }
-
-// pub struct HarmonicTrap  {
-//     pub mass: f64,
-//     pub omega_ho: f64,  //Trap frequency in the perpendicular xy plane
-//     pub omega_z: f64,   //Trap frequency in the z direction
-// }
-
-// impl HarmonicTrap {
-//     pub fn spherical(&mut self, r: f64) -> f64 { //Returns V_ext(r) for a spherical harmonic trap [currently 1D]
-//         0.5*self.mass*self.omega_ho*self.omega_ho*r*r
-//     }
-//     pub fn elliptical(&mut self, r: Vec<f64>) -> f64 { //Returns V_ext(r) for an elliptical harmonic trap
-//         0.5*self.mass*(self.omega_ho*self.omega_ho*(r[0]*r[0] + r[1]*r[1])+ self.omega_z*self.omega_z*r[2]*r[2])
-//     }
-// }

@@ -9,7 +9,7 @@ pub use particle::Particle;
 pub use system::System;
 pub use metropolis::{Metropolis, MetropolisResult, BruteForceMetropolis};
 pub use wavefunction::{WaveFunction, GaussianWaveFunction};
-pub use hamiltonian::{Hamiltonian, HarmonicOscillator};
+pub use hamiltonian::Hamiltonian;
 use montecarlo::monte_carlo;
 use analytical::local_energy_analytical;
 use std::time:: Instant;
@@ -60,8 +60,8 @@ fn main() {
 
             for alpha in alpha_list.iter(){
                 let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
-                let ham: HarmonicOscillator = HarmonicOscillator::elliptical(1.0, 1.0);
-                let mut test_system: System<GaussianWaveFunction, HarmonicOscillator> = System::distributed(*n, dim, wf, ham, 0.1);
+                let ham: Hamiltonian = Hamiltonian::elliptical(1.0, 1.0);
+                let mut test_system: System<GaussianWaveFunction> = System::distributed(*n, dim, wf, ham, 0.1);
                 let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
                 //println!("Energy from monte carlo calculations {}", monte_carlo(mc_cycles, &mut test_system, &mut metro)); 
                 let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 

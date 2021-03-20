@@ -1,6 +1,6 @@
 use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
-use crate::{System, WaveFunction, Hamiltonian};
+use crate::{System, WaveFunction};
 
 pub enum MetropolisResult {
     Accepted(f64),
@@ -9,7 +9,7 @@ pub enum MetropolisResult {
 
 /// Trait for Metropolis samplers.
 pub trait Metropolis {
-    fn step<T: WaveFunction, V: Hamiltonian>(&mut self, sys: &mut System<T, V>) -> MetropolisResult;
+    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult;
     // This'll probably need more generalization, but works for now
     fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
         (old_val / new_val).min(1.)
@@ -36,7 +36,7 @@ impl BruteForceMetropolis {
 }
 
 impl Metropolis for BruteForceMetropolis {
-    fn step<T: WaveFunction, V: Hamiltonian>(&mut self, sys: &mut System<T, V>) -> MetropolisResult {
+    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
@@ -67,7 +67,7 @@ impl ImportanceMetropolis {
 }
 
 impl Metropolis for ImportanceMetropolis {
-    fn step<T: WaveFunction, V: Hamiltonian>(&mut self, sys: &mut System<T, V>) -> MetropolisResult {
+    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
         // TODO: Here we need lots of different shit
         let (next_step, i) = sys.quantum_force_particle_change(self.step_size);
 
