@@ -26,24 +26,14 @@ impl Hamiltonian {
     }
 
     fn inter_boson_potential(&self, particles: &Vec<Particle>) -> f64 {
-        let mut sum: f64 = 0.;
+        let sum: f64 = 0.;
         for i in 0..particles.len() {
             for j in i+1..particles.len() {
-                if particles[i].distance_to(&particles[j]) > 0. {
-                    sum += 0.;
-                } else {
-                    sum += f64::INFINITY;
+                if let distance = particles[i].distance_to(&particles[j]) > 0. {
+                    sum += 0.
                 }
             }
         }
         sum
-    }
-
-    pub fn local_energy<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
-        self.kinetic(wf, particles) + self.trap_potential(particles)
-    }
-
-    pub fn energy<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
-        self.kinetic(wf, particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
     }
 }

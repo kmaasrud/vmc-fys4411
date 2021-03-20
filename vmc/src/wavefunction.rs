@@ -50,13 +50,7 @@ impl WaveFunction for GaussianWaveFunction {
         let mut qforce: Vec<f64> = vec![0.; particle.dim];
 
         for other in particles {
-            // Radius: Distance between the chosen particle, and all the others.
-            // Sorry Amund, I just had to test if I could write this functionally :):):):)
-            r = other.position.iter()
-                .zip(particle.position.iter())
-                .map(|(x, y)| (x - y).powi(2))
-                .sum();
-            r = r.sqrt();
+            r = other.distance_to(particle);
 
             deno = 1. / (1. + self.beta * r);
 

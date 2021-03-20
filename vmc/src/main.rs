@@ -33,7 +33,6 @@ fn main() {
 
 
     let alpha_list: Vec<f64> = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    let max_dim: usize = 3;
     let particle_list = vec![1,10,100];
 
     let variance = 1;
