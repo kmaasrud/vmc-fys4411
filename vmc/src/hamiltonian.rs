@@ -4,25 +4,24 @@ use crate::Particle;
 #[derive(Debug)]
 pub struct Hamiltonian {
     lambda: f64,
-    omega: f64,
 }
 
 impl Hamiltonian {
-    pub fn spherical(omega: f64) -> Self {
-        Hamiltonian { lambda: 1., omega: omega }
+    pub fn spherical() -> Self {
+        Hamiltonian { lambda: 1. }
     }
 
-    pub fn elliptical(lambda: f64, omega: f64) -> Self {
-        Hamiltonian { lambda: lambda, omega: omega }
+    pub fn elliptical(lambda: f64) -> Self {
+        Hamiltonian { lambda: lambda }
     }
 
     fn kinetic<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
-        - self.omega / 2. * wf.laplace(&particles)
+        - 0.5 * wf.laplace(&particles)
     }
 
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
         let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.lambda)).sum();
-        self.omega / 2. * squared_position_sum
+        0.5 * squared_position_sum
     }
 
     fn inter_boson_potential(&self, particles: &Vec<Particle>) -> f64 {
