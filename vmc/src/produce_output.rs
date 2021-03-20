@@ -20,7 +20,7 @@ pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const N_LIST: [usize; 3] = [1, 10, 100];
+    const N_LIST: [usize; 4] = [1, 10, 100, 500];
     const MC_CYCLES: usize = 10_000;
 
     fn run_sim(start: Instant, mc_cycles: usize) {
