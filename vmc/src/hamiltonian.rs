@@ -1,7 +1,6 @@
-use crate::WaveFunction;
-use crate::Particle;
+use crate::{WaveFunction, Particle};
 
-#[derive(Debug)]
+
 pub struct Hamiltonian {
     lambda: f64,
 }

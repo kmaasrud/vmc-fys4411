@@ -16,6 +16,9 @@ use std::{
 use num_cpus;
 
 
+/// Produces results for dimentions 1-3, different alphas and different number of particles and
+/// saves these in its own separate file. Does this a number of times corresponding to the number
+/// of cores the CPU running the program has.
 pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
@@ -43,7 +46,7 @@ pub fn dim_and_n() {
 
                 for alpha in ALPHAS.iter() {
                     let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
-                    let ham: Hamiltonian = Hamiltonian::elliptical(1.0, 1.0);
+                    let ham: Hamiltonian = Hamiltonian::spherical();
                     let mut test_system: System<GaussianWaveFunction> = System::distributed(*n, dim, wf, ham, 0.1);
                     let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
                     let energy = monte_carlo(mc_cycles, &mut test_system, &mut metro); 
@@ -57,6 +60,7 @@ pub fn dim_and_n() {
             }
         }
     }
+
     let n_cpus = num_cpus::get();
     println!("Found {} cores!", n_cpus);
 
