@@ -13,27 +13,25 @@ impl WaveFunction {
 
     fn evaluate(&self, particles: &Vec<Particle>) -> f64 {
         let r: f64; 
+        let psi: f64 = 1.;
         let jastrow = 1.;
         let n_particles = particles.len();
-        if n_particles > 1 {
-            for i in 0..n_particles {
-                for j in i+1..n_particles {
-                    r = particles[i].distance_to(&particles[j]);
-                    if r > 0. {
-                        jastrow *= 1. - 1. / r;
-                    } else {
-                        jastrow *= 0.;
-                    }
+        for i in 0..n_particles {
+            psi *= (-self.alpha * particles[i].squared_sum()).exp();
+            for j in i+1..n_particles {
+                r = particles[i].distance_to(&particles[j]);
+                if r > 0. {
+                    psi *= 1. - 1. / r;
+                } else {
+                    psi *= 0.;
                 }
             }
         }
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        (-self.alpha * squared_position_sum).exp() * jastrow
+        psi
     }
 
     fn evaluate_non_interacting(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        (-self.alpha * squared_position_sum).exp()
+        particles.iter().map(|x| -self.alpha * x.squared_sum()).prod().exp()
     }
 
     fn laplace(&self, particles: &Vec<Particle>) -> f64 {
