@@ -14,7 +14,7 @@ impl Hamiltonian {
         Hamiltonian { gamma: gamma }
     }
 
-    fn kinetic<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
+    fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
         - 0.5 * wf.laplace(&particles)
     }
 
@@ -37,11 +37,11 @@ impl Hamiltonian {
         sum
     }
 
-    pub fn local_energy<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
+    pub fn local_energy(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
         self.kinetic(wf, particles) + self.trap_potential(particles)
     }
 
-    pub fn energy<T: WaveFunction>(&self, wf: &T, particles: &Vec<Particle>) -> f64 {
+    pub fn energy(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
         self.kinetic(wf, particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
     }
 }

@@ -1,16 +1,18 @@
 use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
-use crate::{System, WaveFunction};
+use crate::System;
+use crate::montecarlo::SampledValues;
+
 
 pub enum MetropolisResult {
-    Accepted(f64),
+    Accepted(SampledValues),
     Rejected,
 }
 
 /// Trait for Metropolis samplers.
 pub trait Metropolis {
     fn new(step_size: f64) -> Self;
-    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult;
+    fn step(&mut self, sys: &mut System) -> MetropolisResult;
     // This'll probably need more generalization, but works for now
     fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
         (old_val / new_val).min(1.)
@@ -35,7 +37,7 @@ impl Metropolis for BruteForceMetropolis {
         Self { step_size: step_size, }
     }
 
-    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
+    fn step(&mut self, sys: &mut System) -> MetropolisResult {
         let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
         let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
@@ -44,7 +46,14 @@ impl Metropolis for BruteForceMetropolis {
 
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step.clone();
-            MetropolisResult::Accepted(sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles))
+            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
+            let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
+            MetropolisResult::Accepted(SampledValues {
+                energy: d_energy,
+                energy_squared: d_energy.powi(2),
+                wf_deriv: d_wf_deriv,
+                wf_deriv_times_energy: d_wf_deriv * d_energy,
+            })
         } else {
             MetropolisResult::Rejected
         }
@@ -64,7 +73,7 @@ impl Metropolis for ImportanceMetropolis {
         Self { step_size: step_size, }
     }
 
-    fn step<T: WaveFunction>(&mut self, sys: &mut System<T>) -> MetropolisResult {
+    fn step(&mut self, sys: &mut System) -> MetropolisResult {
         // TODO: Here we need lots of different shit
         let (next_step, i) = sys.quantum_force_particle_change(self.step_size);
 
@@ -79,7 +88,14 @@ impl Metropolis for ImportanceMetropolis {
 
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step.clone();
-            MetropolisResult::Accepted(sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles))
+            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
+            let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
+            MetropolisResult::Accepted(SampledValues {
+                energy: d_energy,
+                energy_squared: d_energy.powi(2),
+                wf_deriv: d_wf_deriv,
+                wf_deriv_times_energy: d_wf_deriv * d_energy,
+            })
         } else {
             MetropolisResult::Rejected
         }
