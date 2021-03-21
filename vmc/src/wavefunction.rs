@@ -14,8 +14,8 @@ impl WaveFunction {
     /// Evaluate the full wavefunction over particles: &Vec<Particles>. Returns an f64 representing
     /// the wavefunction value.
     pub fn evaluate(&self, particles: &Vec<Particle>) -> f64 {
-        let r: f64; 
-        let psi: f64 = 1.;
+        let mut r: f64; 
+        let mut psi: f64 = 1.;
         let n_particles = particles.len();
 
         for i in 0..n_particles {

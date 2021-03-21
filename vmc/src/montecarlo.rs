@@ -9,7 +9,7 @@ pub struct SampledValues {
 }
 
 impl SampledValues {
-    fn add_to_sum(&mut self, dvals: SampledValues) {
+    fn add_to_sum(&mut self, dvals: &SampledValues) {
         self.energy += dvals.energy;
         self.energy_squared += dvals.energy_squared;
         self.wf_deriv += dvals.wf_deriv;
@@ -34,7 +34,7 @@ impl SampledValues {
 pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> SampledValues {
     let energy: f64 = sys.wavefunction.evaluate(&sys.particles);
     let wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
-    let result = SampledValues {
+    let mut result = SampledValues {
         energy: energy,
         energy_squared: energy.powi(2),
         wf_deriv: wf_deriv,
@@ -50,11 +50,11 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
     for _ in 1..n {
         match metro.step(sys) {
             MetropolisResult::Accepted(dvals) => {
-                result.add_to_sum(dvals);
+                result.add_to_sum(&dvals);
                 prev_dvals = dvals;
             },
             MetropolisResult::Rejected => {
-                result.add_to_sum(prev_dvals);
+                result.add_to_sum(&prev_dvals);
             },
         }
     }
