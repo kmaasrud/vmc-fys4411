@@ -4,7 +4,7 @@ use crate::{
     System,
     BruteForceMetropolis,
     ImportanceMetropolis,
-    GaussianWaveFunction,
+    WaveFunction,
     Hamiltonian,
     Metropolis,
 };
@@ -40,15 +40,14 @@ pub fn dim_and_n() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
                 for alpha in ALPHAS.iter() {
-                    let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
+                    let wf = WaveFunction::new(*alpha);
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let mut system: System<GaussianWaveFunction> = System::distributed(*n, dim, wf, ham, 0.1);
+                    let mut system: System = System::distributed(*n, dim, wf, ham, 0.1);
                     let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
-                    let energy = monte_carlo(mc_cycles, &mut system, &mut metro); 
-                    let energy2 = energy.powi(2);
+                    let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
 
                     let duration = start.elapsed();
-                    let data = format!("{},{},{},{:?}\n", alpha, energy, energy2, duration);
+                    let data = format!("{},{},{},{:?}\n", alpha, vals.energy, vals.energy_squared, duration);
                     
                     f.write_all(data.as_bytes()).expect("Unable to write data");
                 }
@@ -94,14 +93,13 @@ pub fn bruteforce_vs_importance() {
             f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
             for step_size in linspace(0.1, 1., 10) {
                 for alpha in ALPHAS.iter() {
-                    let wf: GaussianWaveFunction = GaussianWaveFunction::new(*alpha);
+                    let wf = WaveFunction::new(*alpha);
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let mut system: System<GaussianWaveFunction> = System::distributed(N, dim, wf, ham, 0.1);
+                    let mut system: System = System::distributed(N, dim, wf, ham, 0.1);
                     let mut metro: T = T::new(step_size);
-                    let energy = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
-                    let energy2 = energy.powi(2);
+                    let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
-                    let data = format!("{},{},{},{}\n", step_size, alpha, energy, energy2);
+                    let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
                     f.write_all(data.as_bytes()).expect("Unable to write data");
                 }
             } 
