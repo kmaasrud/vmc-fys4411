@@ -11,13 +11,18 @@ impl WaveFunction {
         WaveFunction { alpha: alpha, beta: alpha}
     }
 
+    /// Evaluate the full wavefunction over particles: &Vec<Particles>. Returns an f64 representing
+    /// the wavefunction value.
     fn evaluate(&self, particles: &Vec<Particle>) -> f64 {
         let r: f64; 
         let psi: f64 = 1.;
-        let jastrow = 1.;
         let n_particles = particles.len();
+
         for i in 0..n_particles {
+            // Normal single-particle wave function
             psi *= (-self.alpha * particles[i].squared_sum()).exp();
+
+            // Jastrow interaction
             for j in i+1..n_particles {
                 r = particles[i].distance_to(&particles[j]);
                 if r > 0. {
@@ -30,10 +35,13 @@ impl WaveFunction {
         psi
     }
 
+    /// Evaluate the wavefunction using only the single-particle part. Returns an f64 representing
+    /// the wavefunction value.
     fn evaluate_non_interacting(&self, particles: &Vec<Particle>) -> f64 {
         particles.iter().map(|x| -self.alpha * x.squared_sum()).prod().exp()
     }
 
+    /// Returns the Laplacian of the wavefunction evaluated at state of particles: &Vec<Particle>.
     fn laplace(&self, particles: &Vec<Particle>) -> f64 {
         let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
         let dim = particles[0].dim as f64;
