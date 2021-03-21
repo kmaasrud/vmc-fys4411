@@ -1,30 +1,37 @@
 use crate::Particle;
 
-pub trait WaveFunction {
-    fn evaluate(&self, particles: &Vec<Particle>) -> f64;
-    fn laplace(&self, particles: &Vec<Particle>) -> f64;
-    fn gradient(&self, particle: Particle) -> Vec<f64>;
-    fn drift_force(&self, particle: Particle) -> Vec<f64> {
-        self.gradient(particle).iter().map(|x| x * 2.).collect()
-    }
-    fn quantum_force(&self, particle: &Particle, particles: &Vec<Particle>) -> Vec<f64>;
-}
 
-
-#[derive(Debug)]
-pub struct GaussianWaveFunction {
+pub struct WaveFunction {
     alpha: f64,
     beta: f64,
 }
 
-impl GaussianWaveFunction {
+impl WaveFunction {
     pub fn new(alpha: f64) -> Self {
-        GaussianWaveFunction { alpha: alpha, beta: alpha}
+        WaveFunction { alpha: alpha, beta: alpha}
     }
-}
 
-impl WaveFunction for GaussianWaveFunction {
     fn evaluate(&self, particles: &Vec<Particle>) -> f64 {
+        let r: f64; 
+        let jastrow = 1.;
+        let n_particles = particles.len();
+        if n_particles > 1 {
+            for i in 0..n_particles {
+                for j in i+1..n_particles {
+                    r = particles[i].distance_to(&particles[j]);
+                    if r > 0. {
+                        jastrow *= 1. - 1. / r;
+                    } else {
+                        jastrow *= 0.;
+                    }
+                }
+            }
+        }
+        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
+        (-self.alpha * squared_position_sum).exp() * jastrow
+    }
+
+    fn evaluate_non_interacting(&self, particles: &Vec<Particle>) -> f64 {
         let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
         (-self.alpha * squared_position_sum).exp()
     }
@@ -61,5 +68,9 @@ impl WaveFunction for GaussianWaveFunction {
         // After this loop, all qforce vectors should be summed to create the total quantum force.
         // MORE: https://compphysics.github.io/ComputationalPhysics2/doc/pub/week4/html/week4-reveal.html slide 11
         qforce
+    }
+
+    fn drift_force(&self, particle: Particle) -> Vec<f64> {
+        self.gradient(particle).iter().map(|x| x * 2.).collect()
     }
 }
