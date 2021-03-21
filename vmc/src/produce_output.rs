@@ -26,7 +26,7 @@ pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 10_000;
+    const MC_CYCLES: usize = 1_000;
 
     fn run_sim(start: Instant, mc_cycles: usize) {
         let path = format!("./data/dim_and_n/{:?}/", std::thread::current().id());
@@ -76,36 +76,57 @@ pub fn dim_and_n() {
 
 
 pub fn bruteforce_vs_importance() {
-    const N: usize = 100;
+    const N: usize = 10;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 10_000;
+    const MC_CYCLES: usize = 1_000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     fn run_for_sampler<T: Metropolis>() {
-        println!("Running simulations using brute force Metropolis algorithm...");
-        let start = Instant::now();
-        for dim in 1..=3 {
-            println!("Dimension: {}", dim);
-            let path = format!("./data/bruteforce_vs_importance/{:?}/", std::any::type_name::<T>());
-            create_dir(&path);
 
-            let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
-            f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
-            for step_size in linspace(0.1, 1., 10) {
-                for alpha in ALPHAS.iter() {
-                    let wf = WaveFunction::new(*alpha);
-                    let ham: Hamiltonian = Hamiltonian::spherical();
-                    let mut system: System = System::distributed(N, dim, wf, ham, 0.1);
-                    let mut metro: T = T::new(step_size);
-                    let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+        println!("Running simulations using {} algorithm...", std::any::type_name::<T>().split("::").last().unwrap());
 
-                    let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
-                    f.write_all(data.as_bytes()).expect("Unable to write data");
-                }
-            } 
+        fn run_sim<T: Metropolis>(mc: usize) {
+            
+            for dim in 1..=3 {
+                println!("Dimension: {}", dim);
+                let path = format!("./data/bruteforce_vs_importance/{}/{:?}", std::any::type_name::<T>().split("::").last().unwrap(),std::thread::current().id());
+                create_dir(&path);
+
+                let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
+                f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
+                for step_size in linspace(0.1, 1., 10) {
+                    for alpha in ALPHAS.iter() {
+                        let wf = WaveFunction::new(*alpha);
+                        let ham: Hamiltonian = Hamiltonian::spherical();
+                        let mut system: System = System::distributed(N, dim, wf, ham, 0.1);
+                        let mut metro: T = T::new(step_size);
+                        let vals = monte_carlo(mc, &mut system, &mut metro); 
+
+                        let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
+                        f.write_all(data.as_bytes()).expect("Unable to write data");
+                    }
+                } 
+            }
         }
+
+        // Multithreading
+        let n_cpus = num_cpus::get();
+        let mc: usize = MC_CYCLES / n_cpus;
+        println!("Spawning threadpool of {} threads, with {} Monte Carlo cycles on each", &n_cpus, &mc);
+        let pool = ThreadPool::new(n_cpus as u8);
+
+        let start = Instant::now();
+
+        for _ in 0..n_cpus {
+            pool.execute(move || run_sim::<T>(mc)); //Running the simulation on each thread individually
+        }
+        println!("All {} threads now executing, waiting for them to finish...", n_cpus);
+        pool.join_all();
+        
         println!("Time spent: {:?}", start.elapsed());
     }
+    
+
 
     run_for_sampler::<BruteForceMetropolis>();
     run_for_sampler::<ImportanceMetropolis>();
