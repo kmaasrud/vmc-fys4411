@@ -8,7 +8,7 @@ pub struct WaveFunction {
 
 impl WaveFunction {
     pub fn new(alpha: f64) -> Self {
-        WaveFunction { alpha: alpha, beta: alpha}
+        WaveFunction { alpha: alpha, beta: alpha }
     }
 
     /// Evaluate the full wavefunction over particles: &Vec<Particles>. Returns an f64 representing
@@ -61,21 +61,31 @@ impl WaveFunction {
         squared_position_prod * self.evaluate(particles)
     }
 
-    ///  Takes input particle and finds it's quantum force by evaluating its wavefunction
-    pub fn quantum_force(&self, particle: &Particle, particles: &Vec<Particle>) -> Vec<f64> {
-        // Loop over all other particles in order to calculate quantum force felt from all of them.
-        // TODO: THIS SHOULD BE PARALELLIZED
+    /// Calculates the quantum force of a particle not interacting with its surrounding particles
+    pub fn quantum_force_non_interacting(&self, particle: &Particle) -> Vec<f64> {
+        particle.position.iter().map(|x| -4. * self.alpha * x).collect()
+    }
+
+    ///  Takes input particle index and finds it's quantum force by evaluating its wavefunction
+    pub fn quantum_force(&self, i: usize, particles: &Vec<Particle>) -> Vec<f64> {
         let mut r: f64;
-        let mut deno: f64;
-        let mut qforce: Vec<f64> = vec![0.; particle.dim];
+        let mut factor: f64;
+        let mut qforce: Vec<f64> = self.quantum_force_non_interacting(&particles[i]);
+        if particles[i].dim > 2 {
+            qforce[2] *= self.beta; // Multiply the z-component by beta
+        }
 
+        // Loop over all other particles in order to calculate quantum force felt from all of them.
         for other in particles {
-            r = other.distance_to(particle);
+            // If positions are same, jump to next iteration
+            if other.position == particles[i].position { continue }
+            r = other.distance_to(&particles[i]);
+            factor = 2. * self.alpha / (r.powi(3) - r * self.alpha);
+            // deno = 1. / (1. + self.beta * r);
 
-            deno = 1. / (1. + self.beta * r);
-
-            for i in 0..particle.dim {
-                qforce[i] += -2. * particle.position[i] * self.alpha * (particle.position[i] - other.position[i]) * deno.powi(2) / r;
+            for i in 0..particles[i].dim {
+                qforce[i] += factor * (particles[i].position[i] - other.position[i]);
+                // qforce[i] += -2. * this.position[i] * self.alpha * (this.position[i] - other.position[i]) * deno.powi(2) / r;
             }
         }
         qforce

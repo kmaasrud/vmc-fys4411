@@ -1,7 +1,10 @@
 use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
-use crate::System;
-use crate::montecarlo::SampledValues;
+use crate::{
+    System,
+    Particle,
+    montecarlo::SampledValues
+};
 
 
 pub enum MetropolisResult {
@@ -45,8 +48,8 @@ impl Metropolis for BruteForceMetropolis {
         let acc_factor = self.acceptance_factor(wf_old.powi(2), wf_new.powi(2));
 
         if Self::hastings_check(acc_factor) {
-            sys.particles = next_step.clone();
-            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
+            sys.particles = next_step;
+            let d_energy = sys.hamiltonian.energy(&sys.wavefunction, &sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,
@@ -74,21 +77,25 @@ impl Metropolis for ImportanceMetropolis {
     }
 
     fn step(&mut self, sys: &mut System) -> MetropolisResult {
-        // TODO: Here we need lots of different shit
-        let (next_step, i) = sys.quantum_force_particle_change(self.step_size);
+        let (next_step, i) = sys.quantum_force_particle_change();
 
         // Greens below
-        let mut langevin_part: f64 = 0.;
-        for j in 0..sys.particles[i].dim { // This is a vector sum + scalar product
-            langevin_part += (next_step[i].position[j] - sys.particles[i].position[j] - next_step[i].qforce[j] * 0.5 * self.step_size).powi(2);
+        fn greens(x: &Particle, y: &Particle, dt: f64) -> f64 {
+            let mut result: f64 = 0.;
+            for j in 0..x.dim { // This is a vector sum + scalar product
+                result += (y.position[j] - x.position[j] - 0.5 * dt * x.qforce[j]).powi(2);
+            }
+            result = -(result / (2. * dt)).exp(); // Ignoring denominator of Greens since it cancels later
+            result
         }
-        langevin_part /= -2. * self.step_size;
 
-        let acc_factor: f64 = 1. / ((2. * 3.14 * self.step_size).powf(1.5 * (sys.particles.len() as f64) )) * langevin_part.exp();
+        let acc_num = greens(&sys.particles[i], &next_step[i], self.step_size) * sys.wavefunction.evaluate_non_interacting(&next_step).powi(2);
+        println!("{}", sys.wavefunction.evaluate(&next_step));
+        let acc_deno = greens(&next_step[i], &sys.particles[i], self.step_size) * sys.wavefunction.evaluate_non_interacting(&sys.particles).powi(2);
 
-        if Self::hastings_check(acc_factor) {
-            sys.particles = next_step.clone();
-            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
+        if Self::hastings_check(acc_num / acc_deno) {
+            sys.particles = next_step;
+            let d_energy = sys.hamiltonian.energy(&sys.wavefunction, &sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,

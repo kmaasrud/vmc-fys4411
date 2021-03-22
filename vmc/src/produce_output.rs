@@ -125,7 +125,7 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    run_for_sampler::<BruteForceMetropolis>();
+    // run_for_sampler::<BruteForceMetropolis>();
     run_for_sampler::<ImportanceMetropolis>();
 }
 

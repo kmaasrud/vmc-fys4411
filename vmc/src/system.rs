@@ -49,26 +49,27 @@ impl System {
     }
 
     /// Takes in a step size and returns the next particle state of the system.
-    pub fn quantum_force_particle_change(&mut self, step_size: f64 ) -> (Vec<Particle>, usize) {
-        // This func is called from metropolis.rs:ImportanceMetropolis in order to
-        // do one step (change the particle system) WITH SAMPLING BIAS: the quantum force.
+    pub fn quantum_force_particle_change(&mut self) -> (Vec<Particle>, usize) {
         let mut rng = thread_rng();
         let uniform = Uniform::new(-1., 1.);
 
+        // 0.005 is hard-coded solution for delta t in Langevin equation
+        let qf_step_size = 0.005;
+
         // Picks one random particle to do the change for
         let i = random::<usize>() % self.particles.len();
+
         // Clones the last particle state of the system
         let mut new_particles = self.particles.clone();
 
-        let quantum_force: Vec<f64> = self.wavefunction.quantum_force(&new_particles[i], &new_particles);
-        self.particles[i].qforce = self.wavefunction.quantum_force(&self.particles[i], &self.particles);
+        new_particles[i].qforce = self.wavefunction.quantum_force(i, &new_particles);
+        self.particles[i].qforce = self.wavefunction.quantum_force(i, &self.particles);
 
+        // Loop over its dimensions and do Langevin equation
         for d in 0..new_particles[i].dim {
-            // Loop over its dimensions and do Langevin equation
-            new_particles[i].position[d] += 0.5 * quantum_force[d] * step_size
-                    + uniform.sample(&mut rng) * step_size.sqrt(); // 0.5 is the D constant.
+            new_particles[i].position[d] += 0.5 * new_particles[i].qforce[d] * qf_step_size + uniform.sample(&mut rng) * qf_step_size.sqrt(); // 0.5 is the D constant.
         }
-        new_particles[i].qforce = quantum_force;
+
         (new_particles, i)
     }
 }
