@@ -8,7 +8,7 @@ pub struct WaveFunction {
 
 impl WaveFunction {
     pub fn new(alpha: f64) -> Self {
-        WaveFunction { alpha: alpha, beta: alpha }
+        WaveFunction { alpha: alpha, beta: 2.82843 }
     }
 
     /// Evaluate the full wavefunction over particles: &Vec<Particles>. Returns an f64 representing
