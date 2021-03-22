@@ -41,15 +41,15 @@ impl Metropolis for BruteForceMetropolis {
     }
 
     fn step(&mut self, sys: &mut System) -> MetropolisResult {
-        let wf_old: f64 = sys.wavefunction.evaluate(&sys.particles);
+        let wf_old: f64 = sys.wavefunction.evaluate_non_interacting(&sys.particles);
         let next_step = sys.random_particle_change(self.step_size);
-        let wf_new: f64 = sys.wavefunction.evaluate(&next_step);
+        let wf_new: f64 = sys.wavefunction.evaluate_non_interacting(&next_step);
 
         let acc_factor = self.acceptance_factor(wf_old.powi(2), wf_new.powi(2));
 
         if Self::hastings_check(acc_factor) {
             sys.particles = next_step;
-            let d_energy = sys.hamiltonian.energy(&sys.wavefunction, &sys.particles);
+            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,

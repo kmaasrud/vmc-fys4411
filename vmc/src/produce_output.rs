@@ -31,6 +31,7 @@ pub fn dim_and_n() {
     fn run_sim(start: Instant, mc_cycles: usize) {
         let path = format!("./data/dim_and_n/{:?}/", std::thread::current().id());
         create_dir(&path);
+        let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
 
         for dim in 1..=3 {
             for n in [1, 10, 100].iter() {
@@ -43,7 +44,6 @@ pub fn dim_and_n() {
                     let wf = WaveFunction{ alpha: *alpha, beta: 1. };
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let mut system: System = System::distributed(*n, dim, wf, ham, 0.1);
-                    let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
                     let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
 
                     let duration = start.elapsed();
@@ -126,7 +126,7 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    // run_for_sampler::<BruteForceMetropolis>();
+    run_for_sampler::<BruteForceMetropolis>();
     run_for_sampler::<ImportanceMetropolis>();
 }
 

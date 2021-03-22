@@ -27,7 +27,7 @@ impl Hamiltonian {
         let mut sum: f64 = 0.;
         for i in 0..particles.len() {
             for j in i+1..particles.len() {
-                if particles[i].distance_to(&particles[j]) > 0. {
+                if particles[i].distance_to(&particles[j]) > 0.0043 {
                     sum += 0.;
                 } else {
                     sum += f64::INFINITY;

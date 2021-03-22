@@ -22,7 +22,8 @@ impl WaveFunction {
             // Jastrow interaction
             for j in i+1..n_particles {
                 r = particles[i].distance_to(&particles[j]);
-                if r > 0. {
+                // Check against hard-core diameter
+                if r > 0.0043 {
                     psi *= 1. - 1. / r;
                 } else {
                     psi *= 0.;
@@ -78,11 +79,9 @@ impl WaveFunction {
             if other.position == particles[i].position { continue }
             r = other.distance_to(&particles[i]);
             factor = 2. * self.alpha / (r.powi(3) - r * self.alpha);
-            // deno = 1. / (1. + self.beta * r);
 
             for i in 0..particles[i].dim {
                 qforce[i] += factor * (particles[i].position[i] - other.position[i]);
-                // qforce[i] += -2. * this.position[i] * self.alpha * (this.position[i] - other.position[i]) * deno.powi(2) / r;
             }
         }
         qforce

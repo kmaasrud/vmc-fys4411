@@ -30,7 +30,6 @@ impl System {
             // Overlapping particles could be a problem...
             sys.particles[i].position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
         }
-
         sys
     }
 
