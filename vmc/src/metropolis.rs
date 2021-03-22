@@ -89,8 +89,8 @@ impl Metropolis for ImportanceMetropolis {
             result
         }
 
-        let acc_num = greens(&sys.particles[i], &next_step[i], self.step_size) * sys.wavefunction.evaluate_non_interacting(&next_step).powi(2);
-        let acc_deno = greens(&next_step[i], &sys.particles[i], self.step_size) * sys.wavefunction.evaluate_non_interacting(&sys.particles).powi(2);
+        let acc_num = greens(&sys.particles[i], &next_step[i], self.step_size) * sys.wavefunction.evaluate(&next_step).powi(2);
+        let acc_deno = greens(&next_step[i], &sys.particles[i], self.step_size) * sys.wavefunction.evaluate(&sys.particles).powi(2);
 
         if Self::hastings_check(acc_num / acc_deno) {
             sys.particles = next_step;

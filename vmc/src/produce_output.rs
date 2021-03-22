@@ -33,7 +33,7 @@ pub fn dim_and_n() {
         create_dir(&path);
 
         for dim in 1..=3 {
-            for n in [1, 10, 100, 500].iter() {
+            for n in [1, 10, 100].iter() {
                 println!("Thread {:?} is calculating -- Dimensionality: {} --  Number of particles: {}", std::thread::current().id(), dim, n);
 
                 let mut f = create_file(&format!("{}/experiment_{}D_{}_n_part.csv", &path, dim, n));
@@ -50,6 +50,7 @@ pub fn dim_and_n() {
                     let data = format!("{},{},{},{:?}\n", alpha, vals.energy, vals.energy_squared, duration);
                     
                     f.write_all(data.as_bytes()).expect("Unable to write data");
+                    println!("Dimension: {} --- Alpha: {:.1} --- N: {:.2} --- Energy: {}", dim, alpha, n, vals.energy);
                 }
             }
         }
