@@ -2,15 +2,11 @@ use crate::Particle;
 
 
 pub struct WaveFunction {
-    alpha: f64,
-    beta: f64,
+    pub alpha: f64,
+    pub beta: f64,
 }
 
 impl WaveFunction {
-    pub fn new(alpha: f64) -> Self {
-        WaveFunction { alpha: alpha, beta: 2.82843 }
-    }
-
     /// Evaluate the full wavefunction over particles: &Vec<Particles>. Returns an f64 representing
     /// the wavefunction value.
     pub fn evaluate(&self, particles: &Vec<Particle>) -> f64 {

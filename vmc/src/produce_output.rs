@@ -40,7 +40,7 @@ pub fn dim_and_n() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
                 for alpha in ALPHAS.iter() {
-                    let wf = WaveFunction::new(*alpha);
+                    let wf = WaveFunction{ alpha: *alpha, beta: 1. };
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let mut system: System = System::distributed(*n, dim, wf, ham, 0.1);
                     let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
@@ -95,7 +95,7 @@ pub fn bruteforce_vs_importance() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
                 for alpha in ALPHAS.iter() {
-                    let wf = WaveFunction::new(*alpha);
+                    let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 };
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let mut system: System = System::distributed(N, dim, wf, ham, 0.1);
                     let mut metro: T = T::new(step_size);
