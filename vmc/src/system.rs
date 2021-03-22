@@ -23,17 +23,12 @@ impl System {
 
     pub fn distributed(n_particles: usize, dim: usize, wavefunction: WaveFunction, hamiltonian: Hamiltonian, spread: f64) -> Self {
         let mut rng = thread_rng();
-        let uniform = Uniform::new(-1., 1.);
+        let uniform = Uniform::new(0., 1.);
         let mut sys: System = System::new(n_particles, dim, wavefunction, hamiltonian);
 
         for i in 0..sys.particles.len() {
             // Overlapping particles could be a problem...
-            let mut particle = Particle::new(dim);
-            particle.position = particle.position
-                .iter()
-                .map(|x| x + spread * uniform.sample(&mut rng))
-                .collect();
-            sys.particles[i] = particle;
+            sys.particles[i].position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
         }
 
         sys

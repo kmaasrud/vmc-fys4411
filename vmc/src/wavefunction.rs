@@ -20,7 +20,8 @@ impl WaveFunction {
 
         for i in 0..n_particles {
             // Normal single-particle wave function
-            psi *= (-self.alpha * particles[i].squared_sum_scaled_z(&self.beta)).exp();
+            let tmp = (-self.alpha * particles[i].squared_sum_scaled_z(&self.beta)).exp();
+            psi *= tmp;
 
             // Jastrow interaction
             for j in i+1..n_particles {

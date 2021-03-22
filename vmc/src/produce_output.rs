@@ -78,9 +78,9 @@ pub fn dim_and_n() {
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
 pub fn bruteforce_vs_importance() {
-    const N: usize = 100;
+    const N: usize = 50;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 1_000;
+    const MC_CYCLES: usize = 5000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     fn run_for_sampler<T: Metropolis>() {
@@ -88,7 +88,6 @@ pub fn bruteforce_vs_importance() {
 
         fn run_sim<T: Metropolis>(mc: usize, step_size: f64) {
             for dim in 1..=3 {
-                println!("Dimension: {}", dim);
                 let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
                 create_dir(&path);
 
@@ -104,6 +103,7 @@ pub fn bruteforce_vs_importance() {
 
                     let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
                     f.write_all(data.as_bytes()).expect("Unable to write data");
+                    println!("Dimension: {} --- Alpha: {:.1} --- Step size: {:.2} --- Energy: {}", dim, alpha, step_size, vals.energy);
                 }
             }
         }
