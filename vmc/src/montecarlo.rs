@@ -1,6 +1,7 @@
 use crate::{System, Metropolis, MetropolisResult};
 
 /// Collection of values that are integrated over
+#[derive(Clone, Debug)]
 pub struct SampledValues {
     pub energy: f64,
     pub energy_squared: f64,
@@ -9,6 +10,7 @@ pub struct SampledValues {
 }
 
 impl SampledValues {
+    fn new() -> Self { SampledValues { energy: 0., energy_squared: 0., wf_deriv: 0., wf_deriv_times_energy: 0. } }
     fn add_to_sum(&mut self, dvals: &SampledValues) {
         self.energy += dvals.energy;
         self.energy_squared += dvals.energy_squared;
@@ -32,20 +34,18 @@ impl SampledValues {
 /// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
 pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> SampledValues {
-    let energy: f64 = sys.wavefunction.evaluate(&sys.particles);
-    let wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
-    let mut result = SampledValues {
-        energy: energy,
-        energy_squared: energy.powi(2),
-        wf_deriv: wf_deriv,
-        wf_deriv_times_energy: wf_deriv * energy,
-    };
-    let mut prev_dvals: SampledValues = SampledValues {
-        energy: energy,
-        energy_squared: energy.powi(2),
-        wf_deriv: wf_deriv,
-        wf_deriv_times_energy: wf_deriv * energy,
-    };
+    let pre_steps = 100;
+    let mut result = SampledValues::new();
+
+    // Run a coupled of steps to get the system into equilibrium
+    for _ in 1..pre_steps {
+        match metro.step(sys) {
+            MetropolisResult::Accepted(vals) => result = vals,
+            MetropolisResult::Rejected => {},
+        }
+    }
+
+    let mut prev_dvals = result.clone();
 
     for _ in 1..n {
         match metro.step(sys) {
@@ -58,6 +58,7 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
             },
         }
     }
+    println!("{:?}", result);
     result.scale_by(n as f64);
     result
 }
