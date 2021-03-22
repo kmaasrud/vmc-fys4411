@@ -15,6 +15,3 @@ Cargo.lock
 
 # Visual Studio Code
 .vscode/*
-
-# Data output folder
-data/
