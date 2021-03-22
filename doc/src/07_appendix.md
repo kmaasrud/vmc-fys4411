@@ -65,9 +65,8 @@ $$
 $$
 
 
-### Gradient and Laplacian for trial wave function general case
 
-#### Gradient {.unnumbered}
+### Gradient of interacting trial wave function {#sec:trial_wf_gradient}
 
 Rewriting the wave function to
 
@@ -110,7 +109,7 @@ $$
  \prod_i^N \phi (\mathbf{r}_ i) \exp{ \left( \sum_{i<j} u(r_{ij}) \right)}  \sum_ {i \ne k} \nabla_k  u(\mathbf{r}_{ik})
 $$
 
-#### Laplacian {.unnumbered}
+### Laplacian of interacting trial wave function {#sec:trial_wf_laplacian}
 
 The Laplacian of the wacefunction needs to be evaluated in order to calculate
 

@@ -4,21 +4,21 @@ The system in question is a hard sphere Bose gas located in a potential well. Th
 
 $$V_\text{ext}(\mathbf r) = \frac{1}{2}m\left(\omega_\text{ho}^2(r_x^2 + r_y^2) + \omega_z^2 r_z^2\right).$$ {#eq:external-potential}
 
-Here, $\mathbf r$ is the position of the particle. Note that setting $\omega_\text{ho} = \omega_z$ results in eq. {@eq:external-potential} evaluating to $V_\text{ext}(\mathbf r) = \frac{1}{2}m\omega_\text{ho}^2r^2$, which represents the *spherical* case of the elliptical harmonic trap. As a simplification, we hereby denote the spherical case as (S) and the general elliptical case as (E).
+Here, $\mathbf r$ is the position of the particle and $\omega_\text{ho}$ is the frequency of the trap. Note that setting $\omega_\text{ho} = \omega_z$ results in eq. {@eq:external-potential} evaluating to $V_\text{ext}(\mathbf r) = \frac{1}{2}m\omega_\text{ho}^2r^2$, which represents the *spherical* case of the elliptical harmonic trap. As a simplification, we hereby denote the spherical case as (S) and the general elliptical case as (E).
 
 In addition to this external potential, we represent the inter-boson interactions with the following pairwise, repulsive potential[@Project1]:
 
-$$V_\text{int}(|\mathbf r_i - \mathbf r_j|) = \begin{cases}\infty & |\mathbf r_i - \mathbf r_j| \le a \\ 0 & |\mathbf r_i - \mathbf r_j| > a\end{cases}.$$ {#eq:internal-potential}
+$$V_\text{int}(|\mathbf r_i - \mathbf r_j|) = \begin{cases}\infty & |\mathbf r_i - \mathbf r_j| \le a \\ 0 & |\mathbf r_i - \mathbf r_j| > a\end{cases},$$ {#eq:internal-potential}
 
-Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the following two-body Hamiltonian:
+where $a$ is the hard-core diameter of the bosons. Eq. {@eq:external-potential} and eq. {@eq:internal-potential} evaluate to the following two-body Hamiltonian:
 
 $$H = \sum_i^N\left(-\frac{\hbar^2}{2m}\nabla_i^2 + V_\text{ext}(\mathbf r_i)\right) + \sum_{i < j}^N V_\text{int} (|\mathbf r_i - \mathbf r_j|).$$ {#eq:hamiltonian}
 
 The term $-\frac{\hbar^2}{2m}\nabla_i^2$ stems from the kinetic energy of the system and the index notation used is described in {@sec:index-notation-for-sums-and-products}. By scaling into length units of $a_\text{ho}$ and energy units of $\hbar\omega_\text{ho}$, this equation is further simplified into:
 
-$$ H = \frac{1}{2}\sum_i^N \left(-\nabla_i^2 + r_{x, i}^2 + r_{y, i}^2 + \gamma^2 r_{z, i}^2\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|) .$$ {#eq:scaled_ham}
+$$ H = \frac{1}{2}\sum_i^N \left(-\nabla_i^2 + r_{x, i}^2 + r_{y, i}^2 + \gamma^2 r_{z, i}^2\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|) ,$$ {#eq:scaled_ham}
 
-The derivation of {@eq:scaled_ham} is explained in {@sec:scaled_ham}.
+where $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. The derivation of {@eq:scaled_ham} is explained in {@sec:scaled_ham}.
 
 ## The variational principle
 
@@ -53,25 +53,17 @@ Once again, the index notation is described in {@sec:index-notation-for-sums-and
 
 \begin{align*}
 g(\alpha,\beta,\mathbf{r}_i) &= e^{-\alpha(x_i^2+y_i^2+\beta z_i^2)}, \\
-\text{and }f(a,|\mathbf r_i-\mathbf r_j|) &= \begin{cases} 0 & |\mathbf r_i-\mathbf r_j| \le a \\ 1-\frac{a}{|\mathbf r_i-\mathbf r_j|} & {|\mathbf r_i-\mathbf r_j|} > a \end{cases}.
+\text{and }f(a,|\mathbf r_i-\mathbf r_j|) &= \begin{cases} 0 & |\mathbf r_i-\mathbf r_j| \le a \\ 1-\frac{a}{|\mathbf r_i-\mathbf r_j|} & {|\mathbf r_i-\mathbf r_j|} > a \end{cases},
 \end{align*}
 
-Simplifying the trial wave function can prove useful, in order to reduce the number of floating point operations. An analytical expression is also convenient for comparison with the numerical calculations.
+as shown in [@Project1]. Simplifying the trial wave function can prove useful, in order to reduce the number of floating point operations. An analytical expression is also convenient for comparison with the numerical calculations.
 
 
 ## Importance sampling
 
-<!-- For Theory:
-
-- Explain difference between importance sampling and brute force sampling.
- For Practical:
-- Run calculations for 1, 2 and 3 dim space, WITHOUT repulsive potential.
-- Study the dependence of the results as a function of the time step $\delta$t
-- Discuss(compare) results on difference between imp sampl and brute force metropolis. -->
-
 Importance sampling, compared to the brute force Metropolis sampling, sets a bias on the sampling, leading it on a better path. This means that the desired standard deviation is acquired after fewer Monte Carlo cycles.
 
-For our quantum mechanical scenario with boson particles in a magnetic trap, the bias has its root in the so-called quantum force. This quantum force pushes the walker (the boson particle) to the regions where the trail wave function is large. It is clear that this yields a faster convergence compared to the Metropolis algorithm, where the walker has the same probability of moving in all directions.
+For our quantum mechanical scenario with boson particles in a magnetic trap, the bias has its root in the so-called quantum force. This quantum force pushes the walker (the boson particle) to the regions where the trial wave function is large. It is clear that this yields a faster convergence compared to the Metropolis algorithm, where the walker has the same probability of moving in all directions.
 
 The quantum force $\mathbf{F}$ is given by the formula
 
@@ -82,44 +74,30 @@ which is derived from the Fokker-Planck equation, using the Langevin equation to
 
 ### Fokker-Planck
 
-<!-- Insert some theroy of what fokker-plack is on a general level -->
 For one particle (or walker), the one-dimensional Fokker-Planck equation for a diffusion process is:
 
 $$ \frac{\partial P}{\partial t}=D \frac{\partial}{\partial x}\left(\frac{\partial}{\partial x}-F\right) P(x, t) $$
 
 Where $P(x,t)$ is a time-dependent probability density, $D$ is the diffusion coefficient and $F$ is a drift term which in our case is driven by the quantum force.
 
+<!-- @amundmr What is D and how can we find it? Later we set it to 1/2 in scaled units, but how do we know this. Probably sufficient to just reference someone else though. -->
+
 
 ### Langevin equation
 
-<!-- Insert some theory of what langevin eq is on a general level -->
 The Langevin equation solution gives the position of the walker in the next timestep. The Langevin equation is:
 
 $$ \frac{\partial x(t)}{\partial t}=D F(x(t))+\eta $$
 
 Converting this to a function yielding the new position $y$ in a computational manner, we use Euler's method.
 
-$$ y=x+D F(x) \Delta t+\xi \sqrt{\Delta t} $$ {#eq:euler_method}
+$$ y=x+D F(x) \Delta t+\xi \sqrt{\Delta t} .$$ {#eq:euler_method}
 
-Where the symbols represent:
-
-| **Variable** | **Description** |
-|:------:|:----------|
-| $y$ | New position|
-| $x$ | Current position |
-| $\text{DF}(x)$ | Diffusion and Drift at the old position |
-| D | In atomic units: 1/2, from the kinetic energy operator |
-| $\Delta t$ | Chosen time-step|
-| $\xi$ | Gaussian random variable |
-
-Table: Explanation of variables used in {@eq:euler_method}. {#tbl:langevin_var_expl}
-
-Examples of timesteps giving stable values of the ground state energy is $\Delta t \in[0.001,0.01]$
+Here $x$ is the old position, $y$ is the new position and $\xi$ is a randomly sampled value from the normal distribution. In scaled units, the diffusion coefficient evaluates to $\frac{1}{2}$. The timestep $\Delta t$ has stable values within the range $\Delta t \in [0.001, 0.01]$ <!-- Citation necessary, @amundmr -->, so we'll simply choose the value $\Delta t = 0.005$ here.
 
 
 ### Fokker-Planck and Langevin equation in importance sampling
 
-<!-- Maybe this can be moved to appendix or method?? -->
 In order to use these equations for our importance sampling, we start with the original Fokker-Planck equation.
 
 After inserting $D$ as the diffusion coefficient and $\mathbf{F}_{\mathbf{i}}$ as component $i$ of the drift velocity, we can make the probability density converge to a stationary state by setting its partial derivative over time to zero.
@@ -134,20 +112,19 @@ By inserting $g(\mathbf{x}) \frac{\partial P}{\partial x}$ for the drift term, $
 
 $$ \frac{\partial^{2} P}{\partial \mathbf{x} _{\mathbf{i}}{}^{2}}=P \frac{\partial g}{\partial P}\left(\frac{\partial P}{\partial \mathbf{x}_{i}}\right)^{2}+P g \frac{\partial^{2} P}{\partial \mathbf{x}_{i}^{2}}+g\left(\frac{\partial P}{\partial \mathbf{x}_{i}}\right)^{2} $$
 
-Where again the left hand side can be set to zero to comply with the fact that at a stationary state, the probability density is the same for all walkers. [THIS MUST BE FALSE??? WHY can we really set this term to zero??]
+Where again the left hand side can be set to zero to comply with the fact that at a stationary state, the probability density is the same for all walkers.
 
-For this to be solvable, the remaning terms have to cancel each other. This is only possible when $g = P^{-1}$, which gives the aformentioned quantum force, $\mathbf{F},$
+For this to be solvable, the remaining terms have to cancel each other. This is only possible when $g = P^{-1}$, which gives the aformentioned quantum force, $\mathbf{F},$
 
 $$ \mathbf{F}=2 \frac{1}{\Psi_{T}} \nabla \Psi_{T}. $$
 
 From here, The Green's function is deployed as
-<!-- Maybe here we could insert the basic Greens function and then explain that we exchange for the euler-solved langevin -->
 
 $$ G(y, x, \Delta t)=\frac{1}{(4 \pi D \Delta t)^{3 N / 2}} \exp \left(\frac{-(y-x-D \Delta t F(x))^{2}}{ 4 D \Delta t}\right) $$
 
 Which will be part of the proposal distribution, $q(y,x)$ as
 
-$$ q(y, x)=\frac{G(x, y, \Delta t)\left|\Psi_{T}(y)\right|^{2}}{G(y, x, \Delta t)\left|\Psi_{T}(x)\right|^{2}}$$
+$$ q(y, x)=\frac{G(x, y, \Delta t)\left|\Psi_{T}(y)\right|^{2}}{G(y, x, \Delta t)\left|\Psi_{T}(x)\right|^{2}}$$ {#eq:proposal_distr}
 
 
 ## Analytical derivations
@@ -195,47 +172,25 @@ The following expression for the drift force will be used to **explanation**
 
 $$ F = \frac{2 \nabla_k \Psi_T(\mathbf{r})}{\Psi_T(\mathbf{r})} = -4 \alpha \mathbf{r}_{k} $$
 
-applying the gradient operator to the trail wavefunction is already shown (appendix: Second derivative of trial wave function).
+applying the gradient operator to the trial wavefunction is already shown (appendix: Second derivative of trial wave function).
 
 ### Local energy for full wave function
 
-<!-- Find the equivalent expressions for the harmonic oscillator part in one, two and three dimensions with \beta = 1 -->
-With $\beta \ne 0$ and $\text{a} > 0$ the wave function becomes a bit more complicated as the potential/Gaussian can be  can now be elliptical  and the wave function contains the Jastrow factor.  Difficult to find an analytical expression for the derivate of the trail wave function.
+With $\beta \ne 0$ and $\text{a} > 0$ the wave function becomes a bit more complicated as the potential/Gaussian can be  can now be elliptical  and the wave function contains the Jastrow factor. The energy is given as:
 
-$$ E_L(\mathbf{r}) \frac{1}{\Psi_T(\mathbf{r})}\sum_i^{N}\nabla_i^2\Psi_T(\mathbf{r}), $$
+$$ E(\mathbf{r}) = \frac{1}{\Psi_T(\mathbf{r})}\sum_i^{N}\nabla_i^2\Psi_T(\mathbf{r}), $$
 
-Rewriting the full wave function
+To simplify coming equations, we set $\phi(\mathbf r) = g(\alpha, \beta, \mathbf r)$, $u(r_{ij}) = \ln f(r_{ij})$ and $r_{ij} = |r_i - r_j|$. With eq. {@eq:trial-wavefunction}, this results in
 
-$$\Psi_T(\mathbf{r})=\Psi_T(\mathbf{r}_1, \mathbf{r}_2, \dots \mathbf{r}_N,\alpha,\beta)
-=\left[
-    \prod_i g(\alpha,\beta,\mathbf{r}_i)
-\right]
-\left[
-    \prod_{j<k}f(a,|\mathbf{r}_j-\mathbf{r}_k|)
-\right],$$
+$$\Psi_T(\mathbf{r})=\prod_i^N \phi(\mathbf{r}_i) \exp{\left(\sum_{i<j}u(r_{ij})\right)}$$
 
-to the following
-
-$$\Psi_T(\mathbf{r})=\left[
-    \prod_i^N \phi(\mathbf{r}_i)
-\right]
-\exp{\left(\sum_{i<j}u(r_{ij})\right)}$$
-
-where
-
-\begin{align*}
-\phi(\mathbf{r}_i) &= \exp [-\alpha(x_i^2 + y_i^2 + \beta z_i^2)] = g(\alpha, \beta,\mathbf{r}_i) \\ \\
-u(r_{ij}) &= \ln f(r_{ij}) \\ \\
-r_{ij} &= |r_i - r_j|
-\end{align*}
-
-The first derivative for the k'th particle then is a bit tricky to calculate, so the result will be presented her while the full calculation is in **REF APPENDIX**. The analytical expression becomes
+Using this simplification, we show in {@sec:trial_wf_gradient} that the gradient for the $k$-th particle is equal to:
 
 \begin{align*} 
-\nabla_k \Psi_T (\mathbf{r}) = \nabla_k \phi (\mathbf{r}_ 4k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N _{j<m} u(r _{jm})\right) \\ \left[\prod^N _i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N _ {j<m} u(r _ {jm})\right) \sum^N _ {l\ne k } \nabla_ k (r_ {kl}),
+\nabla_k \Psi_T (\mathbf{r}) =\ &\nabla_k \phi (\mathbf{r}_ 4k)\left[\prod^N_{i \ne k}{\phi(\mathbf{r}_ k)} \right] \exp \left( \sum^N _{j<m} u(r _{jm})\right) \\ &+ \left[\prod^N _i\phi(\mathbf{r}_ i)\right] \exp \left( \sum^N _ {j<m} u(r _ {jm})\right) \sum^N _ {l\ne k } \nabla_ k (r_ {kl}).
 \end{align*} 
 
-The Laplacian is derived in **REF APPENDIX** resulting in the following analytical expression
+Furthermore, using the resulting Laplacian found in {@sec:trial_wf_laplacian}, we can find
 
 \begin{align*}
 \frac{1}{\Psi_T(\mathbf{r})} \nabla_k^2 \Psi_T(\mathbf{r}) &= \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} + 2 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)}\sum _{j\ne k}
@@ -247,8 +202,7 @@ The Laplacian is derived in **REF APPENDIX** resulting in the following analytic
 &+ \sum _{l\ne k} \frac{2}{r _{lk}} u'(r _{lk}) +  u''(r _{lk})
 \end{align*}
 
-
-Where
+where these hold:
 
 \begin{align*}
 \frac{\nabla_k \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} &= -2\alpha \left[
@@ -257,5 +211,7 @@ x_k^2 \\ y_k^2 \\ \beta z_k^2
 \end{matrix}\right], \\ \\
 \frac{\nabla_k^2 \phi(\mathbf{r}_k)}{\phi(\mathbf{r}_k)} &= 2\alpha (2\alpha)[x_k^2 + y_k^2 + \beta^2z_k^2] - 2 - \beta),\\ \\
 u'(r_{ij}) &= \frac{r_{ij}}{r_{ij}-a}, \quad \text{for}  \quad r_{ij}  > a, \\ \\
-u''(r_{ij}) &= \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad r_{ij}  > a,
+u''(r_{ij}) &= \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad r_{ij}  > a.
 \end{align*}
+
+<!-- Are you done here, @annasro? -->

@@ -45,6 +45,12 @@ references:
       month: 1
       date: 14
     language: en-US
+  - type: misc
+    id: rustc_book
+    title: "The rustc book"
+    url: "https://doc.rust-lang.org/rustc/"
+    urldate: 2021-03-22
+    author: "Rust Community"
 
 # Reference equations with parentheses, e.g. '(1)'
 eqnos-eqref: True
