@@ -85,7 +85,7 @@ impl Metropolis for ImportanceMetropolis {
             for j in 0..x.dim { // This is a vector sum + scalar product
                 result += (y.position[j] - x.position[j] - 0.5 * dt * x.qforce[j]).powi(2);
             }
-            result = -(result / (2. * dt)).exp(); // Ignoring denominator of Greens since it cancels later
+            result = (-result / (2. * dt)).exp(); // Ignoring denominator of Greens since it cancels later
             result
         }
 
