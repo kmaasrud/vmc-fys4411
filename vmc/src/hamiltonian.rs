@@ -2,16 +2,16 @@ use crate::{WaveFunction, Particle};
 
 
 pub struct Hamiltonian {
-    gamma: f64,
+    gamma_squared: f64,
 }
 
 impl Hamiltonian {
     pub fn spherical() -> Self {
-        Hamiltonian { gamma: 1. }
+        Hamiltonian { gamma_squared: 1. }
     }
 
     pub fn elliptical(gamma: f64) -> Self {
-        Hamiltonian { gamma: gamma }
+        Hamiltonian { gamma_squared: gamma.powi(2) }
     }
 
     fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
@@ -19,7 +19,7 @@ impl Hamiltonian {
     }
 
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma)).sum();
+        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma_squared)).sum();
         0.5 * squared_position_sum
     }
 

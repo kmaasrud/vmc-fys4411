@@ -23,11 +23,11 @@ impl Particle {
     }
 
     /// Computes the squared sum of each coordinate, but the z-component is scaled by beta: &f64
-    pub fn squared_sum_scaled_z(&self, beta: &f64) -> f64 {
+    pub fn squared_sum_scaled_z(&self, factor: &f64) -> f64 {
         match self.dim {
             1 => self.position[0].powi(2),
             2 => self.position[0].powi(2) + self.position[1].powi(2),
-            3 => self.position[0].powi(2) + self.position[1].powi(2) + beta * self.position[2].powi(2),
+            3 => self.position[0].powi(2) + self.position[1].powi(2) + factor * self.position[2].powi(2),
             _ => panic!("Dimension should be 1, 2 or 3.")
         }
     }

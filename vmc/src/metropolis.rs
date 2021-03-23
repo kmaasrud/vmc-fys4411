@@ -16,14 +16,13 @@ pub enum MetropolisResult {
 pub trait Metropolis {
     fn new(step_size: f64) -> Self;
     fn step(&mut self, sys: &mut System) -> MetropolisResult;
-    // This'll probably need more generalization, but works for now
-    fn acceptance_factor(&mut self, old_val: f64, new_val: f64) -> f64 {
-        (old_val / new_val).min(1.)
-    }
     fn hastings_check(acceptance_factor: f64) -> bool {
-        let mut rng = thread_rng();
-        let uniform = Uniform::new(0., 1.);
-        uniform.sample(&mut rng) < acceptance_factor
+        if acceptance_factor >= 1. { true }
+        else {
+            let mut rng = thread_rng();
+            let uniform = Uniform::new(0., 1.);
+            uniform.sample(&mut rng) < acceptance_factor
+        }
     }
 }
 
@@ -45,9 +44,7 @@ impl Metropolis for BruteForceMetropolis {
         let next_step = sys.random_particle_change(self.step_size);
         let wf_new: f64 = sys.wavefunction.evaluate_non_interacting(&next_step);
 
-        let acc_factor = self.acceptance_factor(wf_old.powi(2), wf_new.powi(2));
-
-        if Self::hastings_check(acc_factor) {
+        if Self::hastings_check(wf_old.powi(2) / wf_new.powi(2)) {
             sys.particles = next_step;
             let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 

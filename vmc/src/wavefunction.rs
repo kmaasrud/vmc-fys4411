@@ -11,26 +11,26 @@ impl WaveFunction {
     /// the wavefunction value.
     pub fn evaluate(&self, particles: &Vec<Particle>) -> f64 {
         let mut r: f64; 
-        let mut psi: f64 = 1.;
+        let mut g: f64 = 1.;
+        let mut f: f64 = 1.;
         let n_particles = particles.len();
 
         for i in 0..n_particles {
             // Normal single-particle wave function
-            let tmp = (-self.alpha * particles[i].squared_sum_scaled_z(&self.beta)).exp();
-            psi *= tmp;
+            g *= (-self.alpha * particles[i].squared_sum_scaled_z(&self.beta)).exp();
 
-            // Jastrow interaction
+            // Jastrow interaction (NOTE: Hard-core diameter is hard-coded here)
             for j in i+1..n_particles {
                 r = particles[i].distance_to(&particles[j]);
                 // Check against hard-core diameter
                 if r > 0.0043 {
-                    psi *= 1. - 1. / r;
+                    f *= 1. - 0.0043 / r;
                 } else {
-                    psi *= 0.;
+                    f *= 0.;
                 }
             }
         }
-        psi
+        g * f 
     }
 
     /// Evaluate the wavefunction using only the single-particle part. Returns an f64 representing

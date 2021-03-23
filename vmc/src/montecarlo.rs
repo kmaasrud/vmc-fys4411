@@ -34,7 +34,7 @@ impl SampledValues {
 /// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
 pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> SampledValues {
-    let pre_steps = 10000;
+    let pre_steps = 100;
     let mut result = SampledValues::new();
 
     // Run a coupled of steps to get the system into equilibrium

@@ -16,7 +16,6 @@ use std::{
     io::prelude::*
 };
 use num_cpus;
-use itertools_num::linspace;
 
 
 /// Produces results for dimensions 1-3, different alphas and different number of particles and
@@ -41,9 +40,9 @@ pub fn dim_and_n() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
                 for alpha in ALPHAS.iter() {
-                    let wf = WaveFunction{ alpha: *alpha, beta: 1. };
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let mut system: System = System::distributed(*n, dim, wf, ham, 0.1);
+                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
+                    let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
                     let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
 
                     let duration = start.elapsed();
@@ -96,9 +95,9 @@ pub fn bruteforce_vs_importance() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
                 for alpha in ALPHAS.iter() {
-                    let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 };
-                    let ham: Hamiltonian = Hamiltonian::spherical();
-                    let mut system: System = System::distributed(N, dim, wf, ham, 0.1);
+                    let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+                    let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
+                    let mut system: System = System::distributed(N, dim, wf, ham, 1.);
                     let mut metro: T = T::new(step_size);
                     let vals = monte_carlo(mc, &mut system, &mut metro); 
 
@@ -126,7 +125,7 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    run_for_sampler::<BruteForceMetropolis>();
+    // run_for_sampler::<BruteForceMetropolis>();
     run_for_sampler::<ImportanceMetropolis>();
 }
 

@@ -25,10 +25,22 @@ impl System {
         let mut rng = thread_rng();
         let uniform = Uniform::new(0., 1.);
         let mut sys: System = System::new(n_particles, dim, wavefunction, hamiltonian);
+        let mut r: f64;
 
         for i in 0..sys.particles.len() {
-            // Overlapping particles could be a problem...
-            sys.particles[i].position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
+            // Make a new randomly placed particle
+            let mut new_particle: Particle = Particle::new(sys.dimensionality);
+            new_particle.position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
+
+            // Ensure it is not overlapping with other particles
+            for other in sys.particles[..i].iter() {
+                r = other.distance_to(&new_particle);
+                while r < 0.0043 {
+                    new_particle.position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
+                    r = other.distance_to(&new_particle);
+                }
+            }
+            sys.particles[i].position = new_particle.position;
         }
         sys
     }
