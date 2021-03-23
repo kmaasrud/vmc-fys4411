@@ -18,7 +18,9 @@ The term $-\frac{\hbar^2}{2m}\nabla_i^2$ stems from the kinetic energy of the sy
 
 $$ H = \frac{1}{2}\sum_i^N \left(-\nabla_i^2 + r_{x, i}^2 + r_{y, i}^2 + \gamma^2 r_{z, i}^2\right) + \sum_{i<j}^N V_\text{int}(|\mathbf r_i - \mathbf r_j|) ,$$ {#eq:scaled_ham}
 
-where $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. The derivation of {@eq:scaled_ham} is explained in {@sec:scaled_ham}.
+where $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. The derivation of {@eq:scaled_ham} is explained in {@sec:scaled_ham}. Lastly we also define the so-called local energy, which is the quantity we want to integrate over to find the total energy of the system:
+
+$$ E_L(\mathbf r) = \frac{1}{\Psi_T(\mathbf r)}H\Psi_T(\mathbf r) $$ {#eq:local-energy}
 
 ## The variational principle
 
@@ -131,13 +133,11 @@ $$ q(y, x)=\frac{G(x, y, \Delta t)\left|\Psi_{T}(y)\right|^{2}}{G(y, x, \Delta t
 
 ### Local energy simple Gaussian wave function
 
-<!-- Rewrite  -->
-As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function(Ref)(local energy). We only study the harmonic oscillator potential and disregard the two-body potential. This is simply done by setting the parameter $a = 0$ which by {@eq:internal-potential} gives $V_\text{int} = 0$. First $\beta$ is set to 1 to find the relevant local energies for one to three dimensions for both one and N particles. The simplest Gaussian wavefunction then becomes:
-<!-- Simple Gaussian Wavefunction  -->
+As a test case to be compared against our numerical implementation, we want to find an analytical expression for the energy of the trial wave function. We simplify by studying only the non-interacting part, which is done by setting the parameter $a = 0$. We also set $\beta = 1$, giving us the following trial wave function:
 
 $$\Psi_T(\mathbf{r_1, r_2,\ldots,r_N, \alpha, \beta}) = \prod_i \exp(-\alpha r_{i}^2).$$
 
-The energy is here given by
+Considering {@eq:local-energy}:
 
 \begin{align*}
 E_L(\mathbf{r}) &=  \frac{1}{\Psi_T (\mathbf{r})} H \Psi_T (\mathbf{r})
@@ -147,7 +147,7 @@ E_L(\mathbf{r}) &=  \frac{1}{\Psi_T (\mathbf{r})} H \Psi_T (\mathbf{r})
   \nabla_{i}^2 \Psi_T (\mathbf{r}) + V_\text{ext} ({\mathbf{r}}_i) \Psi_T(\mathbf{r}) \right) \right].
 \end{align*}
 
-We simplify $\nabla_i^2\Psi_T$ as shown in {@sec:second-derivative-of-trial-wave-function} to get
+We simplify $\nabla_i^2\Psi_T$ as shown in {@sec:second-derivative-of-trial-wave-function}, yielding
 
 $$\nabla^2\Psi_t(\mathbf r) = -2\alpha\Psi_T\left(\dim - 2\alpha\mathbf r_i^2\right),$$ {#eq:second-derivative-of-trial-wave-function}
 
