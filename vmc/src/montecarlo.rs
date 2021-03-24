@@ -57,8 +57,8 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
                 result.add_to_sum(&prev_dvals);
             },
         }
-        println!("Energy: {}", result.energy)
     }
     result.scale_by(n as f64);
+    println!("{:?}", result);
     result
 }
