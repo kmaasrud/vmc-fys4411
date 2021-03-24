@@ -42,11 +42,27 @@ impl WaveFunction {
 
     /// Returns the Laplacian of the wavefunction evaluated at state of particles: &Vec<Particle>.
     pub fn laplace(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
+        /* let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
         let dim = particles[0].dim as f64;
         let n = particles.len() as f64;
 
-        2. * dim * n * self.alpha + 4. * squared_position_sum * self.alpha.powi(2)
+        2. * dim * n * self.alpha + 4. * squared_position_sum * self.alpha.powi(2) */
+        let mut laplace: f64 = 0.;
+        let factor1 = 2. * self.alpha;
+        let factor2 = 2. * self.alpha * self.beta;
+        for particle in particles {
+            for dim in 1..(particle.dim + 1) {
+                match dim {
+                    1 | 2 => {
+                        laplace += factor1 * (particle.position[dim] as f64).powi(2) - 1.;
+                    }
+                    _ => {
+                        laplace += self.beta * (factor2 * (particle.position[dim] as f64).powi(2) - 1.);
+                    }
+                }
+            }
+        };
+        - self.alpha * laplace * self.evaluate(particles)
     }
 
     pub fn gradient(&self, particle: Particle) -> Vec<f64> {
