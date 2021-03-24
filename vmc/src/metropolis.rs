@@ -46,7 +46,7 @@ impl Metropolis for BruteForceMetropolis {
 
         if Self::hastings_check(wf_old.powi(2) / wf_new.powi(2)) {
             sys.particles = next_step;
-            let d_energy = sys.hamiltonian.local_energy(&sys.wavefunction, &sys.particles);
+            let d_energy = sys.hamiltonian.energy_non_interacting(&sys.wavefunction, &sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,
@@ -63,15 +63,12 @@ impl Metropolis for BruteForceMetropolis {
 
 /// Struct for representing an importance sampling Metropolis algorithm.
 /// Implements the Metropolis trait.
-pub struct ImportanceMetropolis {
-    step_size: f64,
-}
+pub struct ImportanceMetropolis;
+
 
 impl Metropolis for ImportanceMetropolis {
-    /// Makes a new `ImportanceMetropolis` struct based on a step size.
-    fn new(step_size: f64)  -> Self {
-        Self { step_size: step_size, }
-    }
+    /// Makes a new `ImportanceMetropolis` struct.
+    fn new(_: f64)  -> Self { Self }
 
     fn step(&mut self, sys: &mut System) -> MetropolisResult {
         let (next_step, i) = sys.quantum_force_particle_change();
