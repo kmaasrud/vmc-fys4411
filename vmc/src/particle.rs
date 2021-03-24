@@ -27,8 +27,7 @@ impl Particle {
         match self.dim {
             1 => self.position[0].powi(2),
             2 => self.position[0].powi(2) + self.position[1].powi(2),
-            3 => self.position[0].powi(2) + self.position[1].powi(2) + factor * self.position[2].powi(2),
-            _ => panic!("Dimension should be 1, 2 or 3.")
+            _ => self.position[0].powi(2) + self.position[1].powi(2) + factor * self.position[2].powi(2),
         }
     }
     
