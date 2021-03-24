@@ -29,13 +29,13 @@ Our distribution $p$ here is of course $\Psi_T$. The proposal distribution $q(\t
 
 To evaluate the required integrals and find the energy, we use Monte Carlo integration (see section 2.3.1 of our previous work [@AasrudRongveRaniseth2019]). Instead of sampling randomly, we use the Metropolis algorithm as explained above to get our new samples.
 
-### Steepest gradient descent {.unnumbered}
+### Steepest gradient descent {#sec:gradient-descent .unnumbered}
 
 Lastly, to reach the optimum value of $\alpha$, we wish to find the minimum of $E(\alpha)$, in tune with the variational principle as shown in {@sec:the-variational-principle}. This is achieved using a simple steepest gradient descent (or SDG) method. Briefly explained, it works by following the negative value of the gradient, which always points in the direction of greatest momentaneous descent. So it proceeds as follows:
 
-$$ \alpha_{i+1} = \alpha_i - \eta \frac{\partial E}{\partial \alpha} ,$$
+$$ \alpha_{i+1} = \alpha_i - \eta \dot E_\alpha,$$
 
-where $\eta$ is called the *learning rate* - a value which decides how big of a leap we want to do in the direction of the negative gradient.
+where $\dot E_\alpha$ is the gradient of the energy with regards to $\alpha$ as defined in {@eq:energy-deriv} and $\eta$ is the so-called *learning rate* - a value which decides how big of a leap we want to do in the direction of the negative gradient.
 
 ## Statistical analysis
 

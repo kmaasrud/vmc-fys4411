@@ -32,16 +32,17 @@ $$ \langle E(\alpha) \rangle = \langle \Psi_T(\alpha) | H | \Psi_T(\alpha)\rangl
 
 Thus, minimizing over $\alpha$ will give an approximation of the true ground state (perhaps even an accurate answer).
 
-Evaluating this integral is computationally demanding. Hence, we utilize Monte Carlo integration to allow scalability. This is done by changing the particles positions where the shifting follows some rules. For each change, the local energy is sampled resulting in an expectation value of the energy $\langle E\rangle$ for the Hamiltonian. Repeating this for different $\alpha$'s, we seek the value of $\alpha$ that results in the lowest energy and which hopefully approximates the ground state.
+Evaluating this integral is computationally demanding. Hence, we utilize Monte Carlo integration to allow scalability. This is done by changing the particles positions where the shifting follows some rules. For each change, the local energy is sampled resulting in an expectation value of the energy $\langle E\rangle$ for the Hamiltonian.
 
-<!-- Not sure about this, probably better suited for Method
+To find the lowest value with regards to $\alpha$, we could either test over many different values, or use gradient descent methods. The latter requires an expression for $\frac{\partial E}{\partial \alpha}$, which we choose to define thusly:
 
-Calculating the variance, a well known quantum mechanical parameter,
+$$ \dot E_\alpha = \frac{\partial \langle E_L(\alpha)\rangle}{\partial \alpha} .$$
 
-$$ \sigma_E^2 =\langle E ^2\rangle - \langle E\rangle^2 $$
+Using the additional notation of $\dot \Psi_{T, \alpha} = \frac{\partial \langle \Psi_T(\alpha)\rangle}{\partial \alpha}$, it can be shown that by using the chain rule and the hermiticity of the Hamiltonian [@CompQuantum2020], we get the expression
 
-we can chech if we are close to the ground state energy as $\sigma_{E_{0}}^2 = 0.$ -->
+$$ \dot E_\alpha = 2\left(\left\langle\frac{\dot \Psi_{T, \alpha}}{\Psi(\alpha)} E_L(\alpha)\right\rangle - \left\langle\frac{\dot \Psi_{T, \alpha}}{\Psi(\alpha)}\right\rangle \langle E_L(\alpha)\rangle\right) $$ {#eq:energy-deriv}
 
+Further explanation on how this is used in our gradient descent method is explained in {@sec:gradient-descent}.
 
 ## Wave function
 
