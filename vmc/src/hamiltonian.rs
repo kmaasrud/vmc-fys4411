@@ -37,7 +37,7 @@ impl Hamiltonian {
         sum
     }
 
-    pub fn local_energy(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
+    pub fn energy_non_interacting(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
         self.kinetic(wf, particles) + self.trap_potential(particles)
     }
 
