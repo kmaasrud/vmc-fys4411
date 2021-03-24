@@ -129,6 +129,73 @@ pub fn bruteforce_vs_importance() {
     run_for_sampler::<ImportanceMetropolis>();
 }
 
+/// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
+/// Only done using the noninteracting case, with importance sampling
+pub fn sdg_noninteracting() {
+    //DINGDINGDING, DO THE WORK!
+    const N: usize = 10;
+    const MC_CYCLES: usize = 5000;
+    const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
+
+    let mut alphas:Vec<f64> = vec![];
+    let mut energies:Vec<f64> = vec![];
+
+    alphas.push(0.1); alphas.push(0.2);
+
+    let mut done: bool = false;
+    let tolerance: f64 = 0.000_000_001;
+    
+    let dim: usize = 3;
+    let step_size: f64 = 1.;
+
+
+
+    println!("Running simulations using ImportanceMetropolis algorithm...");
+    let start = Instant::now();
+
+    let mut i:usize = 0;
+    while !done {
+
+        let path = format!("./data/sdg_noninteracting/step_size{}", step_size);
+        create_dir(&path);
+        let mut f = create_file(&format!("{}/{}-alpha.csv", &path, &alphas[i]));
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+
+        let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+        let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
+        let mut system: System = System::distributed(N, dim, wf, ham, 1.);
+        let mut metro: ImportanceMetropolis = ImportanceMetropolis::new(step_size);
+        let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+
+        energies.push(vals.energy);
+
+        let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
+        f.write_all(data.as_bytes()).expect("Unable to write data");
+        println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
+
+        if i > 0 {
+            let variance: f64 = vals.energy_squared-vals.energy;
+            let new_alpha: f64 = alphas[i] - 800.* (2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy));
+            println!("             New Alpha: {}", &new_alpha);
+            alphas.push(new_alpha);
+
+            if variance < tolerance {
+                done = true;
+            }
+            //if (energies[i]-energies[i-1]).abs() < tolerance {
+            //    done = true;
+            //}
+        }
+
+        
+
+        i += 1;
+    }
+
+        
+    println!("Time spent: {:?}", start.elapsed());
+
+}
 
 fn create_file(filepath: &str) -> File {
     match File::create(&Path::new(filepath)) {
