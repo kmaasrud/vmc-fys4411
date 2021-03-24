@@ -80,44 +80,43 @@ pub fn dim_and_n() {
 pub fn bruteforce_vs_importance() {
     const N: usize = 50;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 5000;
+    const MC_CYCLES: usize = 1000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
+
+    fn run_sim<T: Metropolis>(mc: usize, step_size: f64) {
+        for dim in 1..=3 {
+            let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
+            create_dir(&path);
+
+            let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
+            f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+
+            for alpha in ALPHAS.iter() {
+                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+                let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
+                let mut system: System = System::distributed(N, dim, wf, ham, 1.);
+                let mut metro: T = T::new(step_size);
+                let vals = monte_carlo(mc, &mut system, &mut metro); 
+
+                let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
+                f.write_all(data.as_bytes()).expect("Unable to write data");
+                println!("Dimension: {} --- Alpha: {:.1} --- Step size: {:.2} --- Energy: {}", dim, alpha, step_size, vals.energy);
+            }
+        }
+    }
 
     fn run_for_sampler<T: Metropolis>() {
         println!("Running simulations using {} algorithm...", std::any::type_name::<T>().split("::").last().unwrap());
 
-        fn run_sim<T: Metropolis>(mc: usize, step_size: f64) {
-            for dim in 1..=3 {
-                let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
-                create_dir(&path);
-
-                let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
-                f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
-
-                for alpha in ALPHAS.iter() {
-                    let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-                    let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
-                    let mut system: System = System::distributed(N, dim, wf, ham, 1.);
-                    let mut metro: T = T::new(step_size);
-                    let vals = monte_carlo(mc, &mut system, &mut metro); 
-
-                    let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
-                    f.write_all(data.as_bytes()).expect("Unable to write data");
-                    println!("Dimension: {} --- Alpha: {:.1} --- Step size: {:.2} --- Energy: {}", dim, alpha, step_size, vals.energy);
-                }
-            }
-        }
-
         // Multithreading
         let n_cpus = num_cpus::get();
-        let mc: usize = MC_CYCLES / n_cpus;
 
-        println!("Spawning threadpool of {} threads, with {} Monte Carlo cycles on each", &n_cpus, &mc);
+        println!("Spawning threadpool of {} threads, with {} Monte Carlo cycles on each", &n_cpus, &MC_CYCLES);
         let pool = ThreadPool::new(n_cpus as u8);
         let start = Instant::now();
 
         for cpu_i in 1..=n_cpus {
-            pool.execute(move || run_sim::<T>(mc, (cpu_i as f64) / (n_cpus as f64))); //Running the simulation on each thread individually
+            pool.execute(move || run_sim::<T>(MC_CYCLES, (cpu_i as f64) / (n_cpus as f64))); //Running the simulation on each thread individually
         }
         println!("All {} threads now executing, waiting for them to finish...", n_cpus);
         pool.join_all();
@@ -125,8 +124,8 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    // run_for_sampler::<BruteForceMetropolis>();
-    run_for_sampler::<ImportanceMetropolis>();
+    run_for_sampler::<BruteForceMetropolis>();
+    run_sim::<ImportanceMetropolis>(MC_CYCLES, 1.); // Step size not relevant here, so 1. does nothing
 }
 
 

@@ -51,8 +51,8 @@ impl WaveFunction {
         let factor1 = 2. * self.alpha;
         let factor2 = 2. * self.alpha * self.beta;
         for particle in particles {
-            for dim in 1..(particle.dim + 1) {
-                match dim {
+            for dim in 0..particle.dim {
+                match dim + 1 {
                     1 | 2 => {
                         laplace += factor1 * (particle.position[dim] as f64).powi(2) - 1.;
                     }

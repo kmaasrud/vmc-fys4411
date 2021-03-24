@@ -37,8 +37,8 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
     let pre_steps = 100;
     let mut result = SampledValues::new();
 
-    // Run a coupled of steps to get the system into equilibrium
-    for _ in 1..pre_steps {
+    // Run a couple of steps to get the system into equilibrium
+    for _ in 0..pre_steps {
         match metro.step(sys) {
             MetropolisResult::Accepted(vals) => result = vals,
             MetropolisResult::Rejected => {},
@@ -57,6 +57,7 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
                 result.add_to_sum(&prev_dvals);
             },
         }
+        println!("Energy: {}", result.energy)
     }
     result.scale_by(n as f64);
     result
