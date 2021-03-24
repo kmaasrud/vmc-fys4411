@@ -37,6 +37,18 @@ $$ \alpha_{i+1} = \alpha_i - \eta \frac{\partial E}{\partial \alpha} ,$$
 
 where $\eta$ is called the *learning rate* - a value which decides how big of a leap we want to do in the direction of the negative gradient.
 
+## Statistical analysis
+
+### Blocking
+
+All of these computer simulations can be considered "computational experiments", and can thus be statistically analyzed in the same way as real-life experiments. There is one catch, however: All our samples are correlated with the previous one, making a "correlation chain" of sorts. [Nilsen @Nilsen2008] presents that in the case of correlated samples, the standard deviation of a sampled quantity (in our case $E$) is
+
+$$ \sigma_E = \sqrt{\frac{1 + 2\tau /\Delta t}{n - 1}\left(\langle E^2\rangle - \langle E\rangle^2\right)}, $$
+
+where $\Delta t$ is the time between each sample and $\tau$ is the time between one sample and the next uncorrelated sample - called the *correlation time*. To combat this correlation effect, we need to split our samples into blocks, each containing $N_\text{blocking}$ samples. Assuming the blocks are big enough that they are uncorrelated, we can calculate the variance normally based on their mean.
+
+A natural value for $N_\text{blocking}$ would be $\tau$, but we don't know it's value. A computationally efficient way of finding it is to plot the standard deviation against different values of $N_\text{blocking}$. The error will initially increase, but eventually plateau, by which we've reached uncorrelated samples and subsequently our desired value for $N_\text{blocking}$ [@Nilsen2008]. Using this, we can confidently compute the variance of our Monte Carlo integration.
+
 ## Natural length scale
 
 As shown in {@sec:scaled_ham}, we use scaled length-units of $r \rightarrow r' = \frac{r}{a_0}$ and $E \rightarrow E' = \frac{E}{\hbar \omega_\text{ho}}$. This gives us the constants of $a_0 = \frac{a}{a_\text{ho}}$ and $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. These scaled units are used throughout the program and are later reversed to get real values.
