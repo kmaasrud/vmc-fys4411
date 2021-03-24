@@ -36,8 +36,8 @@ impl WaveFunction {
     /// Evaluate the wavefunction using only the single-particle part. Returns an f64 representing
     /// the wavefunction value.
     pub fn evaluate_non_interacting(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_prod: f64 = particles.iter().map(|x| -self.alpha * x.squared_sum()).product();
-        squared_position_prod.exp()
+        let squared_position_sum: f64 = particles.iter().map(|x| -self.alpha * x.squared_sum()).sum();
+        squared_position_sum.exp()
     }
 
     /// Returns the Laplacian of the wavefunction evaluated at state of particles: &Vec<Particle>.
