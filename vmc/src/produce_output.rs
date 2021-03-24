@@ -130,7 +130,7 @@ pub fn bruteforce_vs_importance() {
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
 /// Only done using the noninteracting case, with importance sampling
-pub fn sdg_noninteracting() {
+pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
     const MC_CYCLES: usize = 5000;
