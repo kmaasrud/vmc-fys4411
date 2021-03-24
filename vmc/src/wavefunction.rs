@@ -86,8 +86,4 @@ impl WaveFunction {
         }
         qforce
     }
-
-    pub fn drift_force(&self, particle: Particle) -> Vec<f64> {
-        self.gradient(particle).iter().map(|x| x * 2.).collect()
-    }
 }
