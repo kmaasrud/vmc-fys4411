@@ -68,8 +68,8 @@ impl System {
         // Clones the last particle state of the system
         let mut new_particles = self.particles.clone();
 
-        new_particles[i].qforce = self.wavefunction.quantum_force(i, &new_particles);
-        self.particles[i].qforce = self.wavefunction.quantum_force(i, &self.particles);
+        new_particles[i].qforce = self.wavefunction.quantum_force(&new_particles[i]);
+        self.particles[i].qforce = self.wavefunction.quantum_force(&self.particles[i]);
 
         // Loop over its dimensions and do Langevin equation
         for d in 0..new_particles[i].dim {

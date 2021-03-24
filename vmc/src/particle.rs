@@ -22,7 +22,7 @@ impl Particle {
         self.position.iter().map(|x| x.powi(2)).sum()
     }
 
-    /// Computes the squared sum of each coordinate, but the z-component is scaled by beta: &f64
+    /// Computes the squared sum of each coordinate, but the z-component is scaled by factor: &f64
     pub fn squared_sum_scaled_z(&self, factor: &f64) -> f64 {
         match self.dim {
             1 => self.position[0].powi(2),
