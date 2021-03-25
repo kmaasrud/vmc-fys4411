@@ -52,7 +52,7 @@ pub fn _dim_and_n() {
             for n in [1].iter() {
                 println!("Thread {:?} is calculating -- Dimensionality: {} --  Number of particles: {}", std::thread::current().id(), dim, n);
 
-                let mut f = create_file(&format!("{}/experiment_{}D_{}_n_part.csv", &path, dim, n));
+                let mut f = create_file(&format!("{}/numerical_{}D_{}_n_part.csv", &path, dim, n));
                 let mut a = create_file(&format!("{}/analytical_{}D_{}_n_part.csv", &path_ana, dim, n));
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
                 a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 

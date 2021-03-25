@@ -1,27 +1,39 @@
 import plotter as plot
 import os
+import pandas as pd
 
 #filepaths
 PLOT_DIR = "../plots/"
 DATA_DIR = "../data"
-ANA_DIR = "/analytical"
-NUM_DIR = "/numerical"
-
-#dataframes
+ANA_DIR = "/analytical/dim_and_n/"
+NUM_DIR = "/numerical/dim_and_n/"
 
 
-if not os.path.exists(PLOT_DIR):
-    os.mkdir(PLOT_DIR)
+dim = 1
+particles = 1
+filename_a1 = f"analytical_{dim}D_{particles}_n_part.csv"
 
-if not os.path.exists(DATA_DIR):
-    os.mkdirs(DATA_DIR)
+dir = DATA_DIR + ANA_DIR
+energy_mean = []
 
-def image_path(fig_id):
-    return os.path.join(PLOT_DIR, fig_id)
+def avglist (list):
+    return sum(list) / len(list)
 
-def data_path(data_id):
-    return os.path.join(DATA_DIR, data_id)
+for thread in range(len(os.listdir(dir))):
+    threadID = thread + 2
+    threadID_DIR = f"ThreadId({threadID})/"
+    df = pd.read_csv(dir + threadID_DIR+ filename_a1)
+    energy = df['Energy'].values.tolist()
+    energy_mean.append(energy[0])
+    print(energy_mean)
 
-def save_fig(fig_id):
-    plt.savefig(image_path(fig_id) + ".png", format = 'png')
+print(avglist(energy_mean))
+
+
+
+
+
+
+
+
 
