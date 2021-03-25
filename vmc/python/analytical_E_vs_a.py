@@ -28,7 +28,6 @@ for dim in range(1,2):
                 df = pd.read_csv(dir + threadID_DIR + filename_a1)    
                 energy = df['Energy'].values.tolist()
                 
-            
                 energy_list.append(energy[alpha])
 
             energy_mean.append(avglist(energy_list))
@@ -38,11 +37,7 @@ for dim in range(1,2):
         #pd.to_csv(path)
         print(df_new)
         print(len(energy_mean))
-               
-
-           
             
-        
                 
         #print(energy_mean)
 
