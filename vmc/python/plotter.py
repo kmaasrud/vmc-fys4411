@@ -10,6 +10,12 @@ FIG_DIR = './fig/'
 
 plt.style.use('Solarize_Light2')
 
+def image_path(fig_id):
+    return os.path.join(PLOT_DIR, fig_id)
+
+def data_path(data_id):
+    return os.path.join(DATA_DIR, data_id)
+
 def readfiles(fileName, index):
     list = []
     infile = open(fileName,'r')
@@ -38,7 +44,8 @@ def ploting(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
     plt.title(title)
 
     if not os.path.exists(PLOT_DIR):
-        os.makedir(r"" + PLOT_DIR)
+        os.mkdir(PLOT_DIR)
+
     plt.show()
     plt.savefig(r""  +  PLOT_DIR + FILENAME_PLOT) 
     plt.close() 
