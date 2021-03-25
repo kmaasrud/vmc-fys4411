@@ -46,7 +46,7 @@ impl Metropolis for BruteForceMetropolis {
 
         if Self::hastings_check(wf_old.powi(2) / wf_new.powi(2)) {
             sys.particles = next_step;
-            let d_energy = sys.hamiltonian.energy_non_interacting(&sys.wavefunction, &sys.particles);
+            let d_energy = sys.hamiltonian.energy_non_interacting(&sys.wavefunction, &mut sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,
@@ -88,7 +88,7 @@ impl Metropolis for ImportanceMetropolis {
 
         if Self::hastings_check(acc_num / acc_deno) {
             sys.particles = next_step;
-            let d_energy = sys.hamiltonian.energy(&sys.wavefunction, &sys.particles);
+            let d_energy = sys.hamiltonian.energy(&sys.wavefunction, &mut sys.particles);
             let d_wf_deriv = sys.wavefunction.gradient_alpha(&sys.particles); 
             MetropolisResult::Accepted(SampledValues {
                 energy: d_energy,

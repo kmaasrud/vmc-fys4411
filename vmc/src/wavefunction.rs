@@ -40,13 +40,30 @@ impl WaveFunction {
         squared_position_sum.exp()
     }
 
-    /// Returns the Laplacian of the wavefunction evaluated at state of particles: &Vec<Particle>.
-    pub fn laplace(&self, particles: &Vec<Particle>) -> f64 {
-        /* let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        let dim = particles[0].dim as f64;
-        let n = particles.len() as f64;
+    // Returns the Laplacian of the wavefunction evaluated numerically at state of 'particles'.
+    pub fn laplace(&self, particles: &mut Vec<Particle>) -> f64 {
+        let h = 0.0001;
+        let mut second_deriv = 0.;
+        let wf = self.evaluate(&particles);
 
-        2. * dim * n * self.alpha + 4. * squared_position_sum * self.alpha.powi(2) */
+        for i in 0..particles.len() {
+            for dim in 0..particles[i].dim {
+                particles[i].bump_at_dim(dim, h); // Initial position +h
+                let wf_plus = self.evaluate(&particles);
+
+                particles[i].bump_at_dim(dim, -2. * h); // Initial position -h
+                let wf_minus = self.evaluate(&particles);
+
+                particles[i].bump_at_dim(dim, h); // Reset back to initial position
+
+                second_deriv -= wf_plus + wf_minus - 2. * wf; 
+            }
+        }
+        0.5 * second_deriv / h.powi(2)
+    }
+
+    /// Returns the Laplacian of the wavefunction evaluated analytically at state of 'particles'.
+    pub fn laplace_analytical(&self, particles: &Vec<Particle>) -> f64 {
         let mut laplace: f64 = 0.;
         let factor1 = 2. * self.alpha;
         let factor2 = 2. * self.alpha * self.beta;

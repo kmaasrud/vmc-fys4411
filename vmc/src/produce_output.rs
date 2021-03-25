@@ -23,10 +23,10 @@ use num_cpus;
 /// Produces results for dimensions 1-3, different alphas and different number of particles and
 /// saves these in its own separate file. Does this a number of times corresponding to the number
 /// of cores the CPU running the program has.
-pub fn _dim_and_n() {
+pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
-    //const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     const MC_CYCLES: usize = 1_000;
 
     fn analytical(sys: &System)  -> f64{
@@ -49,7 +49,7 @@ pub fn _dim_and_n() {
         let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
 
         for dim in 1..=3 {
-            for n in [1].iter() {
+            for n in [1, 10, 100].iter() {
                 println!("Thread {:?} is calculating -- Dimensionality: {} --  Number of particles: {}", std::thread::current().id(), dim, n);
 
                 let mut f = create_file(&format!("{}/numerical_{}D_{}_n_part.csv", &path, dim, n));
@@ -57,11 +57,9 @@ pub fn _dim_and_n() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
                 a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-                //for alpha in ALPHAS.iter() {
-                for alpha in 0..= 90 {
-                    let alpha = alpha as f64 * 0.01;
+                for alpha in ALPHAS.iter() {
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let wf = WaveFunction{ alpha: alpha, beta: 1. }; // Beta = 1, because spherical trap
+                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
                     let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
                     
@@ -106,14 +104,17 @@ pub fn _dim_and_n() {
 
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
-pub fn _bruteforce_vs_importance() {
+pub fn bruteforce_vs_importance() {
     const N: usize = 50;
     const ALPHAS: [f64; 8] = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65];
-    const MC_CYCLES: usize = 1000;
+    const MC_CYCLES: usize = 5000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
-    fn run_sim<T: Metropolis>(mc: usize, step_size: f64) {
+    fn run_sim<T: Metropolis>(step_size: f64) {
+        let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+        let mut metro: T = T::new(step_size);
         for dim in 1..=3 {
+            println!("Dimension: {}", dim);
             let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
             create_dir(&path);
 
@@ -121,15 +122,13 @@ pub fn _bruteforce_vs_importance() {
             f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
             for alpha in ALPHAS.iter() {
-                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
                 let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
-                let mut system: System = System::distributed(N, dim, wf, ham, 1.);
-                let mut metro: T = T::new(step_size);
-                let vals = monte_carlo(mc, &mut system, &mut metro); 
+                let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
+                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
                 let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
-                println!("Dimension: {} --- Alpha: {:.1} --- Step size: {:.2} --- Energy: {}", dim, alpha, step_size, vals.energy);
+                println!("\tAlpha: {:.1} --- Step size: {:.2} --- Energy: {:.2} --- Derivative: {:.2}", alpha, step_size, vals.energy, vals.wf_deriv);
             }
         }
     }
@@ -145,7 +144,7 @@ pub fn _bruteforce_vs_importance() {
         let start = Instant::now();
 
         for cpu_i in 1..=n_cpus {
-            pool.execute(move || run_sim::<T>(MC_CYCLES, (cpu_i as f64) / (n_cpus as f64))); //Running the simulation on each thread individually
+            pool.execute(move || run_sim::<T>((cpu_i as f64) / (n_cpus as f64))); //Running the simulation on each thread individually
         }
         println!("All {} threads now executing, waiting for them to finish...", n_cpus);
         pool.join_all();
@@ -154,7 +153,7 @@ pub fn _bruteforce_vs_importance() {
     }
 
     // run_for_sampler::<BruteForceMetropolis>();
-    run_sim::<ImportanceMetropolis>(MC_CYCLES, 1.); // Step size not relevant here, so 1. does nothing
+    run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
 }
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.

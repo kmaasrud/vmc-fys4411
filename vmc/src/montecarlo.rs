@@ -34,11 +34,11 @@ impl SampledValues {
 /// - sys: &mut System<V: WaveFunction, W: Hamiltonian> -- Reference to a System struct containing a WaveFunction and a Hamiltonian
 /// - metro: &mut T where T: Metropolis -- Reference to a Metropolis struct
 pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> SampledValues {
-    let pre_steps = 100;
+    let pre_steps = 1;
     let mut result = SampledValues::new();
 
     // Run a couple of steps to get the system into equilibrium
-    for _ in 0..pre_steps {
+    for _ in 0..1 {
         match metro.step(sys) {
             MetropolisResult::Accepted(vals) => result = vals,
             MetropolisResult::Rejected => {},
@@ -50,15 +50,16 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
     for _ in 1..n {
         match metro.step(sys) {
             MetropolisResult::Accepted(dvals) => {
+                println!("{}", dvals.energy);
                 result.add_to_sum(&dvals);
                 prev_dvals = dvals;
             },
             MetropolisResult::Rejected => {
                 result.add_to_sum(&prev_dvals);
+                println!("{}", prev_dvals.energy);
             },
         }
     }
     result.scale_by(n as f64);
-    println!("{:?}", result);
     result
 }

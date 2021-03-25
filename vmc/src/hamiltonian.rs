@@ -1,6 +1,7 @@
 use crate::{WaveFunction, Particle};
 
 
+#[derive(Clone)]
 pub struct Hamiltonian {
     gamma_squared: f64,
 }
@@ -15,7 +16,7 @@ impl Hamiltonian {
     }
 
     fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace(&particles)
+        - 0.5 * wf.laplace(&mut particles.clone())
     }
 
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
@@ -37,11 +38,11 @@ impl Hamiltonian {
         sum
     }
 
-    pub fn energy_non_interacting(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
+    pub fn energy_non_interacting(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
         self.kinetic(wf, particles) + self.trap_potential(particles)
     }
 
-    pub fn energy(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
+    pub fn energy(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
         self.kinetic(wf, particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
     }
 }

@@ -39,4 +39,8 @@ impl Particle {
             .sum();
         result.sqrt()
     }
+
+    pub fn bump_at_dim(&mut self, dim: usize, bump_size: f64) {
+        self.position[dim] += bump_size;
+    }
 }
