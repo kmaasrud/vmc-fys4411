@@ -58,8 +58,8 @@ pub fn _dim_and_n() {
                 a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
                 //for alpha in ALPHAS.iter() {
-                for alpha in 0..= 100 {
-                    let alpha = alpha as f64 * 0.5;
+                for alpha in 0..= 90 {
+                    let alpha = alpha as f64 * 0.01;
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let wf = WaveFunction{ alpha: alpha, beta: 1. }; // Beta = 1, because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);

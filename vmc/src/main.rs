@@ -5,7 +5,6 @@ mod wavefunction;
 mod hamiltonian;
 mod montecarlo;
 mod threadpool;
-mod analytical;
 mod produce_output;
 
 pub use particle::Particle;
