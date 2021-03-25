@@ -21,7 +21,7 @@ use num_cpus;
 /// Produces results for dimensions 1-3, different alphas and different number of particles and
 /// saves these in its own separate file. Does this a number of times corresponding to the number
 /// of cores the CPU running the program has.
-pub fn dim_and_n() {
+pub fn _dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
@@ -77,7 +77,7 @@ pub fn dim_and_n() {
 
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
-pub fn bruteforce_vs_importance() {
+pub fn _bruteforce_vs_importance() {
     const N: usize = 50;
     const ALPHAS: [f64; 8] = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65];
     const MC_CYCLES: usize = 1000;
@@ -130,10 +130,10 @@ pub fn bruteforce_vs_importance() {
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
 /// Only done using the noninteracting case, with importance sampling
-pub fn sdg_noninteracting() {
+pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
-    const MC_CYCLES: usize = 5000;
+    const MC_CYCLES: usize = 10000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     let mut alphas:Vec<f64> = vec![];
@@ -163,7 +163,7 @@ pub fn sdg_noninteracting() {
         let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
         let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
         let mut system: System = System::distributed(N, dim, wf, ham, 1.);
-        let mut metro: ImportanceMetropolis = ImportanceMetropolis::new(step_size);
+        let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
         let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
         energies.push(vals.energy);
@@ -171,10 +171,10 @@ pub fn sdg_noninteracting() {
         let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
         f.write_all(data.as_bytes()).expect("Unable to write data");
         println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
-
+   
         if i > 0 {
             let variance: f64 = vals.energy_squared-vals.energy;
-            let new_alpha: f64 = alphas[i] - 800.* (2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy));
+            let new_alpha: f64 = alphas[i] - 1000.* (2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy));
             println!("             New Alpha: {}", &new_alpha);
             alphas.push(new_alpha);
 
