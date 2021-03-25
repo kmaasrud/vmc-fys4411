@@ -23,10 +23,10 @@ impl WaveFunction {
             for j in i+1..n_particles {
                 r = particles[i].distance_to(&particles[j]);
                 // Check against hard-core diameter
-                if r > 0.0043 {
-                    f *= 1. - 0.0043 / r;
-                } else {
+                if r <= 0.0043 {
                     f *= 0.;
+                } else {
+                    f *= 1. - 0.0043 / r;
                 }
             }
         }

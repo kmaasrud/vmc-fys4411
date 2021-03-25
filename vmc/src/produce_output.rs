@@ -73,7 +73,7 @@ pub fn dim_and_n() {
                     
                     f.write_all(data_n.as_bytes()).expect("Unable to write data");
                     a.write_all(data_a.as_bytes()).expect("Unable to write data");
-                    println!("Dimension: {} --- Alpha: {:.1} --- N: {:.2} --- Energy: {} --- Analytical: {:.2}", dim, alpha, n, vals.energy, energy_exact);
+                    println!("Dimension: {} --- Alpha: {:.1} --- N: {:.2} --- Energy per particle: {} --- Analytical: {:.2}", dim, alpha, n, vals.energy / (*n as f64), energy_exact);
                 }
             }
         }
@@ -97,9 +97,6 @@ pub fn dim_and_n() {
 
     println!("Total time spent: {:?}", start.elapsed());
 }
-
-
-
 
 
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
@@ -128,7 +125,7 @@ pub fn bruteforce_vs_importance() {
 
                 let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
-                println!("\tAlpha: {:.1} --- Step size: {:.2} --- Energy: {:.2} --- Derivative: {:.2}", alpha, step_size, vals.energy, vals.wf_deriv);
+                println!("\tAlpha: {:.1} --- Step size: {:.2} --- Energy per particle: {:.2} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
             }
         }
     }
