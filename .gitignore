@@ -17,4 +17,4 @@ Cargo.lock
 .vscode/*
 
 # Ignore data folder
-/data
+data/
