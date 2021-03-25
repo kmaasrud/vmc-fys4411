@@ -12,4 +12,8 @@ local_energy = []
             local_energy.append  """
 
 
+#analytical wavefunction in one dimension
 
+
+ExactEnergies = 0.25*(AlphaValues*AlphaValues+1.0/(AlphaValues*AlphaValues))
+ExactVariance = 0.25*(1.0+((1.0-AlphaValues**4)**2)*3.0/(4*(AlphaValues**4)))-ExactEnergies*ExactEnergies

@@ -38,9 +38,9 @@ def ploting(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
     plt.title(title)
 
     if not os.path.exists(PLOT_DIR):
-        os.makedirs(r"" + PLOT_DIR)
+        os.makedir(r"" + PLOT_DIR)
     plt.show()
-    #plt.savefig(r""  +  PLOT_DIR + FILENAME_PLOT) 
+    plt.savefig(r""  +  PLOT_DIR + FILENAME_PLOT) 
     plt.close() 
     return fig
 
