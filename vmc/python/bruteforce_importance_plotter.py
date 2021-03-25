@@ -7,11 +7,12 @@ step_size = 1
 dim = 1
 
 
-DATA_DIR_BRUTEFORCE = rf"../data/bruteforce_vs_importance/BruteForceMetropolis/step_size{step_size}/{dim}D.csv"
-DATA_DIR_IMPORTANCE = rf"../data/bruteforce_vs_importance/ImportanceMetropolis/step_size{step_size}/{dim}D.csv"
-PLOT_DIR = fr"../plots/bruteforce_vs_importance/ImportanceMetropolis/step_size{step_size}/"
-FILENEME_PLOT = f"{dim}D.png"
-
+DATA_DIR_BRUTEFORCE = f"../data/bruteforce_vs_importance/BruteForceMetropolis/step_size{step_size}/{dim}D.csv"
+DATA_DIR_IMPORTANCE = f"../data/bruteforce_vs_importance/ImportanceMetropolis/step_size{step_size}/{dim}D.csv"
+#PLOT_DIR = f"../plots/bruteforce_vs_importance/ImportanceMetropolis/step_size{step_size}/"
+#FILENEME_PLOT = f"{dim}D.png"
+PLOT_DIR = "./"
+FILENAME_PLOT = 'plot.py'
 
 df_BRUTEFORCE = pd.read_csv(DATA_DIR_BRUTEFORCE)
 df_IMPORTANCE = pd.read_csv(DATA_DIR_IMPORTANCE)
