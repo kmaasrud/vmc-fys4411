@@ -3,14 +3,12 @@ import matplotlib.pyplot as plt
 
 def pathmaker(DIR):
     if not os.path.exists(DIR):
-        os.mkdir(DIR)
+        os.makedirs(DIR)
+        print(f'made directory {PLOT_DIR}')
         
-def image_path(PLOT_DIR, fig_id):
-    return os.path.join(PLOT_DIR, fig_id)
+def join_path(DIR, id):
+    return os.path.join(DIR, id)
 
-def data_path(data_id):
-    return os.path.join(DATA_DIR, data_id)
-
-def save_fig(PLOT_DIR, fig_id):
-    plt.savefig(image_path(PLOT_DIR,fig_id) + ".png", format = 'png')
+def save_fig(DIR,id):
+    plt.savefig(join_path(DIR, id) + ".png", format = 'png')
 

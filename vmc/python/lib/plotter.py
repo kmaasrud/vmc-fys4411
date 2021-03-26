@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 
-import pathmaker as pth
+from . import pathmaker as pth
 
 plt.style.use('Solarize_Light2')
 
@@ -18,10 +18,8 @@ def readfiles(fileName, index):
     infile.close()
     return list
 
-def plotter(x,y, label, xlabel, ylabel, title, FIG_DIR, filename):
-    #make dir if does not exist
-    pth.pathmaker(FIG_DIR)
-
+def plotter(x,y, label, xlabel, ylabel, title, PLOT_DIR, fig_id):
+   
     #figure size and resolution
     fig = plt.figure()
     #colour, linewith, linestyle
@@ -30,18 +28,23 @@ def plotter(x,y, label, xlabel, ylabel, title, FIG_DIR, filename):
     #plt.xlim(min(x)*1.1, max(x)*1.1)
     #plt.ylim(min(y)*1.1, max(y)*1.1)
     #legend
-    plt.legend(loc = 'upper right', prop = {'size':14}, frameon = False)
+    plt.legend(loc = 'best', prop = {'size':14}, frameon = False)
     plt.rc('font', size=10)
     plt.rc('axes', titlesize=12)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
     
-    pth.save_fig(FIG_DIR, filename)
+     #make dir if does not exist
+    pth.pathmaker(PLOT_DIR)
+
+    pth.save_fig(PLOT_DIR,fig_id)
     
     plt.close() 
     return fig
 
+def multiple_lines(array, y, filename):
+    return 0
 
 def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     df_a = pd.read_csv(DATA_DIR + f"dummy_{dim}D_{particles}_particles_ana.csv")
@@ -64,22 +67,5 @@ def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     plt.rc('axes', titlesize = 15)
     plt.savefig(FIG_DIR + f'dummy_{dim}D_{particles}_particles_error.png') 
     return fig
-#usage
 
-dim = 1
-particles = 100
 
-DATA_DIR = './dummydata/'
-FIG_DIR = './fig/'
-filename = f"dummy_{dim}D_{particles}_particles_ana"
-
-#dataframes
-df_a = pd.read_csv(DATA_DIR + filename + '.csv')
-
-x = df_a["Alpha"]
-y = df_a["Energy"]
-
-plotter(x, y, 'label', 'xlabel', 'ylabel','title', FIG_DIR,filename)
-#plotting
-""" plotter1 = ploting(x_n, y_n, dim, particles, 'some lable', 'x', 'y','some_title')
-"""

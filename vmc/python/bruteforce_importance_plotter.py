@@ -1,7 +1,8 @@
 import pandas as pd
-import plotter as plot
-
 import os
+
+from lib import plotter as plot
+
 
 #location for files and plots
 
