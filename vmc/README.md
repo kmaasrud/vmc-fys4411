@@ -4,7 +4,7 @@ The solver is written in Rust (source code in `src`), and the statistical analys
 
 ## Solver explanation
 
-`wavefunction.rs`, `hamiltonian.rs` and `particle.rs` all contain a similarly named struct representing a respective part of the system. These are all tied together in the `System` struct located in `system.rs`. These represent the a system state and hold the equations to find relevant quantities.
+`wavefunction.rs`, `hamiltonian.rs` and `particle.rs` all contain a similarly named structs representing their respective aspect of the system. They are all tied together in the `System` struct located in `system.rs`. These represent the system state and hold the equations to find relevant quantities.
 
 Building on this, we've got the `Metropolis` trait located inside `metropolis.rs`, which describes an interface that is able to produce a Metropolis step. This trait is realised in the two structs `BruteForceMetropolis` and `ImportanceMetropolis`. Finally, located in `montecarlo.rs`, our Monte Carlo solver leverages this trait to perform an integration over the desired quantities.
 
