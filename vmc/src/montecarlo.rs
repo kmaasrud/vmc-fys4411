@@ -47,7 +47,7 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T) -> 
 
     let mut prev_dvals = result.clone();
 
-    for _ in 1..n {
+    for _ in 0..n {
         match metro.step(sys) {
             MetropolisResult::Accepted(dvals) => {
                 // println!("{}", dvals.energy);

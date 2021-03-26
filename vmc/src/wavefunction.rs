@@ -82,9 +82,9 @@ impl WaveFunction {
         - self.alpha * laplace * self.evaluate(particles)
     }
 
-    pub fn gradient(&self, particle: Particle) -> Vec<f64> {
+    /* pub fn gradient(&self, particle: Particle) -> Vec<f64> {
         particle.position.iter().map(|x| -2. * self.alpha * x).collect()
-    }
+    } */
 
     /// Returns the gradient of the wavefunction with regards to alpha
     pub fn gradient_alpha(&self, particles: &Vec<Particle>) -> f64 {
