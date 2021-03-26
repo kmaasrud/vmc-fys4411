@@ -33,14 +33,14 @@ impl System {
             let mut new_particle: Particle = Particle::new(sys.dimensionality);
             new_particle.position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
 
-            // Ensure it is not overlapping with other particles
+            /* // Ensure it is not overlapping with other particles
             for other in sys.particles[..i].iter() {
                 r = other.distance_to(&new_particle);
                 while r < 0.0043 {
                     new_particle.position = (0..dim).map(|_| spread * (uniform.sample(&mut rng) - 0.5)).collect();
                     r = other.distance_to(&new_particle);
                 }
-            }
+            } */
             sys.particles[i].position = new_particle.position;
         }
         sys

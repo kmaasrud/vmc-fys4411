@@ -104,7 +104,7 @@ pub fn dim_and_n() {
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
     const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 5000;
+    const MC_CYCLES: usize = 10000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
@@ -150,7 +150,8 @@ pub fn bruteforce_vs_importance() {
     }
 
     // run_for_sampler::<BruteForceMetropolis>();
-    run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
+    run_sim::<BruteForceMetropolis>(0.5);
+    // run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
 }
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
