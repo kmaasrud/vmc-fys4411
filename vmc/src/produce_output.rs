@@ -173,7 +173,7 @@ pub fn sgd_noninteracting() {
         let mut done: bool = false;
         let mut energies:Vec<f64> = vec![];
 
-        let path = format!("./data/sdg_noninteracting/learning-rate");
+        let path = format!("./data/sgd_noninteracting/learning-rate");
         create_dir(&path);
         let mut f = create_file(&format!("{}/learning-rate_{}.csv", &path, learning_rate));
         f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
