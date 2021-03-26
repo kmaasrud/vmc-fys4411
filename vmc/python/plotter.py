@@ -2,19 +2,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
-
+plt.style.use('Solarize_Light2')
 
 #global variables
 DATA_DIR = './dummydata/'
 FIG_DIR = './fig/'
 
-plt.style.use('Solarize_Light2')
-
-def image_path(fig_id):
-    return os.path.join(PLOT_DIR, fig_id)
-
-def data_path(data_id):
-    return os.path.join(DATA_DIR, data_id)
 
 def readfiles(fileName, index):
     list = []
@@ -26,11 +19,10 @@ def readfiles(fileName, index):
     infile.close()
     return list
 
-def ploting(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
+def plotter(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
     #figure size and resolution
     fig = plt.figure()
     #colour, linewith, linestyle
-
     plt.plot(x,y, linewidth = 2.0, label = label)
     #boundaries
     #plt.xlim(min(x)*1.1, max(x)*1.1)
@@ -42,9 +34,6 @@ def ploting(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
-
-    if not os.path.exists(PLOT_DIR):
-        os.mkdir(PLOT_DIR)
 
     plt.show()
     plt.savefig(r""  +  PLOT_DIR + FILENAME_PLOT) 
