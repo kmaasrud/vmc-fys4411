@@ -20,8 +20,8 @@ impl Hamiltonian {
     }
 
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
-        // let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma_squared)).sum();
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
+        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma_squared)).sum();
+        // let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
         0.5 * squared_position_sum
     }
 

@@ -62,6 +62,14 @@ impl WaveFunction {
         0.5 * second_deriv / h.powi(2)
     }
 
+    fn laplace_spf(&self, particle: &Particle) -> f64 {
+        -2. * self.alpha * (particle.dim as f64 - 1. + self.beta) + 4. * self.alpha.powi(2) * particle.squared_sum_scaled_z(&self.beta)
+    }
+
+    /* fn gradient_spf(&self, particle: &Particle) -> f64 {
+
+    } */
+
     /// Returns the Laplacian of the wavefunction evaluated analytically at state of 'particles'.
     pub fn laplace_analytical(&self, particles: &Vec<Particle>) -> f64 {
         let mut laplace: f64 = 0.;
@@ -82,9 +90,6 @@ impl WaveFunction {
         - self.alpha * laplace * self.evaluate(particles)
     }
 
-    /* pub fn gradient(&self, particle: Particle) -> Vec<f64> {
-        particle.position.iter().map(|x| -2. * self.alpha * x).collect()
-    } */
 
     /// Returns the gradient of the wavefunction with regards to alpha
     pub fn gradient_alpha(&self, particles: &Vec<Particle>) -> f64 {
