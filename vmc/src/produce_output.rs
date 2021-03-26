@@ -104,11 +104,10 @@ pub fn dim_and_n() {
 pub fn bruteforce_vs_importance() {
     const N: usize = 50;
     const ALPHAS: [f64; 8] = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65];
-    const MC_CYCLES: usize = 5000;
+    const MC_CYCLES: usize = 1000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
-        let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
         let mut metro: T = T::new(step_size);
         for dim in 1..=3 {
             println!("Dimension: {}", dim);
@@ -119,6 +118,7 @@ pub fn bruteforce_vs_importance() {
             f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
             for alpha in ALPHAS.iter() {
+                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
                 let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
                 let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
                 let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 

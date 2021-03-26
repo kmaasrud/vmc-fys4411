@@ -88,8 +88,8 @@ impl WaveFunction {
 
     /// Returns the gradient of the wavefunction with regards to alpha
     pub fn gradient_alpha(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_sum_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.beta)).sum();
-        - squared_position_sum_sum * self.evaluate(particles)
+        let squared_position_sum_sum: f64 = particles.iter().map(|x| - x.squared_sum_scaled_z(&self.beta)).sum();
+        squared_position_sum_sum
     }
 
     /// Calculates the quantum force of a particle not interacting with its surrounding particles
