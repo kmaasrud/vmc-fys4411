@@ -15,9 +15,15 @@ impl Hamiltonian {
         Hamiltonian { gamma_squared: gamma.powi(2) }
     }
 
-    fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace(&mut particles.clone())
+
+    fn kinetic_non_interacting(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace_numeric(&mut particles.clone())
     }
+
+    fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace(&particles)
+    }
+
 
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
         let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma_squared)).sum();
@@ -39,13 +45,12 @@ impl Hamiltonian {
         sum
     }
 
+
     pub fn energy_non_interacting(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
-        // self.kinetic(wf, particles) / wf.evaluate(particles) + self.trap_potential(particles)
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        wf.alpha * (particles.len() * particles[0].dim) as f64 + (0.5 - 2. * wf.alpha.powi(2)) * squared_position_sum
+        self.kinetic_non_interacting(wf, particles) + self.trap_potential(particles)
     }
 
     pub fn energy(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
-        self.kinetic(wf, particles) / wf.evaluate(particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
+        self.kinetic(wf, particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
     }
 }
