@@ -26,7 +26,6 @@ use num_cpus;
 pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
-    const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     const MC_CYCLES: usize = 1_000;
 
     fn analytical(sys: &System)  -> f64{
@@ -41,6 +40,7 @@ pub fn dim_and_n() {
     }
 
     fn run_sim(start: Instant, mc_cycles: usize) {
+        let alphas: Vec<f64> = (0..90).map(|x| x as f64 / 100.).collect();
         let path = format!("./data/numerical/dim_and_n/{:?}/", std::thread::current().id());
         let path_ana = format!("./data/analytical/dim_and_n/{:?}/", std::thread::current().id());
         create_dir(&path);
@@ -57,7 +57,7 @@ pub fn dim_and_n() {
                 f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
                 a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-                for alpha in ALPHAS.iter() {
+                for alpha in alphas.iter() {
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
@@ -103,11 +103,11 @@ pub fn dim_and_n() {
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
-    const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    const MC_CYCLES: usize = 10000;
-    const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
+    const MC_CYCLES: usize = 100000;
+    const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
+        let alphas: Vec<f64> = (1..19).map(|x| x as f64 / 18.).collect();
         let mut metro: T = T::new(step_size);
         for dim in 1..=3 {
             println!("Dimension: {}", dim);
@@ -117,13 +117,15 @@ pub fn bruteforce_vs_importance() {
             let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
             f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
-            for alpha in ALPHAS.iter() {
-                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-                let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
+            for alpha in alphas.iter() {
+                // let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+                let ham: Hamiltonian = Hamiltonian::spherical();
+                // let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
+                let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
                 let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
                 let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
-                let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
+                let data = format!("{},{},{}\n", step_size, alpha, vals.energy);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
                 println!("\tAlpha: {:.2} --- Step size: {:.2} --- Energy per particle: {:.4} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
             }
@@ -149,8 +151,7 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    // run_for_sampler::<BruteForceMetropolis>();
-    run_sim::<BruteForceMetropolis>(0.5);
+    run_for_sampler::<BruteForceMetropolis>();
     // run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
 }
 

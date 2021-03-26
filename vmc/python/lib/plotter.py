@@ -2,11 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import os
-plt.style.use('Solarize_Light2')
 
-#global variables
-DATA_DIR = './dummydata/'
-FIG_DIR = './fig/'
+import pathmaker as pth
+
+plt.style.use('Solarize_Light2')
 
 
 def readfiles(fileName, index):
@@ -19,7 +18,10 @@ def readfiles(fileName, index):
     infile.close()
     return list
 
-def plotter(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
+def plotter(x,y, label, xlabel, ylabel, title, FIG_DIR, filename):
+    #make dir if does not exist
+    pth.pathmaker(FIG_DIR)
+
     #figure size and resolution
     fig = plt.figure()
     #colour, linewith, linestyle
@@ -34,9 +36,9 @@ def plotter(x,y, label, xlabel, ylabel, title, PLOT_DIR, FILENAME_PLOT):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
-
-    plt.show()
-    plt.savefig(r""  +  PLOT_DIR + FILENAME_PLOT) 
+    
+    pth.save_fig(FIG_DIR, filename)
+    
     plt.close() 
     return fig
 
@@ -63,31 +65,21 @@ def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     plt.savefig(FIG_DIR + f'dummy_{dim}D_{particles}_particles_error.png') 
     return fig
 #usage
+
 dim = 1
 particles = 100
 
-
-dir_data_dummy_a = DATA_DIR + f"dummy_{dim}D_{particles}_particles_ana.csv"
-
-dim = 1
-particles = 1
-dir_data_dummy_n = DATA_DIR + f"experiment_{dim}D_{particles}_particles_num.csv"
+DATA_DIR = './dummydata/'
+FIG_DIR = './fig/'
+filename = f"dummy_{dim}D_{particles}_particles_ana"
 
 #dataframes
-df_a = pd.read_csv(dir_data_dummy_a)
-df_n = pd.read_csv(dir_data_dummy_n)
+df_a = pd.read_csv(DATA_DIR + filename + '.csv')
 
-x_n = df_n["Alpha"]
-y_n = df_n["Energy"]
-err_n = np.sqrt(df_n['Variance'])
+x = df_a["Alpha"]
+y = df_a["Energy"]
 
-x_a = df_a["Alpha"]
-y_a = df_a["Energy"]
-err_a = np.sqrt(df_a['Variance'])
-
+plotter(x, y, 'label', 'xlabel', 'ylabel','title', FIG_DIR,filename)
 #plotting
 """ plotter1 = ploting(x_n, y_n, dim, particles, 'some lable', 'x', 'y','some_title')
-dim = 1
-particles = 100
-plotter2 = plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles)
- """
+"""
