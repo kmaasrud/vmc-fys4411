@@ -1,13 +1,25 @@
 # Common imports
 import os
+import pandas as pd
+from pandas import DataFrame
+
+
+from numpy import log2, zeros, mean, var, sum, loadtxt, arange, array, cumsum, dot, transpose, diagonal, sqrt
+from numpy.linalg import inv
 
 # Where to save the figures and data files
-DATA_ID = "Results/EnergyMin"
+
+dim = 1
+particles = 1
+
+DATA_ID = "./dummydata/"
+filename = f"experiment_{dim}D_{particles}_particles_num.csv"
+
 
 def data_path(dat_id):
     return os.path.join(DATA_ID, dat_id)
 
-infile = open(data_path("Energies.dat"),'r')
+infile = open(data_path(filename),'r')
 
 def block(x):
     # preliminaries
@@ -42,11 +54,14 @@ def block(x):
     return mu, s[k]/2**(d-k)
 
 
-x = loadtxt(infile)
+
+df = pd.read_csv(infile)
+
+x = array(df['Energy'].values.tolist())
+
 (mean, var) = block(x) 
 std = sqrt(var)
-import pandas as pd
-from pandas import DataFrame
+
 data ={'Mean':[mean], 'STDev':[std]}
 frame = pd.DataFrame(data,index=['Values'])
-print(frame)
+print(frame) 
