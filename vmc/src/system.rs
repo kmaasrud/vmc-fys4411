@@ -3,6 +3,7 @@ use crate::WaveFunction;
 use crate::Hamiltonian;
 use rand::distributions::{Distribution, Uniform};
 use rand::{prelude::random, thread_rng};
+use rand_distr::Normal;
 
 pub struct System {
     pub particles: Vec<Particle>,
@@ -49,7 +50,7 @@ impl System {
         let mut new_particles = self.particles.clone();
         let i = random::<usize>() % self.particles.len();
         for d in 0..new_particles[i].dim {
-            new_particles[i].position[d] += 2. * (random::<f64>() - 0.5) * step_size;
+            new_particles[i].position[d] += (random::<f64>() - 0.5) * step_size;
         }
         new_particles
     }
@@ -57,7 +58,7 @@ impl System {
     /// Takes in a step size and returns the next particle state of the system.
     pub fn quantum_force_particle_change(&mut self) -> (Vec<Particle>, usize) {
         let mut rng = thread_rng();
-        let uniform = Uniform::new(-1., 1.);
+        let normal = Normal::new(0., 1.).unwrap();
 
         // 0.005 is hard-coded solution for delta t in Langevin equation
         let qf_step_size = 0.005;
@@ -73,7 +74,7 @@ impl System {
 
         // Loop over its dimensions and do Langevin equation
         for d in 0..new_particles[i].dim {
-            new_particles[i].position[d] += 0.5 * new_particles[i].qforce[d] * qf_step_size + uniform.sample(&mut rng) * qf_step_size.sqrt(); // 0.5 is the D constant.
+            new_particles[i].position[d] += 0.5 * new_particles[i].qforce[d] * qf_step_size + normal.sample(&mut rng) * qf_step_size.sqrt(); // 0.5 is the D constant.
         }
 
         (new_particles, i)

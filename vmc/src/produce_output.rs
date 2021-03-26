@@ -102,7 +102,7 @@ pub fn dim_and_n() {
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
 pub fn bruteforce_vs_importance() {
-    const N: usize = 50;
+    const N: usize = 10;
     const ALPHAS: [f64; 8] = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65];
     const MC_CYCLES: usize = 1000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
@@ -125,7 +125,7 @@ pub fn bruteforce_vs_importance() {
 
                 let data = format!("{},{},{},{}\n", step_size, alpha, vals.energy, vals.energy_squared);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
-                println!("\tAlpha: {:.1} --- Step size: {:.2} --- Energy per particle: {:.2} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
+                println!("\tAlpha: {:.2} --- Step size: {:.2} --- Energy per particle: {:.4} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
             }
         }
     }
@@ -157,8 +157,8 @@ pub fn bruteforce_vs_importance() {
 /// Only done using the noninteracting case, with importance sampling
 pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
-    const N: usize = 10;
-    const MC_CYCLES: usize = 10000;
+    const N: usize = 100;
+    const MC_CYCLES: usize = 1000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     let mut alphas:Vec<f64> = vec![];
@@ -167,14 +167,12 @@ pub fn sgd_noninteracting() {
     alphas.push(0.1); alphas.push(0.2);
 
     let mut done: bool = false;
-    let tolerance: f64 = 0.000_000_001;
+    let tolerance: f64 = 0.00001;
     
     let dim: usize = 3;
     let step_size: f64 = 1.;
 
-
-
-    println!("Running simulations using ImportanceMetropolis algorithm...");
+    println!("Running simulations using BruteForceMetropolis algorithm...");
     let start = Instant::now();
 
     let mut i:usize = 0;
@@ -198,12 +196,12 @@ pub fn sgd_noninteracting() {
         println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
    
         if i > 0 {
-            let variance: f64 = vals.energy_squared-vals.energy;
-            let new_alpha: f64 = alphas[i] - 1000.* (2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy));
+            let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
+            let new_alpha: f64 = alphas[i] - 0.005 * energy_deriv;
             println!("             New Alpha: {}", &new_alpha);
             alphas.push(new_alpha);
 
-            if variance < tolerance {
+            if energy_deriv.abs() < tolerance {
                 done = true;
             }
             //if (energies[i]-energies[i-1]).abs() < tolerance {
