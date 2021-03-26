@@ -158,67 +158,78 @@ pub fn bruteforce_vs_importance() {
 /// Only done using the noninteracting case, with importance sampling
 pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
-    const N: usize = 100;
-    const MC_CYCLES: usize = 1000;
+    const N: usize = 10;
+    const MC_CYCLES: usize = 100000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
+    const dim: usize = 3;
+    const step_size: f64 = 1.;
+    const tolerance: f64 = 0.00001;
 
-    let mut alphas:Vec<f64> = vec![];
-    let mut energies:Vec<f64> = vec![];
+    fn run(start_alpha:f64, learning_rate: f64) {
+        let mut alphas:Vec<f64> = vec![];
+        alphas.push(start_alpha);
 
-    alphas.push(0.1); alphas.push(0.2);
+        let mut done: bool = false;
+        let mut energies:Vec<f64> = vec![];
 
-    let mut done: bool = false;
-    let tolerance: f64 = 0.00001;
-    
-    let dim: usize = 3;
-    let step_size: f64 = 1.;
-
-    println!("Running simulations using BruteForceMetropolis algorithm...");
-    let start = Instant::now();
-
-    let mut i:usize = 0;
-    while !done {
-
-        let path = format!("./data/sdg_noninteracting/step_size{}", step_size);
+        let path = format!("./data/sdg_noninteracting/learning-rate");
         create_dir(&path);
-        let mut f = create_file(&format!("{}/{}-alpha.csv", &path, &alphas[i]));
+        let mut f = create_file(&format!("{}/learning-rate_{}.csv", &path, learning_rate));
         f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
-        let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-        let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
-        let mut system: System = System::distributed(N, dim, wf, ham, 1.);
-        let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
-        let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+        let mut i:usize = 0;
+        while !done {
 
-        energies.push(vals.energy);
+            let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+            let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
+            let mut system: System = System::distributed(N, dim, wf, ham, 1.);
+            let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
-        let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
-        f.write_all(data.as_bytes()).expect("Unable to write data");
-        println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
-   
-        if i > 0 {
+            energies.push(vals.energy);
+
+            let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
+            f.write_all(data.as_bytes()).expect("Unable to write data");
+            println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
+
+
             let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
-            let new_alpha: f64 = alphas[i] - 0.005 * energy_deriv;
-            println!("             New Alpha: {}", &new_alpha);
+            let new_alpha: f64 = alphas[i] - learning_rate * energy_deriv;
             alphas.push(new_alpha);
 
             if energy_deriv.abs() < tolerance {
+                println!("Tolerance is met, exiting.");
+                done = true;
+            } else if i > 100 {
+                println!("Max lim met, exiting.");
                 done = true;
             }
             //if (energies[i]-energies[i-1]).abs() < tolerance {
             //    done = true;
             //}
+            i += 1;
         }
-
         
-
-        i += 1;
     }
+    // Multithreading
+    println!("Running simulations using BruteForceMetropolis algorithm...");
+    let start_alphas:Vec<f64> = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    let learning_rates:Vec<f64> = vec![0.00005, 0.0001, 0.0002, 0.0004, 0.0008, 0.0016, 0.032, 0.064];
+    let start_alpha: f64 = 0.2;
 
-        
+    println!("Spawning threadpool of 8 threads, with {} Monte Carlo cycles on each", &MC_CYCLES);
+    let pool = ThreadPool::new(8);
+    let start = Instant::now();
+
+
+    for learning_rate in learning_rates {
+        pool.execute(move || run(start_alpha, learning_rate)); //Running the simulation on each thread individually
+    }
+    println!("All threads now executing, waiting for them to finish...");
+    pool.join_all();
+    
     println!("Time spent: {:?}", start.elapsed());
-
-}
+    }
 
 fn create_file(filepath: &str) -> File {
     match File::create(&Path::new(filepath)) {
