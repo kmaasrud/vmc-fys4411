@@ -64,7 +64,6 @@ impl Metropolis for BruteForceMetropolis {
 /// Implements the Metropolis trait.
 pub struct ImportanceMetropolis;
 
-
 impl Metropolis for ImportanceMetropolis {
     /// Makes a new `ImportanceMetropolis` struct.
     fn new(_: f64)  -> Self { Self }
