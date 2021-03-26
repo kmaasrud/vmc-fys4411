@@ -42,7 +42,7 @@ pub fn dim_and_n() {
     fn run_sim(start: Instant, mc_cycles: usize) {
         let alphas: Vec<f64> = (0..90).map(|x| x as f64 / 100.).collect();
         let path = format!("./data/numerical/dim_and_n/{:?}/", std::thread::current().id());
-        let path_ana = format!("./data/analytical/dim_and_n/{:?}/", std::thread::current().id());
+        let path_ana = format!("./data/dim_and_n/analytical/{:?}/", std::thread::current().id());
         create_dir(&path);
         create_dir(&path_ana);
          

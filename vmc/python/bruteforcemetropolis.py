@@ -14,8 +14,7 @@ for dim in range(1, 3 + 1):
             DATA_DIR = f"../data/bruteforce_vs_importance/BruteForceMetropolis/step_size{step}/"
             PLOT_DIR = f"../plots/bruteforce_vs_importance/BruteForceMetropolis/step_size{step}/"        
             
-           
-
+    
             file_id = f"{dim}D"
             label = f'Stepsize: {step}'
             title = f'Brute Force Metropolis: Energy vs. alpha for stepsize = {step}, dim = {dim}'
@@ -26,7 +25,7 @@ for dim in range(1, 3 + 1):
             y = df['Energy']
             x = df['Alpha']
 
-        
+    
             plot.plotter(x,y,label, xlabel, ylabel, title, PLOT_DIR, file_id)
             
 
