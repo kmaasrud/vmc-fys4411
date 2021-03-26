@@ -10,7 +10,6 @@ NUM_DIR = "/numerical/dim_and_n/"
 dir = DATA_DIR + ANA_DIR
 
 
-
 def avglist (list):
     return sum(list) / len(list)
 
