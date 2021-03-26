@@ -15,6 +15,3 @@ Cargo.lock
 
 # Visual Studio Code
 .vscode/*
-
-# Ignore data folder
-data/
