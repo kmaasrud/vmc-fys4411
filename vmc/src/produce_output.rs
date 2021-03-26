@@ -103,7 +103,7 @@ pub fn dim_and_n() {
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
-    const MC_CYCLES: usize = 100000;
+    const MC_CYCLES: usize = 10000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
@@ -118,10 +118,10 @@ pub fn bruteforce_vs_importance() {
             f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
             for alpha in alphas.iter() {
-                // let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-                let ham: Hamiltonian = Hamiltonian::spherical();
-                // let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
-                let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
+                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+                // let ham: Hamiltonian = Hamiltonian::spherical();
+                let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
+                // let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
                 let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
                 let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
 
