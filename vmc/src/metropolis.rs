@@ -2,7 +2,8 @@ use rand::thread_rng;
 use rand::distributions::{Uniform, Distribution};
 use crate::{
     System,
-    montecarlo::SampledValues
+    Particle,
+    montecarlo::SampledValues,
 };
 
 
@@ -72,16 +73,20 @@ impl Metropolis for ImportanceMetropolis {
         let (next_step, i) = sys.quantum_force_particle_change();
 
         // Greens below
-        /* fn greens(x: &Particle, y: &Particle, dt: f64) -> f64 {
+        fn greens(x: &Particle, y: &Particle, dt: f64) -> f64 {
             let mut result: f64 = 0.;
             for j in 0..x.dim { // This is a vector sum + scalar product
                 result += (y.position[j] - x.position[j] - 0.5 * dt * x.qforce[j]).powi(2);
             }
             result = (-result / (2. * dt)).exp(); // Ignoring denominator of Greens since it cancels later
             result
-        } */
+        }
 
-        let mut green = 0.;
+        let acc_num = greens(&sys.particles[i], &next_step[i], 0.005) * sys.wavefunction.evaluate(&next_step).powi(2);
+        let acc_deno = greens(&next_step[i], &sys.particles[i], 0.005) * sys.wavefunction.evaluate(&sys.particles).powi(2);
+        let acceptance_factor = acc_num / acc_deno;
+
+        /* let mut green = 0.;
         for j in 0..sys.dimensionality {
             let first = next_step[i].position[j] - sys.particles[i].position[j] - 0.0025 * sys.particles[i].qforce[j];
             let second = sys.particles[i].position[j] - next_step[i].position[j] - 0.0025 * next_step[i].qforce[j];
@@ -91,12 +96,8 @@ impl Metropolis for ImportanceMetropolis {
         let wf_old = sys.wavefunction.evaluate(&sys.particles);
         let wf_new = sys.wavefunction.evaluate(&next_step);
         let wf_factor = wf_new.powi(2) / wf_old.powi(2);
-        // println!("{}", wf_factor);
 
-        let acceptance_factor = (green / 0.01).exp() * wf_new.powi(2) / wf_old.powi(2);
-
-        /* let acc_num = greens(&sys.particles[i], &next_step[i], 0.005) * sys.wavefunction.evaluate(&next_step).powi(2);
-        let acc_deno = greens(&next_step[i], &sys.particles[i], 0.005) * sys.wavefunction.evaluate(&sys.particles).powi(2); */
+        let acceptance_factor = (green / 0.01).exp() * wf_new.powi(2) / wf_old.powi(2); */
 
         if Self::hastings_check(acceptance_factor) {
             sys.particles = next_step;
