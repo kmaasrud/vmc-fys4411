@@ -103,8 +103,8 @@ pub fn dim_and_n() {
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
-    const ALPHAS: [f64; 8] = [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65];
-    const MC_CYCLES: usize = 1000;
+    const ALPHAS: [f64; 8] = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    const MC_CYCLES: usize = 5000;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {

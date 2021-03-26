@@ -99,7 +99,6 @@ impl WaveFunction {
 
     ///  Takes input particle index and finds it's quantum force by evaluating its wavefunction
     pub fn quantum_force(&self, particle: &Particle) -> Vec<f64> {
-        // let mut qforce: Vec<f64> = self.quantum_force_non_interacting(&particles[i]);
         let mut qforce: Vec<f64> = vec![0.; particle.dim];
 
         for dim in 0..particle.dim {
@@ -112,6 +111,7 @@ impl WaveFunction {
                 }
             }
         }
+        // let mut qforce: Vec<f64> = self.quantum_force_non_interacting(&particles[i]);
         // let mut factor: f64;
         // let mut r: f64;
         /* if particles[i].dim > 2 {
