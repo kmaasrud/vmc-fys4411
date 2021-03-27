@@ -59,40 +59,6 @@ impl WaveFunction {
         }
         laplace / wf
     }
-    pub fn laplace_analytical_non_interacting(&self, particles: &Vec<Particle>) -> f64 {
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.beta)).sum();
-        - 2. * (particles[0].dim * particles.len()) as f64 * self.alpha + 4. * self.alpha.powi(2) * squared_position_sum
-    }
-    pub fn laplace_analytical(&self, particles: &Vec<Particle>) -> f64 {
-        let mut laplace = 0.;
-        for (i, particle) in particles.iter().enumerate() {
-            laplace += self.laplace_spf(particle);
-            let gradient_spf = self.gradient_spf(particle);
-            let gradient_interaction = self.gradient_interaction(i, particles);
-            for dim in 0..particle.dim {
-                laplace += 2. * gradient_spf[dim] * gradient_interaction[dim] + gradient_interaction[dim].powi(2);
-            }
-            laplace += self.laplace_interaction(i, particles);
-        }
-        laplace
-    }
-    fn laplace_spf(&self, particle: &Particle) -> f64 {
-        -2. * self.alpha * (particle.dim as f64 - 1. + self.beta) + 4. * self.alpha.powi(2) * particle.squared_sum_scaled_z(&self.beta)
-    }
-    fn laplace_interaction(&self, i: usize, particles: &Vec<Particle>) -> f64 {
-        let mut laplace = 0.;
-        let a: f64 = 0.0043;
-        let a2 = a.powi(2);
-        let factor = a * (particles[i].dim as f64 - 1.);
-
-        for j in 0..particles.len() {
-            if i == j { continue }
-            let distance: f64 = particles[i].distance_to(&particles[j]);
-            let distance_minus_a = distance - a;
-            laplace += factor / (distance.powi(2) * distance_minus_a) + (a2 - 0.0086 * distance) / (distance.powi(2) * distance_minus_a.powi(2));
-        }
-        laplace
-    }
 
     // --- Gradients ---
     /// Returns the gradient for a particle with regards to the non-interacting part of the
