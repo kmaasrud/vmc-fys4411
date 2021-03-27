@@ -17,12 +17,12 @@ impl Hamiltonian {
 
     // --- Kinetic energies ---
     /// Kinetic energy for non-interacting particles using numerically calculated Laplacian
-    fn kinetic_non_interacting(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace(&mut particles.clone(), true)
+    fn kinetic_non_interacting(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace(particles, true)
     }
     /// Kinetic energy for interacting particles using numerically calculated Laplacian
-    fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace(&mut particles.clone(), false)
+    fn kinetic(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace(particles, false)
     }
 
     // --- Potential energy ---
