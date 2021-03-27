@@ -34,6 +34,7 @@ pub trait Metropolis {
             energy_squared: d_energy.powi(2),
             wf_deriv: d_wf_deriv,
             wf_deriv_times_energy: d_wf_deriv * d_energy,
+            accepted_steps: 0,
         }
     }
     fn greens(x: &Particle, y: &Particle) -> f64 {
