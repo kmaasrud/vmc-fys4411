@@ -133,6 +133,6 @@ impl WaveFunction {
     }
     /// Calculates the quantum force of a particle not interacting with its surrounding particles
     pub fn quantum_force_non_interacting(&self, particle: &Particle) -> Vec<f64> {
-        particle.position.iter().map(|x| -4. * self.alpha * x).collect()
+        self.gradient_spf(particle).iter().map(|x| 2. * x).collect()
     }
 }

@@ -22,6 +22,7 @@ impl System {
         }
     }
 
+    /// Creates a new system with particles distributed randomly
     pub fn distributed(n_particles: usize, dim: usize, wavefunction: WaveFunction, hamiltonian: Hamiltonian, spread: f64) -> Self {
         let mut rng = thread_rng();
         let uniform = Uniform::new(0., 1.);
@@ -47,6 +48,7 @@ impl System {
         sys
     }
 
+    /// Change a random particle's position by a random value
     pub fn random_particle_change(&self, step_size: f64) -> Vec<Particle> {
         let mut new_particles = self.particles.clone();
         let i = random::<usize>() % self.particles.len();

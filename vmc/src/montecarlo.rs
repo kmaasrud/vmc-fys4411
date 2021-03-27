@@ -18,7 +18,7 @@ impl SampledValues {
         self.wf_deriv_times_energy += dvals.wf_deriv_times_energy;
     }
 
-    fn scale_by(&mut self, factor: f64) {
+    fn divide_by(&mut self, factor: f64) {
         self.energy /= factor;
         self.energy_squared /= factor;
         self.wf_deriv /= factor;
@@ -40,21 +40,21 @@ pub fn monte_carlo<T: Metropolis>(n: usize, sys: &mut System, metro: &mut T, non
         }
     }
 
+    // Store the previous values to add if Metropolis step is rejected
     let mut prev_dvals = result.clone();
 
     for _ in 0..n {
         match metro.step(sys, non_interacting) {
             MetropolisResult::Accepted(dvals) => {
-                // println!("{}", dvals.energy);
                 result.add_to_sum(&dvals);
                 prev_dvals = dvals;
             },
             MetropolisResult::Rejected => {
                 result.add_to_sum(&prev_dvals);
-                // println!("{}", prev_dvals.energy);
             },
         }
     }
-    result.scale_by(n as f64);
+    // Divide all values by n to get the mean
+    result.divide_by(n as f64);
     result
 }
