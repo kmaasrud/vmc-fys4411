@@ -27,6 +27,7 @@ pub fn dim_and_n() {
     const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
     const STEP_SIZE: f64 = 1.0;
     const MC_CYCLES: usize = 1_000;
+    const NON_INTERACTING: bool = true;
 
     fn analytical(sys: &System)  -> f64{
         let dim = sys.dimensionality;
@@ -61,7 +62,7 @@ pub fn dim_and_n() {
                     let ham: Hamiltonian = Hamiltonian::spherical();
                     let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
-                    let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
+                    let vals = monte_carlo(mc_cycles, &mut system, &mut metro, NON_INTERACTING); 
                     
                     let energy_exact = analytical(&system);
                     let energy_exact_squared = energy_exact.powi(2);
@@ -104,6 +105,7 @@ pub fn dim_and_n() {
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
     const MC_CYCLES: usize = 10000;
+    const NON_INTERACTING: bool = false;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
@@ -123,7 +125,7 @@ pub fn bruteforce_vs_importance() {
                 let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
                 // let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
                 let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
-                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
                 let data = format!("{},{},{}\n", step_size, alpha, vals.energy);
                 f.write_all(data.as_bytes()).expect("Unable to write data");
@@ -151,8 +153,8 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    run_for_sampler::<BruteForceMetropolis>();
-    // run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
+    // run_for_sampler::<BruteForceMetropolis>();
+    run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
 }
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
@@ -161,6 +163,7 @@ pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
     const MC_CYCLES: usize = 100000;
+    const NON_INTERACTING: bool = true;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
     const dim: usize = 3;
     const step_size: f64 = 1.;
@@ -185,7 +188,7 @@ pub fn sgd_noninteracting() {
             let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
             let mut system: System = System::distributed(N, dim, wf, ham, 1.);
             let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
-            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
             energies.push(vals.energy);
 
