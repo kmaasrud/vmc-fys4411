@@ -79,7 +79,7 @@ impl Metropolis for ImportanceMetropolis {
     fn new(_: f64)  -> Self { Self }
 
     fn step(&mut self, sys: &mut System, non_interacting: bool) -> MetropolisResult {
-        let (next_step, i) = sys.quantum_force_particle_change();
+        let (next_step, i) = sys.quantum_force_particle_change(non_interacting);
 
         /* // Old Greens below
         fn greens(x: &Particle, y: &Particle) -> f64 {
