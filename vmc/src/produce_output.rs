@@ -105,7 +105,7 @@ pub fn dim_and_n() {
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
     const MC_CYCLES: usize = 10000;
-    const NON_INTERACTING: bool = false;
+    const NON_INTERACTING: bool = true;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
