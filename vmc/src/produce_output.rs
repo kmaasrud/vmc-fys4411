@@ -31,11 +31,11 @@ pub fn track_each_cycle() {
     const DIM: usize = 3;
     const N: usize = 10;
 
-
     fn run_with<T: Metropolis>() {
         let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("track_each_cycle");
         create_dir(&path);
-        path.push(std::any::type_name::<T>().split("::").last().unwrap());
+        path.push(format!("{}.csv", std::any::type_name::<T>().split("::").last().unwrap()));
         let mut f = create_file(&path); 
         f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
@@ -69,8 +69,8 @@ pub fn track_each_cycle() {
                     result.add_to_sum(&prev_dvals);
                 },
             }
-            let scaled_energy = result.energy / (N as f64);
-            f.write_all(format!("{},{}", i, scaled_energy).as_bytes()).expect("Unable to write data");
+            let scaled_energy = result.energy / (i as f64);
+            f.write_all(format!("{},{}\n", i, scaled_energy).as_bytes()).expect("Unable to write data");
             println!("Monte Carlo cycles: {}      Energy: {}", i, scaled_energy);
         }
     }
@@ -82,81 +82,55 @@ pub fn track_each_cycle() {
 }
 
 
-/// Produces results for dimensions 1-3, different alphas and different number of particles and
-/// saves these in its own separate file. Does this a number of times corresponding to the number
-/// of cores the CPU running the program has.
+/// Produces results for dimensions 1-3, different alphas and different number of particles.
+/// Does this for each core, which means we'll get to evaluate the mean over them.
+/// BEWARE: This function takes a lot of time (6681.230737684s when I ran it last)
 #[allow(dead_code)]
 pub fn dim_and_n() {
-    const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
-    const STEP_SIZE: f64 = 1.0;
-    const MC_CYCLES: usize = 1_000;
+    const CSV_HEADER: &str = "N,Dim,Alpha,Energy\n";
+    const STEP_SIZE: f64 = 0.5;
+    const MC_CYCLES: usize = 10_000;
     const NON_INTERACTING: bool = true;
 
-    fn analytical(sys: &System)  -> f64{
-        let dim = sys.dimensionality;
-        let n = sys.particles.len();
-        let alpha = sys.wavefunction.alpha;
-        let particles = &sys.particles;
+    fn run_sim(mc_cycles: usize) {
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("dim_and_n");
+        create_dir(&path);
+        path.push(format!("{:?}.csv", std::thread::current().id()));
+        let mut f = create_file(&path); 
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        let energy =  (alpha as f64) * (n as f64) * (dim as f64) + (0.5  - 2. * (alpha as f64).powf(2.)) * (squared_position_sum as f64);
-        return energy
-    }
-
-    fn run_sim(start: Instant, mc_cycles: usize) {
-        let alphas: Vec<f64> = (0..90).map(|x| x as f64 / 100.).collect();
-        let path = format!("./data/numerical/dim_and_n/{:?}/", std::thread::current().id());
-        let path_ana = format!("./data/dim_and_n/analytical/{:?}/", std::thread::current().id());
-        /* create_dir(&path);
-        create_dir(&path_ana); */
+        let alphas = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8];
          
-        let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
+        let mut metro = BruteForceMetropolis::new(STEP_SIZE);
 
         for dim in 1..=3 {
+            println!("\tDimension {}", dim);
             for n in [1, 10, 100].iter() {
-                println!("Thread {:?} is calculating -- Dimensionality: {} --  Number of particles: {}", std::thread::current().id(), dim, n);
-
-                /* let mut f = create_file(&format!("{}/numerical_{}D_{}_n_part.csv", &path, dim, n));
-                let mut a = create_file(&format!("{}/analytical_{}D_{}_n_part.csv", &path_ana, dim, n)); */
-                /* f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
-                a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");  */
-
+                println!("\t\tNumber of particles {}", n);
                 for alpha in alphas.iter() {
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
+                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1 because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
                     let vals = monte_carlo(mc_cycles, &mut system, &mut metro, NON_INTERACTING); 
-                    
-                    let energy_exact = analytical(&system);
-                    let energy_exact_squared = energy_exact.powi(2);
-                    
-                    
-                    let duration = start.elapsed();
-                    let data_n = format!("{},{},{},{:?}\n", alpha, vals.energy, vals.energy_squared, duration);
-                    let data_a = format!("{},{},{},{:?}\n", alpha, energy_exact, energy_exact_squared, duration);
-                    
-                    /* f.write_all(data_n.as_bytes()).expect("Unable to write data");
-                    a.write_all(data_a.as_bytes()).expect("Unable to write data"); */
-                    println!("Dimension: {} --- Alpha: {:.1} --- N: {:.2} --- Energy per particle: {} --- Analytical: {:.2}", dim, alpha, n, vals.energy / (*n as f64), energy_exact);
+                    f.write_all(format!("{},{},{},{:?}\n", n, dim, alpha, vals.energy).as_bytes()).expect("Unable to write data");
+                    println!("\t\t\tAlpha value: {}, Energy: {}", alpha, vals.energy);
                 }
             }
         }
     }
 
     let n_cpus = num_cpus::get();
-    println!("Found {} cores!", n_cpus);
-
-    let mc: usize = MC_CYCLES / n_cpus;
-    println!("Running {} Monte Carlo cycles on each core.", mc);
-
     let pool = ThreadPool::new(n_cpus as u8);
 
-    let start = Instant::now();
-    for _ in 0..n_cpus {
-        pool.execute(move || run_sim(start, mc));
-    }
+    println!("Found {} cores!", n_cpus);
+    println!("Running {} Monte Carlo cycles on each core.", MC_CYCLES);
 
-    println!("All cores now executing, waiting for them to finish...");
+    let start = Instant::now();
+
+    for _ in 0..n_cpus {
+        pool.execute(move || run_sim(MC_CYCLES));
+    }
     pool.join_all();
 
     println!("Total time spent: {:?}", start.elapsed());
