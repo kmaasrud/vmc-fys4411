@@ -25,7 +25,7 @@ use num_cpus;
 #[allow(dead_code)]
 pub fn track_each_cycle() {
     const CSV_HEADER: &str = "MCCycles,Energy\n";
-    const NON_INTERACTING: bool = true;
+    const NON_INTERACTING: bool = false;
     const STEP_SIZE: f64 = 0.5;
     const ALPHA: f64 = 0.5;
     const DIM: usize = 3;

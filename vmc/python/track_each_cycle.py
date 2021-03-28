@@ -1,16 +1,27 @@
 import os
 import matplotlib.pyplot as plt
+plt.style.use("seaborn")
+import numpy as np
 from lib.utils import read_csv, find_cargo_root
+from lib.blocking import block
 
 data_folder = os.path.join(find_cargo_root(), "data")
+save_folder = os.path.join(os.path.dirname(find_cargo_root()), "doc", "assets")
+if not os.path.isdir(save_folder):
+    os.mkdir(save_folder)
 
+N = 10
 true_val = 15
 
 bruteforce = read_csv(os.path.join(data_folder, "track_each_cycle", "BruteForceMetropolis.csv"))
-bruteforce_error = [abs(val - true_val) for val in bruteforce["Energy"][-100:]]
 importance = read_csv(os.path.join(data_folder, "track_each_cycle", "ImportanceMetropolis.csv"))
-importance_error = [abs(val - true_val) for val in importance["Energy"][-100:]]
+x = [100, 1000, 3000, 5000, 7000, 10000]
+bruteforce_std = [np.sqrt(block(np.array(vals))[1]) for vals in [bruteforce["Energy"][1:up_to] for up_to in x]]
+importance_std = [np.sqrt(block(np.array(vals))[1]) for vals in [importance["Energy"][1:up_to] for up_to in x]]
 
-plt.plot(bruteforce["MCCycles"][-100:], bruteforce_error)
-plt.plot(importance["MCCycles"][-100:], importance_error)
-plt.show()
+plt.plot(x, bruteforce_std, "-o", label="Brute-force")
+plt.plot(x, importance_std, "-o", label="Importance")
+plt.xlabel("Monte Carlo cycles")
+plt.ylabel(r"$\sigma_E$")
+plt.legend()
+plt.savefig(os.path.join(save_folder, "std_at_cycles.png"))
