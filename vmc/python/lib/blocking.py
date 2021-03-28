@@ -1,7 +1,5 @@
 # Common imports
 import os
-import pandas as pd
-from pandas import DataFrame
 from numpy import log2, zeros, mean, var, sum, loadtxt, arange, array, cumsum, dot, transpose, diagonal, sqrt
 from numpy.linalg import inv
 
@@ -26,7 +24,19 @@ def block(x):
         # estimate variance of x
         s[i] = var(x)
         # perform blocking transformation
-        x = 0.5*(x[0::2] + x[1::2])
+
+        # Thanks @Schoyen and @gregwinther for this:
+        # We might get a situaion where the array is not easily split in two equal sizes
+        x_1 = x[0::2] # Extracting all numbers at odd positions
+        x_2 = x[1::2] # Numbers at even positions
+        # If length is not equal, remove highest number
+        if (len(x_1) > len(x_2)):
+            x_1 = x_1[:-1]
+        elif (len(x_2) > len(x_1)):
+            x_2 = x_2[:-1]
+
+        # Blocking transformation
+        x = 0.5*(x_1 + x_2)
    
     # generate the test observator M_k from the theorem
     M = (cumsum( ((gamma/s)**2*2**arange(1,d+1)[::-1])[::-1] )  )[::-1]
@@ -44,6 +54,8 @@ def block(x):
 
 
 if __name__ == "__main__":
+    from pandas import DataFrame
+    import pandas as pd
     # Where to save the figures and data files
     dim = 1
     particles = 1
