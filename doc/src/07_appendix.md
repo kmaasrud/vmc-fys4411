@@ -5,7 +5,7 @@
 
 ## Source code
 
-All source code for both the Rust VMC implementation and this document is found on the following GitHub Repository
+All source code for both the Rust VMC implementation and this document is found in the following GitHub Repository
 
 <https://github.com/kmaasrud/vmc-fys4411>
 

@@ -21,15 +21,15 @@ where our goal is to sample from $p(\theta)$. The Metropolis algorithm proceeds 
 		- Else, set $\theta_{i} = \theta_{i-1}$
 3. Repeat as many times as needed.
 		
-Our distribution $p$ here is of course $\Psi_T$. The proposal distribution $q(\theta'|\theta_{i-1})$ is the distribution that suggests a new sample given the previous one. In the case which we'll call the *brute force Metropolis*, our choice here is the normal distribution centered around the previous sample to favor samples close to it. This makes the sequence into a random walk and our  $r$ becomes a bit simpler, namely $r = \frac{g(\theta')}{g(\theta_{i-1})}$. A flaw with this is that the sampler might not converge around the important parts[^important] and jump around a bit "willy-nilly". To combat this, we utilize the proposal distribution shown in eq. {@eq:proposal_distr} to get more relevant samples quicker.
+Our distribution $p$ here is of course $\Psi_T$. The proposal distribution $q(\theta'|\theta_{i-1})$ is the distribution that suggests a new sample given the previous one. In the case which we'll call the *brute force Metropolis*, our choice here is the normal distribution centered around the previous sample to favor samples close to it. This makes the sequence into a random walk and our  $r$ becomes a bit simpler, namely $r = \frac{g(\theta')}{g(\theta_{i-1})}$. A flaw with this is that the sampler might not converge around the important parts[^important] and jump around a bit "willy-nilly". To combat this, we utilize the proposal distribution shown in eq. {@eq:proposal_distr} to get more relevant samples quicker. We will use the term *importance sampling Metropolis* to refer to this method.
 
 [^important]: Namely the greater values of the distribution, which actually contribute.
 
-### Monte Carlo integration {.unnumbered}
+### Monte Carlo integration {-}
 
 To evaluate the required integrals and find the energy, we use Monte Carlo integration (see section 2.3.1 of our previous work [@AasrudRongveRaniseth2019]). Instead of sampling randomly, we use the Metropolis algorithm as explained above to get our new samples.
 
-### Steepest gradient descent {#sec:gradient-descent .unnumbered}
+### Steepest gradient descent {-}
 
 Lastly, to reach the optimum value of $\alpha$, we wish to find the minimum of $E(\alpha)$, in tune with the variational principle as shown in {@sec:the-variational-principle}. This is achieved using a simple steepest gradient descent (or SDG) method. Briefly explained, it works by following the negative value of the gradient, which always points in the direction of greatest momentaneous descent. So it proceeds as follows:
 

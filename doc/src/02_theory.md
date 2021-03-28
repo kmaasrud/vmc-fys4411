@@ -42,7 +42,7 @@ Using the additional notation of $\dot \Psi_{T, \alpha} = \frac{\partial \langle
 
 $$ \dot E_\alpha = 2\left(\left\langle\frac{\dot \Psi_{T, \alpha}}{\Psi(\alpha)} E_L(\alpha)\right\rangle - \left\langle\frac{\dot \Psi_{T, \alpha}}{\Psi(\alpha)}\right\rangle \langle E_L(\alpha)\rangle\right) $$ {#eq:energy-deriv}
 
-Further explanation on how this is used in our gradient descent method is explained in {@sec:gradient-descent}.
+Further explanation on how this is used in our gradient descent method is explained in the section [Steepest gradient descent](#steepest-gradient-descent).
 
 ## Wave function
 
