@@ -2,24 +2,13 @@
 import os
 import pandas as pd
 from pandas import DataFrame
-
-
 from numpy import log2, zeros, mean, var, sum, loadtxt, arange, array, cumsum, dot, transpose, diagonal, sqrt
 from numpy.linalg import inv
-
-# Where to save the figures and data files
-
-dim = 1
-particles = 1
-
-DATA_ID = "./dummydata/"
-filename = f"experiment_{dim}D_{particles}_particles_num.csv"
 
 
 def data_path(dat_id):
     return os.path.join(DATA_ID, dat_id)
 
-infile = open(data_path(filename),'r')
 
 def block(x):
     # preliminaries
@@ -54,14 +43,24 @@ def block(x):
     return mu, s[k]/2**(d-k)
 
 
+if __name__ == "__main__":
+    # Where to save the figures and data files
+    dim = 1
+    particles = 1
 
-df = pd.read_csv(infile)
+    DATA_ID = "./dummydata/"
+    filename = f"experiment_{dim}D_{particles}_particles_num.csv"
 
-x = array(df['Energy'].values.tolist())
+    infile = open(data_path(filename),'r')
 
-(mean, var) = block(x) 
-std = sqrt(var)
+    df = pd.read_csv(infile)
 
-data ={'Mean':[mean], 'STDev':[std]}
-frame = pd.DataFrame(data,index=['Values'])
-print(frame) 
+    x = array(df['Energy'].values.tolist())
+
+    (mean, var) = block(x) 
+    std = sqrt(var)
+
+    data ={'Mean':[mean], 'STDev':[std]}
+    frame = pd.DataFrame(data,index=['Values'])
+    print(frame) 
+    infile.close()
