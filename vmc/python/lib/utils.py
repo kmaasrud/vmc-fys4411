@@ -8,29 +8,36 @@ def read_csv(filename):
         # Strip any trailing whitespace or newlines
         line = [l.rstrip() for l in line] 
 
-        # Try evaluating each element to a Python datatype.
-        # This means that e.g. 2+2 will be evaluted as 4, and not a string
+        # Try making a float of the data
         try:
-            line = [eval(l) for l in line]
-        # NameError means its a string, just store the plain value
-        except NameError:
+            line = [float(l) for l in line]
+        # ValueError means its a string, just store the plain value
+        except ValueError:
             pass
         
         return line
 
-    dictionary = {}
+    csv = {}
     with open(filename) as f:
         # Read in first line as header and add as keywords in dictionary
         header = process_line(f.readline())
-        dictionary = {h: [] for h in header}
+        csv = {h: [] for h in header}
 
         # Each proceeding line will be added to its respective header
         for line in f.readlines():
             line = process_line(line)
             for i, h in enumerate(header):
-                dictionary[h].append(line[i])
+                csv[h].append(line[i])
 
-    return dictionary
+    return csv
+
+def ensure_path(DIR):
+    if not os.path.exists(DIR):
+        os.makedirs(DIR)
+        print(f'made directory {PLOT_DIR}')
+
+def save_fig(DIR, id):
+    plt.savefig(join_path(DIR, id) + ".png", format = 'png')
 
 
 def find_cargo_root():
@@ -45,6 +52,3 @@ def find_cargo_root():
         # Change path to its parent and loop again
         else:
             root_path = os.path.dirname(root_path)
-
-if __name__ == "__main__":
-    print(find_cargo_root())
