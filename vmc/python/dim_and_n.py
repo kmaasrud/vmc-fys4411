@@ -40,9 +40,9 @@ for N in list(set(mean_data["N"])):
             if d == 3:
                 x3.append(a), y3.append(e / N)
 
-    plt.plot(x1, y1, label="Dimensionality 1")
-    plt.plot(x2, y2, label="Dimensionality 2")
-    plt.plot(x3, y3, label="Dimensionality 3")
+    plt.plot(x1, y1, "-o", label="Dimensionality 1")
+    plt.plot(x2, y2, "-o", label="Dimensionality 2")
+    plt.plot(x3, y3, "-o", label="Dimensionality 3")
     mean_min = mean([x[y.index(min(y))] for x, y in [(x1, y1), (x2, y2), (x3, y3)]])
     plt.vlines(mean_min, min(y1), max(y3), colors="black", linestyles="dashed", label=f"Mean minimum: {round(mean_min, 2)}")
     plt.title(f"Number of particles N = {int(N)}")
@@ -66,10 +66,10 @@ for N in list(set(mean_data["N"])):
                 x3.append(a), y3.append(e)
 
     plt.clf()
-    plt.plot(x1, y1, label="Dimensionality 1")
-    plt.plot(x2, y2, label="Dimensionality 2")
-    plt.plot(x3, y3, label="Dimensionality 3")
-    plt.title(f"Number of particles N = {N}")
+    plt.plot(x1, y1, "-o", label="Dimensionality 1")
+    plt.plot(x2, y2, "-o", label="Dimensionality 2")
+    plt.plot(x3, y3, "-o", label="Dimensionality 3")
+    plt.title(f"Number of particles N = {int(N)}")
     plt.xlabel(r"$\alpha$")
     plt.ylabel(r"$\sigma_{\langle E\rangle}$")
     plt.legend(loc = 1, prop = {'size':13}, frameon = True)
