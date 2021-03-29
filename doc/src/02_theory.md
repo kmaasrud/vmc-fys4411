@@ -216,3 +216,17 @@ u''(r_{ij}) &= \frac{a(a-2r_{ij})}{r_{ij}^2(a-r_{ij})^2}, \quad \text{for} \quad
 \end{align*}
 
 <!-- Are you done here, @annasro? -->
+
+
+### One Body density
+
+The probability of finding a particle at a ceratin position is given by the one body density. The probability is given by the following integral. 
+
+\begin{align*}
+  \rho(x_1) = \int{|\Psi(x_1, x_2,...|^2 dx_2 ...dx_N}
+\end{align*}
+
+Hence te probaility is given by the integral over all dimensions exept the one in question.The integral gives a distrubution of all the particles in question. 
+
+For a system with only a few particles, this would be hard to solve. Approximating the integral using Monte Carlo integration, is however a much simpler job. 
+

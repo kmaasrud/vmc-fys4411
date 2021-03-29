@@ -5,7 +5,7 @@ import os
 
 from . import pathmaker as pth
 
-plt.style.use('Solarize_Light2')
+plt.style.use('seaborn')
 
 
 def readfiles(fileName, index):
