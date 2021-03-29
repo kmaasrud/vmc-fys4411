@@ -25,3 +25,29 @@ In figure \ref{fig:optimal_alpha}, we see that the optimal value of $\alpha$ see
   \caption{Expected local energy (in units of $\hbar\omega_\text{ho}$) per particle, found at $N=1,10,100$ and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The black dashed line shows the mean minimum over all three dimensions.}
   \label{fig:optimal_alpha_std}
 \end{figure}
+\FloatBarrier
+
+
+## Steepest Gradient Descent
+
+Only the non-interacting case with 10 particles in 3 dimensions were tested with 20 thousand Monte Carlo cycles. The first test was to see what learning rate yielded sufficiently fast convergence to the correct energy. The test was done with start $alpha = 0.2$. The result can be seen in \ref{fig:sgd-learning-rates}
+\begin{figure}[ht]%
+  \centerfloat
+  \captionsetup[subfigure]{labelformat=empty}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/SGD_learning-rate.png}}
+  \caption{Steepest gradient descent of start $\alpha = 0.2$ with different learning rates, $\eta$.}
+  \label{fig:sgd-learning-rates}
+\end{figure}
+\FloatBarrier
+This shows that a learning rate of $0.0004$ is on the safe side of stability, while still beeing fast enough. We then used this learning rate for testing the convergence of our SGD to the correct $\alpha$ by starting at eight different alpha values: $\alpha = \{0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$. From figure \ref{fig:sgd-alphas} below we see that the steepest gradient descent method is executed beautifully as all starting values approaches the correct $\alpha$ value of $0.5$.
+
+\begin{figure}[ht]%
+  \centerfloat
+  \captionsetup[subfigure]{labelformat=empty}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/SGD_alphas.png}}
+  \caption{Steepest gradient descent of different start $\alpha$.}
+  \label{fig:sgd-alphas}
+\end{figure}
+
+\FloatBarrier
+

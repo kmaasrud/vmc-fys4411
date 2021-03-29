@@ -62,6 +62,7 @@ numbersections: True
 header-includes: |
     \usepackage{graphicx}
     \usepackage{subfig}
+    \usepackage{placeins}
     \makeatletter
     \newcommand*{\centerfloat}{%
       \parindent \z@
@@ -69,3 +70,4 @@ header-includes: |
       \rightskip\leftskip
       \parfillskip \z@skip}
     \makeatother
+# placeins is for \floatBarrier command

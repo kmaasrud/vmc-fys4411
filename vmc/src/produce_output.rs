@@ -201,7 +201,7 @@ pub fn bruteforce_vs_importance() {
 pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
-    const MC_CYCLES: usize = 100000;
+    const MC_CYCLES: usize = 20000;
     const NON_INTERACTING: bool = true;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
     const dim: usize = 3;
@@ -215,10 +215,14 @@ pub fn sgd_noninteracting() {
         let mut done: bool = false;
         let mut energies:Vec<f64> = vec![];
 
-        let path = format!("./data/sgd_noninteracting/learning-rate");
-        // create_dir(&path);
-        // let mut f = create_file(&format!("{}/learning-rate_{}.csv", &path, learning_rate));
-        // f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+        let mut path = find_cargo_root().unwrap();
+        //path.push("data"); path.push("sgd_noninteracting"); path.push("start-alpha");
+        path.push("data"); path.push("sgd_noninteracting"); path.push("learning-rate");
+        create_dir(&path);
+        //path.push(format!("start-alpha_{}.csv", start_alpha));
+        path.push(format!("learning-rate_{}.csv", learning_rate));
+        let mut f = create_file(&path);
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
         let mut i:usize = 0;
         while !done {
@@ -232,8 +236,8 @@ pub fn sgd_noninteracting() {
             energies.push(vals.energy);
 
             let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
-            // f.write_all(data.as_bytes()).expect("Unable to write data");
-            println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
+            f.write_all(data.as_bytes()).expect("Unable to write data");
+            println!("Dimension: {} --- Alpha: {:.16} --- Step size: {:.2} --- Energy: {:.16} --- Iteration: {}", dim, alphas[i], step_size, vals.energy, i);
 
 
             let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
@@ -243,7 +247,7 @@ pub fn sgd_noninteracting() {
             if energy_deriv.abs() < tolerance {
                 println!("Tolerance is met, exiting.");
                 done = true;
-            } else if i > 100 {
+            } else if i > 150 {
                 println!("Max lim met, exiting.");
                 done = true;
             }
@@ -257,14 +261,16 @@ pub fn sgd_noninteracting() {
     // Multithreading
     println!("Running simulations using BruteForceMetropolis algorithm...");
     let start_alphas:Vec<f64> = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-    let learning_rates:Vec<f64> = vec![0.00005, 0.0001, 0.0002, 0.0004, 0.0008, 0.0016, 0.032, 0.064];
+    let learning_rates:Vec<f64> = vec![0.00005, 0.0001, 0.0002, 0.0004, 0.0008, 0.0016, 0.0032, 0.0064];
     let start_alpha: f64 = 0.2;
+    let learning_rate: f64 = 0.0004;
 
     println!("Spawning threadpool of 8 threads, with {} Monte Carlo cycles on each", &MC_CYCLES);
     let pool = ThreadPool::new(8);
     let start = Instant::now();
 
-
+    
+    //for start_alpha in start_alphas {
     for learning_rate in learning_rates {
         pool.execute(move || run(start_alpha, learning_rate)); //Running the simulation on each thread individually
     }
