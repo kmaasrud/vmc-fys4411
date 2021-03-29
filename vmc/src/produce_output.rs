@@ -7,92 +7,130 @@ use crate::{
     WaveFunction,
     Hamiltonian,
     Metropolis,
+    MetropolisResult,
+    montecarlo::SampledValues,
 };
 
 use std::{
+    env,
     time::Instant,
     fs::{File, create_dir_all},
-    path::Path,
+    path::{Path, PathBuf},
     io::prelude::*,
     
 };
 use num_cpus;
 
 
+#[allow(dead_code)]
+pub fn track_each_cycle() {
+    const CSV_HEADER: &str = "MCCycles,Energy\n";
+    const NON_INTERACTING: bool = false;
+    const STEP_SIZE: f64 = 0.5;
+    const ALPHA: f64 = 0.5;
+    const DIM: usize = 3;
+    const N: usize = 10;
 
-/// Produces results for dimensions 1-3, different alphas and different number of particles and
-/// saves these in its own separate file. Does this a number of times corresponding to the number
-/// of cores the CPU running the program has.
-pub fn dim_and_n() {
-    const CSV_HEADER: &str = "Alpha,Energy,Energy2,TimeElapsed\n";
-    const STEP_SIZE: f64 = 1.0;
-    const MC_CYCLES: usize = 1_000;
+    fn run_with<T: Metropolis>() {
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("track_each_cycle");
+        create_dir(&path);
+        path.push(format!("{}.csv", std::any::type_name::<T>().split("::").last().unwrap()));
+        let mut f = create_file(&path); 
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-    fn analytical(sys: &System)  -> f64{
-        let dim = sys.dimensionality;
-        let n = sys.particles.len();
-        let alpha = sys.wavefunction.alpha;
-        let particles = &sys.particles;
+        let mut metro: T = T::new(STEP_SIZE);
+        let ham: Hamiltonian = Hamiltonian::spherical();
+        let wf = WaveFunction{ alpha: ALPHA, beta: 1. }; // Beta = 1, because spherical trap
+        let mut system: System = System::distributed(N, DIM, wf, ham, 1.);
 
-        let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
-        let energy =  (alpha as f64) * (n as f64) * (dim as f64) + (0.5  - 2. * (alpha as f64).powf(2.)) * (squared_position_sum as f64);
-        return energy
+        let pre_steps = 1000;
+        let mut result = SampledValues::new();
+
+        // Run a couple of steps to get the system into equilibrium
+        for _ in 0..pre_steps {
+            match metro.step(&mut system, NON_INTERACTING) {
+                MetropolisResult::Accepted(vals) => result = vals,
+                MetropolisResult::Rejected => {},
+            }
+        }
+
+        // Store the previous values to add if Metropolis step is rejected
+        let mut prev_dvals = result.clone();
+
+        for i in 0..10000 {
+            match metro.step(&mut system, NON_INTERACTING) {
+                MetropolisResult::Accepted(dvals) => {
+                    result.accepted_steps += 1;
+                    result.add_to_sum(&dvals);
+                    prev_dvals = dvals;
+                },
+                MetropolisResult::Rejected => {
+                    result.add_to_sum(&prev_dvals);
+                },
+            }
+            let scaled_energy = result.energy / (i as f64);
+            f.write_all(format!("{},{}\n", i, scaled_energy).as_bytes()).expect("Unable to write data");
+            println!("Monte Carlo cycles: {}      Energy: {}", i, scaled_energy);
+        }
     }
 
-    fn run_sim(start: Instant, mc_cycles: usize) {
-        let alphas: Vec<f64> = (0..90).map(|x| x as f64 / 100.).collect();
-        let path = format!("./data/numerical/dim_and_n/{:?}/", std::thread::current().id());
-        let path_ana = format!("./data/dim_and_n/analytical/{:?}/", std::thread::current().id());
+    let pool = ThreadPool::new(2);
+    pool.execute(move || run_with::<BruteForceMetropolis>());
+    pool.execute(move || run_with::<ImportanceMetropolis>());
+    pool.join_all();
+}
+
+
+/// Produces results for dimensions 1-3, different alphas and different number of particles.
+/// Does this for each core, which means we'll get to evaluate the mean over them.
+/// BEWARE: This function takes a lot of time (6681.230737684s when I ran it last)
+#[allow(dead_code)]
+pub fn dim_and_n() {
+    const CSV_HEADER: &str = "N,Dim,Alpha,Energy\n";
+    const STEP_SIZE: f64 = 0.5;
+    const MC_CYCLES: usize = 10_000;
+    const NON_INTERACTING: bool = true;
+
+    fn run_sim(mc_cycles: usize) {
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("dim_and_n");
         create_dir(&path);
-        create_dir(&path_ana);
+        path.push(format!("{:?}.csv", std::thread::current().id()));
+        let mut f = create_file(&path); 
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
+
+        let alphas = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8];
          
-        let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
+        let mut metro = BruteForceMetropolis::new(STEP_SIZE);
 
         for dim in 1..=3 {
+            println!("\tDimension {}", dim);
             for n in [1, 10, 100].iter() {
-                println!("Thread {:?} is calculating -- Dimensionality: {} --  Number of particles: {}", std::thread::current().id(), dim, n);
-
-                let mut f = create_file(&format!("{}/numerical_{}D_{}_n_part.csv", &path, dim, n));
-                let mut a = create_file(&format!("{}/analytical_{}D_{}_n_part.csv", &path_ana, dim, n));
-                f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
-                a.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
-
+                println!("\t\tNumber of particles {}", n);
                 for alpha in alphas.iter() {
                     let ham: Hamiltonian = Hamiltonian::spherical();
-                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1, because spherical trap
+                    let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Beta = 1 because spherical trap
                     let mut system: System = System::distributed(*n, dim, wf, ham, 1.);
-                    let vals = monte_carlo(mc_cycles, &mut system, &mut metro); 
-                    
-                    let energy_exact = analytical(&system);
-                    let energy_exact_squared = energy_exact.powi(2);
-                    
-                    
-                    let duration = start.elapsed();
-                    let data_n = format!("{},{},{},{:?}\n", alpha, vals.energy, vals.energy_squared, duration);
-                    let data_a = format!("{},{},{},{:?}\n", alpha, energy_exact, energy_exact_squared, duration);
-                    
-                    f.write_all(data_n.as_bytes()).expect("Unable to write data");
-                    a.write_all(data_a.as_bytes()).expect("Unable to write data");
-                    println!("Dimension: {} --- Alpha: {:.1} --- N: {:.2} --- Energy per particle: {} --- Analytical: {:.2}", dim, alpha, n, vals.energy / (*n as f64), energy_exact);
+                    let vals = monte_carlo(mc_cycles, &mut system, &mut metro, NON_INTERACTING); 
+                    f.write_all(format!("{},{},{},{:?}\n", n, dim, alpha, vals.energy).as_bytes()).expect("Unable to write data");
+                    println!("\t\t\tAlpha value: {}, Energy: {}", alpha, vals.energy);
                 }
             }
         }
     }
 
     let n_cpus = num_cpus::get();
-    println!("Found {} cores!", n_cpus);
-
-    let mc: usize = MC_CYCLES / n_cpus;
-    println!("Running {} Monte Carlo cycles on each core.", mc);
-
     let pool = ThreadPool::new(n_cpus as u8);
 
-    let start = Instant::now();
-    for _ in 0..n_cpus {
-        pool.execute(move || run_sim(start, mc));
-    }
+    println!("Found {} cores!", n_cpus);
+    println!("Running {} Monte Carlo cycles on each core.", MC_CYCLES);
 
-    println!("All cores now executing, waiting for them to finish...");
+    let start = Instant::now();
+
+    for _ in 0..n_cpus {
+        pool.execute(move || run_sim(MC_CYCLES));
+    }
     pool.join_all();
 
     println!("Total time spent: {:?}", start.elapsed());
@@ -101,21 +139,23 @@ pub fn dim_and_n() {
 
 /// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
 /// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
+#[allow(dead_code)]
 pub fn bruteforce_vs_importance() {
     const N: usize = 10;
     const MC_CYCLES: usize = 10000;
+    const NON_INTERACTING: bool = false;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
 
     fn run_sim<T: Metropolis>(step_size: f64) {
         let alphas: Vec<f64> = (1..19).map(|x| x as f64 / 18.).collect();
         let mut metro: T = T::new(step_size);
-        for dim in 1..=3 {
+        for dim in 3..=3 {
             println!("Dimension: {}", dim);
             let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
-            create_dir(&path);
+            // create_dir(&path);
 
-            let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
-            f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+            // let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
+            // f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
             for alpha in alphas.iter() {
                 let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
@@ -123,10 +163,10 @@ pub fn bruteforce_vs_importance() {
                 let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
                 // let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
                 let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
-                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
                 let data = format!("{},{},{}\n", step_size, alpha, vals.energy);
-                f.write_all(data.as_bytes()).expect("Unable to write data");
+                // f.write_all(data.as_bytes()).expect("Unable to write data");
                 println!("\tAlpha: {:.2} --- Step size: {:.2} --- Energy per particle: {:.4} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
             }
         }
@@ -151,16 +191,18 @@ pub fn bruteforce_vs_importance() {
         println!("Time spent: {:?}", start.elapsed());
     }
 
-    run_for_sampler::<BruteForceMetropolis>();
-    // run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
+    // run_for_sampler::<BruteForceMetropolis>();
+    run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
 }
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
 /// Only done using the noninteracting case, with importance sampling
+#[allow(dead_code)]
 pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
     const MC_CYCLES: usize = 100000;
+    const NON_INTERACTING: bool = true;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
     const dim: usize = 3;
     const step_size: f64 = 1.;
@@ -174,9 +216,9 @@ pub fn sgd_noninteracting() {
         let mut energies:Vec<f64> = vec![];
 
         let path = format!("./data/sgd_noninteracting/learning-rate");
-        create_dir(&path);
-        let mut f = create_file(&format!("{}/learning-rate_{}.csv", &path, learning_rate));
-        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+        // create_dir(&path);
+        // let mut f = create_file(&format!("{}/learning-rate_{}.csv", &path, learning_rate));
+        // f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
         let mut i:usize = 0;
         while !done {
@@ -185,12 +227,12 @@ pub fn sgd_noninteracting() {
             let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
             let mut system: System = System::distributed(N, dim, wf, ham, 1.);
             let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
-            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro); 
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
             energies.push(vals.energy);
 
             let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
-            f.write_all(data.as_bytes()).expect("Unable to write data");
+            // f.write_all(data.as_bytes()).expect("Unable to write data");
             println!("Dimension: {} --- Alpha: {} --- Step size: {:.2} --- Energy: {}", dim, alphas[i], step_size, vals.energy);
 
 
@@ -232,15 +274,33 @@ pub fn sgd_noninteracting() {
     println!("Time spent: {:?}", start.elapsed());
     }
 
-fn create_file(filepath: &str) -> File {
-    match File::create(&Path::new(filepath)) {
+fn create_file(filepath: &PathBuf) -> File {
+    match File::create(filepath) {
         Ok(f) => f,
-        Err(why) => panic!("Unable to create {}: {}", filepath, why),
+        Err(why) => panic!("Unable to create {:?}: {}", filepath, why),
     }
 }
 
-fn create_dir(path: &str) {
-    if Path::new(&path).exists() == false {
-        create_dir_all(&path).expect("Unable to create folder");
+fn create_dir(path: &PathBuf) {
+    if Path::new(path).exists() == false {
+        create_dir_all(path).expect("Unable to create folder");
+    }
+}
+
+fn find_cargo_root() -> Option<PathBuf> {
+    let mut path: PathBuf = env::current_dir().unwrap().into();
+    let file = Path::new("Cargo.toml");
+
+    loop {
+        path.push(file);
+
+        if path.is_file() {
+            path.pop();
+            break Some(path);
+        }
+
+        if !(path.pop() && path.pop()) {
+            break None;
+        }
     }
 }

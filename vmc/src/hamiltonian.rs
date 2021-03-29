@@ -7,50 +7,38 @@ pub struct Hamiltonian {
 }
 
 impl Hamiltonian {
+    // --- Constructors ---
     pub fn spherical() -> Self {
         Hamiltonian { gamma_squared: 1. }
     }
-
     pub fn elliptical(gamma: f64) -> Self {
         Hamiltonian { gamma_squared: gamma.powi(2) }
     }
 
-
-    fn kinetic_non_interacting(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace_numeric(&mut particles.clone())
+    // --- Kinetic energies ---
+    /// Kinetic energy for non-interacting particles using numerically calculated Laplacian
+    fn kinetic_non_interacting(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace(particles, true)
+    }
+    /// Kinetic energy for interacting particles using numerically calculated Laplacian
+    fn kinetic(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
+        - 0.5 * wf.laplace(particles, false)
     }
 
-    fn kinetic(&self, wf: &WaveFunction, particles: &Vec<Particle>) -> f64 {
-        - 0.5 * wf.laplace(&particles)
-    }
-
-
+    // --- Potential energy ---
+    /// Potential energy of the spherical/elliptical harmonic trap
     fn trap_potential(&self, particles: &Vec<Particle>) -> f64 {
         let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum_scaled_z(&self.gamma_squared)).sum();
-        // let squared_position_sum: f64 = particles.iter().map(|x| x.squared_sum()).sum();
         0.5 * squared_position_sum
     }
 
-    fn inter_boson_potential(&self, particles: &Vec<Particle>) -> f64 {
-        let mut sum: f64 = 0.;
-        for i in 0..particles.len() {
-            for j in i+1..particles.len() {
-                if particles[i].distance_to(&particles[j]) > 0.0043 {
-                    sum += 0.;
-                } else {
-                    sum += f64::INFINITY;
-                }
-            }
-        }
-        sum
-    }
-
-
+    // --- Total local energies ---
+    /// Total local energy, assuming non-interacting particles
     pub fn energy_non_interacting(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
         self.kinetic_non_interacting(wf, particles) + self.trap_potential(particles)
     }
-
+    /// Total local energy for interacting particles
     pub fn energy(&self, wf: &WaveFunction, particles: &mut Vec<Particle>) -> f64 {
-        self.kinetic(wf, particles) + self.trap_potential(particles) + self.inter_boson_potential(particles)
+        self.kinetic(wf, particles) + self.trap_potential(particles)
     }
 }
