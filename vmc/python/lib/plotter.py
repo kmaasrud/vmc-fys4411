@@ -47,7 +47,6 @@ def plot_dataframe(df, PLOT_DIR, fig_id):
     plt.figure()
     df.plot(x = 'Alpha')
 
-    
     pth.pathmaker(PLOT_DIR)
     plt.xlabel('Alpha')
     plt.ylabel('Energy')
@@ -60,7 +59,6 @@ def plot_dataframe(df, PLOT_DIR, fig_id):
     
     return 0
 
-    
 
 def plot_E_alpha_gaussian(x_n, y_n, err_n, x_a, y_a, err_a, dim, particles):
     df_a = pd.read_csv(DATA_DIR + f"dummy_{dim}D_{particles}_particles_ana.csv")
