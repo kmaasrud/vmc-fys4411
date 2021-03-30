@@ -58,9 +58,18 @@ This shows that a learning rate of $0.0004$ is on the safe side of stability, wh
 
 Following these tests for a non-interacting system, we put our solver to the task of finding the energy of a system of $10$ particles in an elliptical harmonic potential ($\beta = \gamma = 2.82843$), at different values of $\alpha$ when the particles interact with eachother. The results are shown in figure \ref{fig:interacting-elliptical}.
 
-\begin{figure}[ht]
+\begin{figure}[htb]
   \centerfloat
-  \includegraphics[scale=.6]{assets/plots/interacting_elliptical.png}
+  \includegraphics[scale=.5]{assets/plots/interacting_elliptical.png}
   \caption{The energy of a three-dimensional system of $10$ interacting particles, situated in an elliptical harmonic oscillator potential well. The energy is evaluated against different values of $\alpha$ and using the two Metropolis algorithms listed.}
   \label{fig:interacting-elliptical}
+\end{figure}
+
+They are quite ambigious, especially in the case of importance sampling. After this, we ran our SGD solver with the same interacting system. This yielded promising results under both Metropolis algorithms, both converging on a value just below $\alpha = 0.5$. However, as seen in figure \ref{fig:sgd-interacting}, the brute force Metropolis algorithm converges more quickly.
+
+\begin{figure}[htb]
+  \centerfloat
+  \includegraphics[scale=.5]{assets/plots/sgd_interacting.png}
+  \caption{Convergence of $\alpha$ for the abovementioned system, solved using the two Metropolis algorithms listed. An acceptable convergence was aquired after $150$ steps, and so the SGD was stopped there for both algorithms.}
+  \label{fig:sgd-interacting}
 \end{figure}
