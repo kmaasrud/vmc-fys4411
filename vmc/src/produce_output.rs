@@ -24,7 +24,7 @@ use num_cpus;
 
 #[allow(dead_code)]
 pub fn track_each_cycle() {
-    const CSV_HEADER: &str = "alpha,Energy\n";
+    const CSV_HEADER: &str = "MCCycles,Energy\n";
     const NON_INTERACTING: bool = false;
     const STEP_SIZE: f64 = 0.5;
     const ALPHA: f64 = 0.5;
@@ -33,7 +33,7 @@ pub fn track_each_cycle() {
 
     fn run_with<T: Metropolis>() {
         let mut path = find_cargo_root().unwrap();
-        path.push("data"); path.push("ana_vs_num");
+        path.push("data"); path.push("track_each_cycle");
         create_dir(&path);
         path.push(format!("{}.csv", std::any::type_name::<T>().split("::").last().unwrap()));
         let mut f = create_file(&path); 
@@ -145,31 +145,24 @@ pub fn bruteforce_vs_importance() {
     const MC_CYCLES: usize = 10000;
     const NON_INTERACTING: bool = false;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
+    const DIM: usize = 3;
 
-    fn run_sim<T: Metropolis>(step_size: f64) {
-        let alphas: Vec<f64> = (1..19).map(|x| x as f64 / 18.).collect();
-        let mut metro: T = T::new(step_size);
-        for dim in 3..=3 {
-            println!("Dimension: {}", dim);
-            let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
-            // create_dir(&path);
+    fn run_sim<T: Metropolis>(alpha: f64) {
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("dim_and_n");
+        create_dir(&path);
+        path.push(format!("{:?}.csv", std::thread::current().id()));
+        let mut f = create_file(&path); 
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-            // let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
-            // f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+        let mut metro: T = T::new(0.5);
+        let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+        let wf = WaveFunction{ alpha: alpha, beta: 2.82843 }; // Set beta = gamma
+        let mut system: System = System::distributed(N, DIM, wf, ham.clone(), 1.);
+        let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
-            for alpha in alphas.iter() {
-                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-                // let ham: Hamiltonian = Hamiltonian::spherical();
-                let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
-                // let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
-                let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
-                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
-
-                let data = format!("{},{},{}\n", step_size, alpha, vals.energy);
-                // f.write_all(data.as_bytes()).expect("Unable to write data");
-                println!("\tAlpha: {:.2} --- Step size: {:.2} --- Energy per particle: {:.4} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
-            }
-        }
+        let data = format!("{},{}\n", alpha, vals.energy);
+        f.write_all(data.as_bytes()).expect("Unable to write data");
     }
 
     fn run_for_sampler<T: Metropolis>() {
