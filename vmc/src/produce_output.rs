@@ -301,13 +301,12 @@ pub fn sgd_interacting() {
             }
         }
     }
-    let start_alphas:Vec<f64> = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     let learning_rate = 0.0004;
     let start_alpha: f64 = 0.2;
 
     let start = Instant::now();
     run::<BruteForceMetropolis>(start_alpha, learning_rate);
-    // run::<ImportanceMetropolis>(start_alpha, learning_rate);
+    run::<ImportanceMetropolis>(start_alpha, learning_rate);
     println!("Time spent: {:?}", start.elapsed());
 }
 
