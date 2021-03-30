@@ -20,7 +20,8 @@ pub use threadpool::ThreadPool;
 fn main() {
     // produce_output::track_each_cycle();
     // produce_output::dim_and_n();
-    produce_output::interacting_elliptical();
+    // produce_output::interacting_elliptical();
     // produce_output::sgd_noninteracting();
+    produce_output::sgd_interacting();
     // create_output::metropolis();
 }

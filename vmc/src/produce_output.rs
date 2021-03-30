@@ -255,7 +255,61 @@ pub fn sgd_noninteracting() {
     pool.join_all();
     
     println!("Time spent: {:?}", start.elapsed());
+}
+
+
+#[allow(dead_code, unused_variables)]
+pub fn sgd_interacting() {
+    const N: usize = 10;
+    const MC_CYCLES: usize = 1000;
+    const NON_INTERACTING: bool = false;
+    const CSV_HEADER: &str = "SGDStep,Alpha,Energy\n";
+    const DIM: usize = 3;
+    const STEP_SIZE: f64 = 1.;
+    const TOLERANCE: f64 = 0.00001;
+
+    fn run<T: Metropolis>(start_alpha:f64, learning_rate: f64) {
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("sgd_interacting");
+        create_dir(&path);
+        path.push("bruteforce.csv");
+        let mut f = create_file(&path);
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+
+        let mut metro: ImportanceMetropolis = ImportanceMetropolis::new(STEP_SIZE);
+        let mut alphas:Vec<f64> = vec![];
+        alphas.push(start_alpha);
+
+        for i in 0..150 {
+            let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+            let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
+            let mut system: System = System::distributed(N, DIM, wf, ham, 1.);
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
+
+            let data = format!("{},{},{}\n", i, alphas[i], vals.energy);
+            f.write_all(data.as_bytes()).expect("Unable to write data");
+            println!("Alpha: {:.3}, Energy: {:.3}", alphas[i], vals.energy);
+
+            let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
+            let new_alpha: f64 = alphas[i] - learning_rate * energy_deriv;
+            alphas.push(new_alpha);
+
+            if energy_deriv.abs() < TOLERANCE {
+                println!("Found optimal alpha: {}", alphas[i]);
+                break;
+            }
+        }
     }
+    let start_alphas:Vec<f64> = vec![0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    let learning_rate = 0.0004;
+    let start_alpha: f64 = 0.2;
+
+    let start = Instant::now();
+    run::<BruteForceMetropolis>(start_alpha, learning_rate);
+    run::<ImportanceMetropolis>(start_alpha, learning_rate);
+    println!("Time spent: {:?}", start.elapsed());
+}
+
 
 fn create_file(filepath: &PathBuf) -> File {
     match File::create(filepath) {
