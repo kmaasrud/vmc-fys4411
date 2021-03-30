@@ -269,14 +269,15 @@ pub fn sgd_interacting() {
     const TOLERANCE: f64 = 0.00001;
 
     fn run<T: Metropolis>(start_alpha:f64, learning_rate: f64) {
+        let metro_type = std::any::type_name::<T>().split("::").last().unwrap();
         let mut path = find_cargo_root().unwrap();
         path.push("data"); path.push("sgd_interacting");
         create_dir(&path);
-        path.push("bruteforce.csv");
+        path.push(format!("{}.csv", metro_type));
         let mut f = create_file(&path);
         f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
-        let mut metro: ImportanceMetropolis = ImportanceMetropolis::new(STEP_SIZE);
+        let mut metro = T::new(STEP_SIZE);
         let mut alphas:Vec<f64> = vec![];
         alphas.push(start_alpha);
 
@@ -306,7 +307,7 @@ pub fn sgd_interacting() {
 
     let start = Instant::now();
     run::<BruteForceMetropolis>(start_alpha, learning_rate);
-    run::<ImportanceMetropolis>(start_alpha, learning_rate);
+    // run::<ImportanceMetropolis>(start_alpha, learning_rate);
     println!("Time spent: {:?}", start.elapsed());
 }
 
