@@ -24,7 +24,7 @@ use num_cpus;
 
 #[allow(dead_code)]
 pub fn track_each_cycle() {
-    const CSV_HEADER: &str = "MCCycles,Energy\n";
+    const CSV_HEADER: &str = "alpha,Energy\n";
     const NON_INTERACTING: bool = false;
     const STEP_SIZE: f64 = 0.5;
     const ALPHA: f64 = 0.5;
@@ -33,7 +33,7 @@ pub fn track_each_cycle() {
 
     fn run_with<T: Metropolis>() {
         let mut path = find_cargo_root().unwrap();
-        path.push("data"); path.push("track_each_cycle");
+        path.push("data"); path.push("ana_vs_num");
         create_dir(&path);
         path.push(format!("{}.csv", std::any::type_name::<T>().split("::").last().unwrap()));
         let mut f = create_file(&path); 

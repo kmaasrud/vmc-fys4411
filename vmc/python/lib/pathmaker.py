@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 def pathmaker(DIR):
     if not os.path.exists(DIR):
         os.makedirs(DIR)
-        print(f'made directory {PLOT_DIR}')
+        print(f'made directory {DIR}')
         
 def join_path(DIR, id):
     return os.path.join(DIR, id)
