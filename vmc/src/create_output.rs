@@ -21,7 +21,7 @@ use std::{
 
 #[allow(dead_code)]
 pub fn metropolis(){
-    const CSV_HEADER: &str = "Alpha,Energy\n";
+    const CSV_HEADER: &str = "Alpha,Energy, Time\n";
     const STEP_SIZE: f64 = 0.5;
     const NON_INTERACTING: bool = true;
     const MC_CYCLES: usize = 10_000;
@@ -53,7 +53,7 @@ pub fn metropolis(){
             let mut system: System = System::distributed(N, DIM, wf, ham.clone(), 1.);
             let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
             
-            let data = format!("{},{}\n", alpha, vals.energy);
+            let data = format!("{},{},{:?}\n", alpha, vals.energy, start.elapsed());
             f.write_all(data.as_bytes()).expect("Unable to write data");
             println!("Time spent for alpha = {}: {:?}", alpha, start.elapsed());
         }

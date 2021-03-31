@@ -7,7 +7,6 @@ from numpy.linalg import inv
 def data_path(dat_id):
     return os.path.join(DATA_ID, dat_id)
 
-
 def block(x):
     # preliminaries
     n = len(x)
@@ -60,7 +59,7 @@ def block(x):
         print("Warning: Use more data")
     return mu, s[k]/2**(d-k)
 
-
+""" 
 if __name__ == "__main__":
     from pandas import DataFrame
     import pandas as pd
@@ -84,3 +83,4 @@ if __name__ == "__main__":
     frame = pd.DataFrame(data,index=['Values'])
     print(frame) 
     infile.close()
+ """

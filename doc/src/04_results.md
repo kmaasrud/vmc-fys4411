@@ -1,4 +1,5 @@
 # Results
+## Analytic vs. numerical calulcations
 
 ## Finding the optimal $\alpha$
 
