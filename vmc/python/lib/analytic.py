@@ -1,25 +1,38 @@
 import numpy as np
-from numpy.random import seed, rand
-import pandas as pd
+from random import random, seed
 
-def init_pos(seed_int, N):
-    seed(seed_int)
-    pos = rand(N)
+
+def AnalyticLocalEnergy(alpha, dim, N, StepSize):
+    #seed for random number generator
+    seed()
+
+    r = np.zeros((N,dim), np.double)
+    omega = 1
+
     
-    return pos
+    for i in range(N):
+        for j in range(dim):
+            r[i,j] = (random()) 
 
-def squared_pos_sum(vec):
-    return np.sum(np.square(vec))
+    if dim == 1:
+        r1 = r[0,0]
+        for i in range(0, N):
+            r1 += r[i,0]**2
+        E = N*alpha*dim + (0.5*omega*omega - 2.0*alpha*alpha)*(r1)
+    if dim == 2:
+        r1 = r[0,0]; r2 = r[0,1]
+        for i in range(0, N):
+            r1 += r[i,0]**2
+            r2 += r[i,1]**2
+        E = N*alpha*dim + (0.5*omega*omega - 2*alpha*alpha)*(r1 + r2)
+    if dim == 3:
+        r1 = r[0,0]; r2 = r[0,1]; r3 = r[0,2]
+        for i in range(0, N):
+            r1 += r[i,0]**2
+            r2 += r[i,1]**2
+            r3 += r[i,2]**2
+        E = N*alpha*dim + (0.5*omega*omega - 2*alpha*alpha)*(r1 + r2 + r3)
+        
 
-def analytic_energy(dim, N, alpha,pos):
-    E = N*alpha*dim*(.5 - 2*alpha**2)*squared_pos_sum(pos)
     return E
-
-
-
-
-
-
-
-
-
+   

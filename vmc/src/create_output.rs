@@ -23,14 +23,16 @@ use std::{
 pub fn metropolis(){
     const CSV_HEADER: &str = "Alpha,Energy\n";
     const STEP_SIZE: f64 = 0.5;
-    const NON_INTERACTING: bool = false;
+    const NON_INTERACTING: bool = true;
     const MC_CYCLES: usize = 10_000;
     const DIM : usize = 1;
-    const N: usize= 10;
+    const N: usize= 1;
     
     
     fn simulate<T: Metropolis>(){
-        let alphas : Vec<f64> = (1..19).map(|x| x as f64 / 18.).collect();
+        let alphas = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8];
+
+        //let alphas : Vec<f64> = (3..190).map(|x| x as f64 / 100.).collect();
         
         let mut metro: T = T::new(STEP_SIZE);
 
@@ -43,10 +45,9 @@ pub fn metropolis(){
         f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
 
         println!("Dimension: {}", DIM);
-
         
         for alpha in alphas.iter(){
-
+            let start = Instant::now();
             let ham: Hamiltonian = Hamiltonian::spherical();
             let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
             let mut system: System = System::distributed(N, DIM, wf, ham.clone(), 1.);
@@ -54,8 +55,9 @@ pub fn metropolis(){
             
             let data = format!("{},{}\n", alpha, vals.energy);
             f.write_all(data.as_bytes()).expect("Unable to write data");
+            println!("Time spent for alpha = {}: {:?}", alpha, start.elapsed());
         }
-        
+            
     }   
 
     let start = Instant::now();

@@ -1,15 +1,16 @@
 #Compare energy vs. alpha analytic vs. bruteforce/importance 
-
 from lib import analytic as ana
 from lib import pathmaker as pth
+from lib.blocking import block
 import os
 import numpy as np
 import pandas as pd
+import time
 import matplotlib.pyplot as plt
 plt.style.use("seaborn")
 
 dim = 1
-N = 10
+N = 1
 
 save_folder = f"../plots/ana_vs_num/{dim}D_{N}N/"
 data_folder = f"../data/ana_vs_num/{dim}D_{N}N/"
@@ -32,37 +33,46 @@ df_IM = pd.read_csv(importance)
 energy_IM = df_IM["Energy"].values.tolist()
 alpha_IM = df_IM["Alpha"].values.tolist()
 
-alphas = alpha_IM
-#analytic
 
+#analytic
+alphas = alpha_IM
 energy = []
-pos = ana.init_pos(3, N)
+
+#calculate analytic energy
+start_time = time.time()
+df_analytical = pd.DataFrame()
 for a in alphas:
-    energy.append(ana.analytic_energy(dim, N, a, pos))
-   
+    E = ana.AnalyticLocalEnergy(a, dim, N, StepSize = 1.0)
+    energy.append(E)
+    time= time.time() - start_time
+
+    data = {"alpha":alpha,"energy":E,'time': time}
+    
+
+
+
 #plots:
 #analytic vs. bruteforce
-plt.plot(alphas,energy, "-o", label="Analytic")
-plt.plot(alpha_BF,energy_BF, "-o", label="Brute Force Metropolis")
+plt.plot(alphas,energy, label="Analytic")
+plt.plot(alpha_BF,energy_BF, label="Brute Force Metropolis")
+plt.plot(alpha_IM,energy_IM, label="Importance Sampling")
 
 plt.title(f"Brute Force metropolis vs. analytic for {dim}D and {N} particles")
 plt.xlabel(r"$\alpha$")
-plt.ylabel(r"$\frac{\langle E\rangle}{N}$ ($\hbar\omega$)")
+plt.ylabel(r"$\langle E\rangle$ ($\hbar\omega$)")
 plt.legend(loc = 'best', prop = {'size':13}, frameon = True)
+
 plt.savefig(os.path.join(save_folder, f"EnergyAlpha_BF_{dim}D_{N}N.png"))
-
 plt.clf()
-
+"""
 #Analytic vs. Importance
-plt.plot(alphas, energy, "-o", label="Analytic")
-plt.plot(alpha_IM,energy_IM, "-o", label="Importance Sampling")
-
+plt.plot(alphas, energy, label="Analytic")
+plt.plot(alpha_IM,energy_IM, label="Importance Sampling")
 plt.title(f"Importance sampling vs. analytic for {dim}D and {N} particles")
 plt.xlabel(r"$\alpha$")
-plt.ylabel(r"$\frac{\langle E\rangle}{N}$ ($\hbar\omega$)")
+plt.ylabel("$\langle E\rangle$ ($\hbar\omega$)"$ ($\hbar\omega$)")
 plt.legend(loc = 'best', prop = {'size':13}, frameon = True)
 plt.savefig(os.path.join(save_folder, f"EnergyAlpha_IM_{dim}D_{N}N.png"))
 
 plt.clf()
-
-
+"""
