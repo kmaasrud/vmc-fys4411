@@ -158,7 +158,7 @@ $$ E_L(\mathbf{r}) = \frac{\hbar^2 }{m} \alpha N \dim +  \left( \frac{1}{2} m \o
 
 as shown in {@sec:local-energy-for-gaussian-wave-function}. We can simplify this even further by scaling, namely setting $\hbar = m = 1$, which gives us the equation
 
-$$E_L(\mathbf{r}) = N\alpha  \dim  + \left(\frac{1}{2} m \omega^2_\text{ho} - 2 \alpha^2\right) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
+$$E_L(\mathbf{r}) = N\alpha  \dim  + \left(\frac{1}{2} \omega^2_\text{ho} - 2 \alpha^2\right) \sum_i^N \mathbf{r}^2_{i}$$ {#eq:local-energy-gauss-scaled}
 
 An even simpler analytic expression is obtained by setting $\omega_{\text{ho}} = 1$ and taking the derivate of the local energy with respect to $r_i$,  giving $\alpha= 0.5$.
 
