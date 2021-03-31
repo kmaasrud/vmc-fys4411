@@ -17,14 +17,13 @@ use std::{
     fs::{File, create_dir_all},
     path::{Path, PathBuf},
     io::prelude::*,
-    
 };
 use num_cpus;
 
 
 #[allow(dead_code)]
 pub fn track_each_cycle() {
-    const CSV_HEADER: &str = "alpha,Energy\n";
+    const CSV_HEADER: &str = "MCCycles,Energy\n";
     const NON_INTERACTING: bool = false;
     const STEP_SIZE: f64 = 0.5;
     const ALPHA: f64 = 0.5;
@@ -33,7 +32,7 @@ pub fn track_each_cycle() {
 
     fn run_with<T: Metropolis>() {
         let mut path = find_cargo_root().unwrap();
-        path.push("data"); path.push("ana_vs_num");
+        path.push("data"); path.push("track_each_cycle");
         create_dir(&path);
         path.push(format!("{}.csv", std::any::type_name::<T>().split("::").last().unwrap()));
         let mut f = create_file(&path); 
@@ -137,76 +136,54 @@ pub fn dim_and_n() {
 }
 
 
-/// Runs the VMC for dimension 1-3, different values of alpha and different step sizes. 
-/// Does this using both brute force Metropolis sampling and importance Metropolis sampling.
+// Run the VMC for the interacting elliptical case, with both BruteForceMetropolis and
+// ImportanceMetropolis.
 #[allow(dead_code)]
-pub fn bruteforce_vs_importance() {
+pub fn interacting_elliptical() {
     const N: usize = 10;
-    const MC_CYCLES: usize = 10000;
+    const MC_CYCLES: usize = 4000;
     const NON_INTERACTING: bool = false;
-    const CSV_HEADER: &str = "StepSize,Alpha,Energy\n";
+    const CSV_HEADER: &str = "Alpha,Energy\n";
+    const DIM: usize = 3;
 
-    fn run_sim<T: Metropolis>(step_size: f64) {
-        let alphas: Vec<f64> = (1..19).map(|x| x as f64 / 18.).collect();
-        let mut metro: T = T::new(step_size);
-        for dim in 3..=3 {
-            println!("Dimension: {}", dim);
-            let path = format!("./data/bruteforce_vs_importance/{}/step_size{}", std::any::type_name::<T>().split("::").last().unwrap(), step_size);
-            // create_dir(&path);
+    fn run_sim<T: Metropolis>() {
+        let metro_type = std::any::type_name::<T>().split("::").last().unwrap();
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("interacting_elliptical");
+        create_dir(&path);
+        path.push(format!("{:?}.csv", metro_type));
+        let mut f = create_file(&path); 
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data"); 
 
-            // let mut f = create_file(&format!("{}/{}D.csv", &path, dim));
-            // f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+        let alphas: Vec<f64> = (4..21).map(|x| x as f64 / 20.).collect();
+        for alpha in alphas {
+            let mut metro: T = T::new(0.5);
+            let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // input value is gamma
+            let wf = WaveFunction{ alpha: alpha, beta: 2.82843 }; // set beta = gamma
+            let mut system: System = System::distributed(N, DIM, wf, ham.clone(), 1.);
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
-            for alpha in alphas.iter() {
-                let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
-                // let ham: Hamiltonian = Hamiltonian::spherical();
-                let wf = WaveFunction{ alpha: *alpha, beta: 2.82843 }; // Set beta = gamma
-                // let wf = WaveFunction{ alpha: *alpha, beta: 1. }; // Set beta = gamma
-                let mut system: System = System::distributed(N, dim, wf, ham.clone(), 1.);
-                let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
-
-                let data = format!("{},{},{}\n", step_size, alpha, vals.energy);
-                // f.write_all(data.as_bytes()).expect("Unable to write data");
-                println!("\tAlpha: {:.2} --- Step size: {:.2} --- Energy per particle: {:.4} --- Derivative: {:.2}", alpha, step_size, vals.energy / (N as f64), vals.wf_deriv);
-            }
+            let data = format!("{},{}\n", alpha, vals.energy);
+            println!("{}", data);
+            f.write_all(data.as_bytes()).expect("Unable to write data");
         }
     }
-
-    fn run_for_sampler<T: Metropolis>() {
-        println!("Running simulations using {} algorithm...", std::any::type_name::<T>().split("::").last().unwrap());
-
-        // Multithreading
-        let n_cpus = num_cpus::get();
-
-        println!("Spawning threadpool of {} threads, with {} Monte Carlo cycles on each", &n_cpus, &MC_CYCLES);
-        let pool = ThreadPool::new(n_cpus as u8);
-        let start = Instant::now();
-
-        for cpu_i in 1..=n_cpus {
-            pool.execute(move || run_sim::<T>((cpu_i as f64) / (n_cpus as f64))); //Running the simulation on each thread individually
-        }
-        println!("All {} threads now executing, waiting for them to finish...", n_cpus);
-        pool.join_all();
-        
-        println!("Time spent: {:?}", start.elapsed());
-    }
-
-    // run_for_sampler::<BruteForceMetropolis>();
-    run_sim::<ImportanceMetropolis>(1.); // Step size not relevant here, so 1. does nothing
+    run_sim::<BruteForceMetropolis>();
+    run_sim::<ImportanceMetropolis>(); 
 }
 
 /// Runs the VMC for dimension X, utilizing simple gradient descent in order to choose fitting alpha parameter.
 /// Only done using the noninteracting case, with importance sampling
-#[allow(dead_code)]
+#[allow(dead_code, unused_variables)]
 pub fn sgd_noninteracting() {
     //DINGDINGDING, DO THE WORK!
     const N: usize = 10;
     const MC_CYCLES: usize = 20000;
     const NON_INTERACTING: bool = true;
     const CSV_HEADER: &str = "StepSize,Alpha,Energy,Energy2\n";
-    const dim: usize = 3;
-    const step_size: f64 = 1.;
-    const tolerance: f64 = 0.00001;
+    const DIM: usize = 3;
+    const STEP_SIZE: f64 = 1.;
+    const TOLERANCE: f64 = 0.00001;
 
     fn run(start_alpha:f64, learning_rate: f64) {
         let mut alphas:Vec<f64> = vec![];
@@ -229,22 +206,22 @@ pub fn sgd_noninteracting() {
 
             let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
             let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
-            let mut system: System = System::distributed(N, dim, wf, ham, 1.);
-            let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(step_size);
+            let mut system: System = System::distributed(N, DIM, wf, ham, 1.);
+            let mut metro: BruteForceMetropolis = BruteForceMetropolis::new(STEP_SIZE);
             let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
 
             energies.push(vals.energy);
 
-            let data = format!("{},{},{},{}\n", step_size, alphas[i], vals.energy, vals.energy_squared);
+            let data = format!("{},{},{},{}\n", STEP_SIZE, alphas[i], vals.energy, vals.energy_squared);
             f.write_all(data.as_bytes()).expect("Unable to write data");
-            println!("Dimension: {} --- Alpha: {:.16} --- Step size: {:.2} --- Energy: {:.16} --- Iteration: {}", dim, alphas[i], step_size, vals.energy, i);
+            println!("Dimension: {} --- Alpha: {:.16} --- Step size: {:.2} --- Energy: {:.16} --- Iteration: {}", DIM, alphas[i], STEP_SIZE, vals.energy, i);
 
 
             let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
             let new_alpha: f64 = alphas[i] - learning_rate * energy_deriv;
             alphas.push(new_alpha);
 
-            if energy_deriv.abs() < tolerance {
+            if energy_deriv.abs() < TOLERANCE {
                 println!("Tolerance is met, exiting.");
                 done = true;
             } else if i > 150 {
@@ -278,7 +255,61 @@ pub fn sgd_noninteracting() {
     pool.join_all();
     
     println!("Time spent: {:?}", start.elapsed());
+}
+
+
+#[allow(dead_code, unused_variables)]
+pub fn sgd_interacting() {
+    const N: usize = 10;
+    const MC_CYCLES: usize = 1000;
+    const NON_INTERACTING: bool = false;
+    const CSV_HEADER: &str = "SGDStep,Alpha,Energy\n";
+    const DIM: usize = 3;
+    const STEP_SIZE: f64 = 1.;
+    const TOLERANCE: f64 = 0.00001;
+
+    fn run<T: Metropolis>(start_alpha:f64, learning_rate: f64) {
+        let metro_type = std::any::type_name::<T>().split("::").last().unwrap();
+        let mut path = find_cargo_root().unwrap();
+        path.push("data"); path.push("sgd_interacting");
+        create_dir(&path);
+        path.push(format!("{}.csv", metro_type));
+        let mut f = create_file(&path);
+        f.write_all(CSV_HEADER.as_bytes()).expect("Unable to write data");
+
+        let mut metro = T::new(STEP_SIZE);
+        let mut alphas:Vec<f64> = vec![];
+        alphas.push(start_alpha);
+
+        for i in 0..150 {
+            let ham: Hamiltonian = Hamiltonian::elliptical(2.82843); // Input value is gamma
+            let wf = WaveFunction{ alpha: alphas[i], beta: 2.82843 }; // Set beta = gamma
+            let mut system: System = System::distributed(N, DIM, wf, ham, 1.);
+            let vals = monte_carlo(MC_CYCLES, &mut system, &mut metro, NON_INTERACTING); 
+
+            let data = format!("{},{},{}\n", i, alphas[i], vals.energy);
+            f.write_all(data.as_bytes()).expect("Unable to write data");
+            println!("Alpha: {:.3}, Energy: {:.3}", alphas[i], vals.energy);
+
+            let energy_deriv = 2.* (vals.wf_deriv_times_energy-vals.wf_deriv*vals.energy);
+            let new_alpha: f64 = alphas[i] - learning_rate * energy_deriv;
+            alphas.push(new_alpha);
+
+            if energy_deriv.abs() < TOLERANCE {
+                println!("Found optimal alpha: {}", alphas[i]);
+                break;
+            }
+        }
     }
+    let learning_rate = 0.0004;
+    let start_alpha: f64 = 0.2;
+
+    let start = Instant::now();
+    run::<BruteForceMetropolis>(start_alpha, learning_rate);
+    run::<ImportanceMetropolis>(start_alpha, learning_rate);
+    println!("Time spent: {:?}", start.elapsed());
+}
+
 
 fn create_file(filepath: &PathBuf) -> File {
     match File::create(filepath) {
