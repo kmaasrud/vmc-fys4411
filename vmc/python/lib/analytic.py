@@ -2,6 +2,22 @@ import numpy as np
 from random import random, seed
 
 
+# My attempt at doing the same as you, Anna. It seems to be doing the exact same
+def create_system(dim, N):
+    seed(2021) # Set specific seed for reproducability
+    system = np.zeros((N, dim))
+    for i in range(N):
+        for j in range(dim):
+            system[i,j] = (random() - 0.5)
+
+    return system
+
+def local_energy(alpha, system):
+    pos_squared_sum = sum(map(lambda y: sum(map(lambda x: x**2, y)), system))
+
+    return len(system) * len(system[0]) * alpha + (0.5 - 2 * alpha**2) * pos_squared_sum
+
+
 def AnalyticLocalEnergy(alpha, dim, N, StepSize):
     #seed for random number generator
     seed()
