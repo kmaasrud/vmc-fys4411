@@ -1,8 +1,23 @@
 # Results
-
 ## Analytic vs. numerical calulcations
+In order to test our algorithm for both the Brute Force and Importance sampling, the results are compared to the analytical calculated energy for a range of alpha values. It is expected that the local energy is at is minimun at $alpha  = 0.5$ as shown in \ref{#eq:local-energy-min}. 
 
-## Finding the optimal $\alpha$ for non-interacting systems
+\begin{figure}[ht]%
+  \centerfloat
+  \captionsetup[subfigure]{labelformat=empty}
+   \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_1N/\EnergyAlpha_BF_1D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_10N/\EnergyAlpha_BF_1D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_100N/\EnergyAlpha_BF_1D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_1N/\EnergyAlpha_BF_2D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_10N/\EnergyAlpha_BF_2D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_100N/\EnergyAlpha_BF_2D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_1N/\EnergyAlpha_BF_3D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_10N/\EnergyAlpha_BF_3D_10N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_100N/\EnergyAlpha_BF_3D_100N.png}}
+  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
+  \label{fig:BF_vs_IM_VS_analytical}
+\end{figure}
+## Finding the optimal $\alpha$
 
 Using the brute force Metropolis algorithm, we calculated the expected value of the local energy at different values of $\alpha$. This was also done at different dimensions and number of particles. The simulation over all these variables were done once for each core of the processor running them. In our case, this resulted in 8 runs. The mean over all runs are seen in figure \ref{fig:optimal_alpha}.
 
@@ -56,21 +71,6 @@ This shows that a learning rate of $0.0004$ is on the safe side of stability, wh
 \FloatBarrier
 
 
-## Introducing importance sampling
-
-After introducing a new Metropolis algorithm based on importance sampling, we compared the performance of it against the brute force algorithm by tracking each Monte Carlo cycle and it's corresponding calculated energy. Using blocking (as explained under Blocking in {@sec:statistical-analysis}), we calculated the standard deviation at different amounts of Monte Carlo cycles. The results are shown in figure \ref{fig:std-at-cycles}.
-
-\begin{figure}[h!]
-  \centerfloat
-  \includegraphics[scale=.45]{assets/plots/std_at_cycles.png}
-  \caption{Standard deviation for brute force Metropolis and Metropolis with importance sampling, plotted against the number of Monte Carlo cycles performed. The values are calcuated with blocking.}
-  \label{fig:std-at-cycles}
-\end{figure}
-\FloatBarrier
-
-As one can see, both methods behave very similarly, almost overlapping.
-
-
 ## An interacting system
 
 Following these tests for a non-interacting system, we put our solver to the task of finding the energy of a system of $10$ particles in an elliptical harmonic potential ($\beta = \gamma = 2.82843$), at different values of $\alpha$ when the particles interact with eachother. The results are shown in figure \ref{fig:interacting-elliptical}.
@@ -90,4 +90,3 @@ They are quite ambigious, especially in the case of importance sampling. After t
   \caption{Convergence of $\alpha$ for the abovementioned system, solved using the two Metropolis algorithms listed. An acceptable convergence was aquired after $150$ steps, and so the SGD was stopped there for both algorithms.}
   \label{fig:sgd-interacting}
 \end{figure}
-\FloatBarrier

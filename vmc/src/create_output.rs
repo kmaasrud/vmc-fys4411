@@ -21,12 +21,12 @@ use std::{
 
 #[allow(dead_code)]
 pub fn metropolis(){
-    const CSV_HEADER: &str = "Alpha,Energy, Time\n";
-    const STEP_SIZE: f64 = 0.5;
+    const CSV_HEADER: &str = "Alpha,Energy,Time\n";
+    const STEP_SIZE: f64 = 1.0;
     const NON_INTERACTING: bool = true;
     const MC_CYCLES: usize = 10_000;
     const DIM : usize = 1;
-    const N: usize= 1;
+    const N: usize= 100;
     
     
     fn simulate<T: Metropolis>(){
@@ -55,7 +55,7 @@ pub fn metropolis(){
             
             let data = format!("{},{},{:?}\n", alpha, vals.energy, start.elapsed());
             f.write_all(data.as_bytes()).expect("Unable to write data");
-            println!("Time spent for alpha = {}: {:?}", alpha, start.elapsed());
+            println!("Time spent for alpha = {}: {:?}", alpha,  start.elapsed());
         }
             
     }   
