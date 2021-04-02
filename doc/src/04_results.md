@@ -2,7 +2,7 @@
 
 ## Analytic vs. numerical calulcations
 
-## Finding the optimal $\alpha$
+## Finding the optimal $\alpha$ for non-interacting systems
 
 Using the brute force Metropolis algorithm, we calculated the expected value of the local energy at different values of $\alpha$. This was also done at different dimensions and number of particles. The simulation over all these variables were done once for each core of the processor running them. In our case, this resulted in 8 runs. The mean over all runs are seen in figure \ref{fig:optimal_alpha}.
 
