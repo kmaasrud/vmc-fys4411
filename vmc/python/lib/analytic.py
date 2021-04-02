@@ -1,7 +1,6 @@
 import numpy as np
 from random import random, seed
 
-
 # My attempt at doing the same as you, Anna. It seems to be doing the exact same
 def create_system(dim, N):
     seed(2021) # Set specific seed for reproducability
@@ -20,7 +19,7 @@ def local_energy(alpha, system):
 
 def AnalyticLocalEnergy(alpha, dim, N, StepSize):
     #seed for random number generator
-    seed()
+    seed(2021)
 
     r = np.zeros((N,dim), np.double)
     omega = 1
