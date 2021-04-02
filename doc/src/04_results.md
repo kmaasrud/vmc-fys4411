@@ -1,4 +1,5 @@
 # Results
+
 ## Analytic vs. numerical calulcations
 
 ## Finding the optimal $\alpha$
@@ -55,6 +56,21 @@ This shows that a learning rate of $0.0004$ is on the safe side of stability, wh
 \FloatBarrier
 
 
+## Introducing importance sampling
+
+After introducing a new Metropolis algorithm based on importance sampling, we compared the performance of it against the brute force algorithm by tracking each Monte Carlo cycle and it's corresponding calculated energy. Using blocking (as explained under Blocking in {@sec:statistical-analysis}), we calculated the standard deviation at different amounts of Monte Carlo cycles. The results are shown in figure \ref{fig:std-at-cycles}.
+
+\begin{figure}[h!]
+  \centerfloat
+  \includegraphics[scale=.45]{assets/plots/std_at_cycles.png}
+  \caption{Standard deviation for brute force Metropolis and Metropolis with importance sampling, plotted against the number of Monte Carlo cycles performed. The values are calcuated with blocking.}
+  \label{fig:std-at-cycles}
+\end{figure}
+\FloatBarrier
+
+As one can see, both methods behave very similarly, almost overlapping.
+
+
 ## An interacting system
 
 Following these tests for a non-interacting system, we put our solver to the task of finding the energy of a system of $10$ particles in an elliptical harmonic potential ($\beta = \gamma = 2.82843$), at different values of $\alpha$ when the particles interact with eachother. The results are shown in figure \ref{fig:interacting-elliptical}.
@@ -74,3 +90,4 @@ They are quite ambigious, especially in the case of importance sampling. After t
   \caption{Convergence of $\alpha$ for the abovementioned system, solved using the two Metropolis algorithms listed. An acceptable convergence was aquired after $150$ steps, and so the SGD was stopped there for both algorithms.}
   \label{fig:sgd-interacting}
 \end{figure}
+\FloatBarrier
