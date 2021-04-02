@@ -17,6 +17,7 @@ In order to test our algorithm for both the Brute Force and Importance sampling,
   \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
   \label{fig:BF_vs_IM_VS_analytical}
 \end{figure}
+
 ## Finding the optimal $\alpha$
 
 Using the brute force Metropolis algorithm, we calculated the expected value of the local energy at different values of $\alpha$. This was also done at different dimensions and number of particles. The simulation over all these variables were done once for each core of the processor running them. In our case, this resulted in 8 runs. The mean over all runs are seen in figure \ref{fig:optimal_alpha}.
