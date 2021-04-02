@@ -10,9 +10,8 @@ import matplotlib.pyplot as plt
 plt.style.use("seaborn")
 
 dim = 3
-N = 100
+N = 500
 
-print(dim, N)
 
 save_folder = f"../plots/ana_vs_num/{dim}D_{N}N/"
 data_folder = f"../data/ana_vs_num/{dim}D_{N}N/"
@@ -23,7 +22,7 @@ pth.pathmaker(save_folder)
 bruteforce = os.path.join(data_folder, "BruteForceMetropolis.csv")
 importance = os.path.join(data_folder, "ImportanceMetropolis.csv")
 
-
+"""
 #bruteforce:
 df_BF = pd.read_csv(bruteforce)
 energy_BF = df_BF["Energy"].values.tolist()
@@ -47,7 +46,7 @@ print(f"Time used IM: {sum_time_IM}")
 [float(i)/2 for i in time_BF]
 [float(i)/2 for i in time_IM]
 
-""" 
+"""
 
 #analytic
 alphas = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8]
@@ -68,7 +67,7 @@ data = {"Alpha":alphas,"Energy":energy,'Time':time_ana}
 analytical = pd.DataFrame.from_dict(data)
 time_ana = analytical['Time'].values.tolist()
 
-
+"""
 #if we want some statistics
 x = np.array(analytical['Energy'].values.tolist())
 (mean, var) = block(x) 

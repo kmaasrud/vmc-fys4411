@@ -25,8 +25,8 @@ pub fn metropolis(){
     const STEP_SIZE: f64 = 1.0;
     const NON_INTERACTING: bool = true;
     const MC_CYCLES: usize = 10_000;
-    const DIM : usize = 1;
-    const N: usize= 1;
+    const DIM : usize = 3;
+    const N: usize= 500;
     
     
     fn simulate<T: Metropolis>(){
