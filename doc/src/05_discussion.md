@@ -8,6 +8,8 @@ In our testing, the brute force Metropolis algorithm generally produced better r
 
 ## Convergence of SGD
 
+The convergence from different alphas to the correct one ($\alpha = 0.5$) in figure \ref{fig:sgd-alphas} shows that the convergence happens faster for $\alpha$-values below the correct one, while higher $\alpha$-values converges slower. The reason for this is that the derivative of the energy has a larger value when $\alpha < 0.5$, which by equation {@eq:sgd} shows that the step size is larger, in turn yielding faster convergence.
+
 ## General performance
 
 In general, the variational Monte Carlo solver yielded the desired results confidently. By using Metropolis Monte Carlo integration together with steepest gradient descent, we were able to produce the correct optimal value of $\alpha$ for both a non-interacting system and an interacting one - with differing number of particles and dimensionality.

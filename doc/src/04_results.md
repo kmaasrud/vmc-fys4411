@@ -56,7 +56,7 @@ In figure \ref{fig:optimal_alpha}, we see that the optimal value of $\alpha$ see
 
 ## Steepest Gradient Descent
 
-Only the non-interacting case with 10 particles in 3 dimensions was tested with 20 thousand Monte Carlo cycles. The first test was to see what learning rate yielded sufficiently fast convergence to the correct energy. The test was done with start $alpha = 0.2$. The result can be seen in \ref{fig:sgd-learning-rates}
+Only the non-interacting case with 10 particles in 3 dimensions was tested with 20 thousand Monte Carlo cycles. The first test was to see what learning rate yielded sufficiently fast convergence to the correct energy. The test was done with start $alpha = 0.2$. The result can be seen in figure \ref{fig:sgd-learning-rates} below.
 
 \begin{figure}[ht]%
   \centerfloat
