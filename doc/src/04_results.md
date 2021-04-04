@@ -16,19 +16,20 @@ In order to test our algorithm for both the Brute Force and Importance sampling,
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_1N/EnergyAlpha_BF_3D_1N.png}}
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_10N/EnergyAlpha_BF_3D_10N.png}}
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_100N/EnergyAlpha_BF_3D_100N.png}}
-  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
+  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_500N/EnergyAlpha_BF_3D_500N.png}}
+  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ (500 for 3D only - because of long computational time)  and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
   \label{fig:BF_vs_IM_VS_analytical}
 \end{figure}
 
 The time used for the two different methods for the simpele Gaussian wavefunctions are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
 
-| Time[s] for: | 1D 1N | 1D 10N | 1D 100N | 2D 1N | 2D 10N   | 2D 100N | 3D 1N | 3D 10N | 3D 100N |
-|------------------------|-------|--------|---------|-------|----------|---------|-------|--------|---------|
-| Brute Force Metropolis | 3.4   | 18.6   | 1178    | 3.2   | 35.5     | 2497    | 3.5   | 36.8   | 2073    |
-| Importance samlping    | 5.1   | 21.7   | 1345    | 4.6   | 43.5     | 3038    | 5.4   | 46.4   | 2709    |
-| Analytic               | 0.0   | 0.0    | 0.01561 | 0.0   | 0.004095 | 0.00876 |       |        |         |
+| Time[s] for: | 1D 1N | 1D 10N | 1D 100N | 2D 1N | 2D 10N   | 2D 100N | 3D 1N | 3D 10N | 3D 100N |3D 500N |
+|------------------------|-------|--------|---------|------- |----------|---------|-------|--------|---------|---------
+| Brute Force Metropolis | 0.23  | 1.47   | 90.4    | 0.22   | 2.73     | 186     | 0.33   | 2.95   | 161    |  3990  |
+| Importance samlping    | 0.58  | 1.68   | 109     | 0.36   | 3.45     | 233     | 0.40   | 3.71   | 214    |  5280  |
+| Analytic               | 0.0   | 0.0    | 0.01561 | 0.0   | 0.0041    | 0.0088  | 0.0    | 0.001  |  0.004 | 0.02  |
 
-Table: <Here is caption> {#tbl:BF_vs_IM_VS_analytical}
+Table: <Total time to calculate the local energy for $\alpha = 0.5$ for the different systems(D: dimensions, N: number of particles) utilising both the Brute Force Metropolis sampling, Importance sampling and the analytical\exact energy.> {#tbl:BF_vs_IM_VS_analytical}
 
 
 ## Finding the optimal $\alpha$
