@@ -162,8 +162,7 @@ $$E_L(\mathbf{r}) = N\alpha  \dim  + \left(\frac{1}{2} \omega^2_\text{ho} - 2 \a
 
 An even simpler analytic expression is obtained by setting $\omega_{\text{ho}} = 1$ and taking the derivate of the local energy with respect to $r_i$,  giving $\alpha= 0.5$.
 
-$$E_L = \frac{N \dim}{2}$$
-{#eq:local-energy-min}
+$$E_L = \frac{N \dim}{2}$$ {#eq:local-energy-min}
 
 
 ### Drift force

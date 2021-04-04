@@ -1,31 +1,36 @@
 # Results
+
 ## Analytic vs. numerical calulcations
-In order to test our algorithm for both the Brute Force and Importance sampling, the results are compared to the analytical calculated energy for a range of alpha values. It is expected that the local energy is at is minimun at $alpha  = 0.5$ as shown in \ref{#eq:local-energy-min}. 
+
+In order to test our algorithm for both the Brute Force and Importance sampling, the results are compared to the analytical calculated energy for a range of alpha values. It is expected that the local energy is at is minimun at $alpha  = 0.5$ as shown in {@eq:local-energy-min}. 
 
 \begin{figure}[ht]%
   \centerfloat
   \captionsetup[subfigure]{labelformat=empty}
-   \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_1N/\EnergyAlpha_BF_1D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_10N/\EnergyAlpha_BF_1D_10N.png}}\\
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_100N/\EnergyAlpha_BF_1D_100N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_1N/\EnergyAlpha_BF_2D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_10N/\EnergyAlpha_BF_2D_10N.png}}\\
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_100N/\EnergyAlpha_BF_2D_100N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_1N/\EnergyAlpha_BF_3D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_10N/\EnergyAlpha_BF_3D_10N.png}}
-  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_100N/\EnergyAlpha_BF_3D_100N.png}}
+   \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_1N/EnergyAlpha_BF_1D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_10N/EnergyAlpha_BF_1D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_100N/EnergyAlpha_BF_1D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_1N/EnergyAlpha_BF_2D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_10N/EnergyAlpha_BF_2D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_100N/EnergyAlpha_BF_2D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_1N/EnergyAlpha_BF_3D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_10N/EnergyAlpha_BF_3D_10N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_100N/EnergyAlpha_BF_3D_100N.png}}
   \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
   \label{fig:BF_vs_IM_VS_analytical}
 \end{figure}
 
-The time used for the two different methods for the simpele Gaussian wavefunctions are listed in the table \ref{tab:BF_vs_IM_VS_analytical} below. 
+The time used for the two different methods for the simpele Gaussian wavefunctions are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
 
 | Time[s] for: | 1D 1N | 1D 10N | 1D 100N | 2D 1N | 2D 10N   | 2D 100N | 3D 1N | 3D 10N | 3D 100N |
 |------------------------|-------|--------|---------|-------|----------|---------|-------|--------|---------|
 | Brute Force Metropolis | 3.4   | 18.6   | 1178    | 3.2   | 35.5     | 2497    | 3.5   | 36.8   | 2073    |
 | Importance samlping    | 5.1   | 21.7   | 1345    | 4.6   | 43.5     | 3038    | 5.4   | 46.4   | 2709    |
 | Analytic               | 0.0   | 0.0    | 0.01561 | 0.0   | 0.004095 | 0.00876 |       |        |         |
-\label{tab:BF_vs_IM_VS_analytical}
+
+Table: <Here is caption> {#tbl:BF_vs_IM_VS_analytical}
+
+
 ## Finding the optimal $\alpha$
 
 Using the brute force Metropolis algorithm, we calculated the expected value of the local energy at different values of $\alpha$. This was also done at different dimensions and number of particles. The simulation over all these variables were done once for each core of the processor running them. In our case, this resulted in 8 runs. The mean over all runs are seen in figure \ref{fig:optimal_alpha}.
