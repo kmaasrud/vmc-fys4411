@@ -104,3 +104,4 @@ They are quite ambigious, especially in the case of importance sampling. After t
   \caption{Convergence of $\alpha$ for the abovementioned system, solved using the two Metropolis algorithms listed. An acceptable convergence was aquired after $150$ steps, and so the SGD was stopped there for both algorithms.}
   \label{fig:sgd-interacting}
 \end{figure}
+\FloatBarrier
