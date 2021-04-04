@@ -26,7 +26,7 @@ $$ E_L(\mathbf r) = \frac{1}{\Psi_T(\mathbf r)}H\Psi_T(\mathbf r) $$ {#eq:local-
 
 Given the above Hamiltonian, we can introduce the concept of a *trial wave function* $\Psi_T(\alpha)$. This is a normalized ansatz to the ground state wave function, parametrized by the parameter(s) $\alpha$. This gives us a way of deploying the *variational principle* by varying said parameter $\alpha$ to our needs:
 
-We know that for any normalized function $\Psi_T$, the expected energy is higher than the ground state energy (as proved in [@Griffiths] on p. 293-294), viz.
+We know that for any normalized function $\Psi_T$, the expected energy is higher than the ground state energy (as proved by Griffiths [@Griffiths] on p. 293-294), viz.
 
 $$ \langle E(\alpha) \rangle = \langle \Psi_T(\alpha) | H | \Psi_T(\alpha)\rangle \ge E_0 = \langle \Psi_0 | H | \Psi_0\rangle. $$ {#eq:variational-principle}
 
