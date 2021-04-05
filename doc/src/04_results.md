@@ -2,7 +2,9 @@
 
 ## Analytic vs. numerical calulcations
 
-In order to test our algorithm for both the brute force and the importance sampling algorithm, the results are compared to the analytically calculated energy for a range of $\alpha$-values. It is expected that the local energy is at its minimum at $\alpha  = 0.5$, as shown in {@eq:local-energy-min}, so the analytical graph representing this equation should intersect our numerically calculated energies in their minimum point. Figure \ref{fig:BF_vs_IM_VS_analytical} shows a collection of graphs, most of them showing just this.
+In order to test our algorithm for both the brute force and the importance sampling algorithm, the results are compared to the analytically calculated energy for a range of $\alpha$-values. It is expected that the local energy is at its minimum at $\alpha  = 0.5$, as shown in {@eq:local-energy-min}, so the analytical graph representing this equation should intersect our numerically calculated energies in their minimum point.
+
+The local energy for different $\alpha$ values are shown in the figures \ref{fig:BF_vs_IM_VS_analytical_1D}, \ref{fig:BF_vs_IM_VS_analytical_2D} and \ref{fig:BF_vs_IM_VS_analytical_3D}. The plots originates from caluclations utilizing the brute force, importance sampling and the analytical expression for the three dimensions and different number of particles. 
 
 \begin{figure}[ht]%
   \centerfloat

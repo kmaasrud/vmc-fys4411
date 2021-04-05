@@ -1,18 +1,17 @@
 # Discussion
 
 ## Numerical solver compared to analytical solutions {-}
+
 ### Local energy {-}
-The local energy for different alphas are shown in the figures {@fig:BF_vs_IM_VS_analytical_1D}, {@fig:BF_vs_IM_VS_analytical_2D} and {@fig:BF_vs_IM_VS_analytical_3D}. The plots originates from caluclations utilizing the Brute Force Metropolis, Importance Sampling and the analytical expression for the three dimensions and different number of particles. 
 
-All the systems has one common point, namely $\alpha = 0.5$. The two numerical methods have, for most systems, an energy minima at this point, which is expected. 
+All the systems have one common point, namely $\alpha = 0.5$. The two numerical methods have, for most systems, an energy minima at this point, which is as expected.
 
-Increasing the size of the sytem (higher number of dimensions and particles) the energy approaches a more linear dependency of alpha.  The Importance Sampling method is aproaching linearity faster than the Brute Force method. A possible explenation is decreasing accuracy for an increasing size of the system, because the shape of the energy as a function of alpha is expected to be a parabola. However, as can be seen, the two numerical methods are also approaching the analytical values for the energy for an increased size of the system. 
+Increasing the size of the system (higher number of dimensions and particles) the energy approaches a more linear dependency with regards to $\alpha$. The importance sampling method approaches linearity faster than the brute force method. A possible explanation for this, is that we get decreasing accuracy at increasing $N$, because the shape of the energy as a function of $\alpha$ is expected to be convex. However, as can be seen, the two numerical methods are also approaching the analytical values for the energy for an increased size of the system. 
 
-Overall the analytical calulated energy is approximatly linear. However, the expresson for the local energy (eq. {@eq:local-energy-gauss-scaled}) is proportional to $\alpha^2$. It is expected to be a parobola with an energy minima at $\alpha = 0.5$. Guessing there is something wrong with setup of the particle positions. 
-
-
+Overall the analytically calulated energy is approximately linear. However, the expresson for the local energy {@eq:local-energy-gauss-scaled} is proportional to $\alpha^2$. It is expected to be convex with an energy minima at $\alpha = 0.5$. Our guess is that there is something wrong with setup of the particle positions, but we have not the time to further investigate that in this report.
 
 ### Performance {-}
+
 To measure the computational efficiency of the brute force Metropolis and importance sampling algorithms, the elapsed time when calculating energy for a specific $\alpha$ (here $\alpha = 0.5$) was measured. The times are listed in table {@tbl:BF_vs_IM_VS_analytical}. Its worth noting that especially for the analytical calculations in lower dimensions, writing to file and overhead from the Python runtime might have affected the timing, as these calculations are very quick.
     
 Looking at the greater picture, the computing time increased proportionally with the number of dimensions and particles, as expected. The brute force Metropolis method was faster than the importance sampling method in all the measured computations. For the larger systems of $D = 2$ and $3$, as well as $N = 10$ to $500$, the speedup is approximately $20- 25\%$ for the brute force Metropolis algorithm. 

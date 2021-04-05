@@ -180,3 +180,5 @@ where $\gamma = \frac{\omega_z}{\omega_\text{ho}}$. We lastly reorganize the abo
 $$ H' = \frac{1}{2}\sum_i^N \left(-\nabla_i^{\prime 2} + r_{x, i}^{\prime 2} + r_{y, i}^{\prime 2} + \gamma^2 r_{z, i}^{\prime 2}\right) + \sum_{i<j}^N V'_\text{int}(|\mathbf r'_i - \mathbf r'_j|) .$$ {#eq:scaled_ham_appendix}
 
 By ensuring that we used scaled length units of $r' = \frac{r}{a_\text{ho}}$ and scaled energy units of $E' = \frac{E}{\hbar\omega_\text{ho}}$, equation {@eq:scaled_ham_appendix} holds. For simplification, we will not use the primed notation outside this derivation.
+
+\clearpage
