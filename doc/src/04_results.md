@@ -2,34 +2,47 @@
 
 ## Analytic vs. numerical calulcations
 
-In order to test our algorithm for both the Brute Force and Importance sampling, the results are compared to the analytical calculated energy for a range of alpha values. It is expected that the local energy is at is minimun at $alpha  = 0.5$ as shown in {@eq:local-energy-min}. 
+In order to test our algorithm for both the brute force and the importance sampling algorithm, the results are compared to the analytically calculated energy for a range of $\alpha$-values. It is expected that the local energy is at its minimum at $\alpha  = 0.5$, as shown in {@eq:local-energy-min}, so the analytical graph representing this equation should intersect our numerically calculated energies in their minimum point. Figure \ref{fig:BF_vs_IM_VS_analytical} shows a collection of graphs, most of them showing just this.
 
 \begin{figure}[ht]%
   \centerfloat
   \captionsetup[subfigure]{labelformat=empty}
    \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_1N/EnergyAlpha_BF_1D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_10N/EnergyAlpha_BF_1D_10N.png}}\\
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_100N/EnergyAlpha_BF_1D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_10N/EnergyAlpha_BF_1D_10N.png}}
+  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_100N/EnergyAlpha_BF_1D_100N.png}}\\
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_1N/EnergyAlpha_BF_2D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_10N/EnergyAlpha_BF_2D_10N.png}}\\
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_100N/EnergyAlpha_BF_2D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_10N/EnergyAlpha_BF_2D_10N.png}}
+  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_100N/EnergyAlpha_BF_2D_100N.png}}\\
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_1N/EnergyAlpha_BF_3D_1N.png}}
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_10N/EnergyAlpha_BF_3D_10N.png}}
   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_100N/EnergyAlpha_BF_3D_100N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_500N/EnergyAlpha_BF_3D_500N.png}}
+  %\subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_500N/EnergyAlpha_BF_3D_500N.png}}
   \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ (500 for 3D only - because of long computational time)  and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
   \label{fig:BF_vs_IM_VS_analytical}
 \end{figure}
 
-The time used for the two different methods for the simpele Gaussian wavefunctions are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
+The total elapsed times of the three methods evaluating the simple Gaussian wave function are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
 
-| Time[s] for: | 1D 1N | 1D 10N | 1D 100N | 2D 1N | 2D 10N   | 2D 100N | 3D 1N | 3D 10N | 3D 100N |3D 500N |
+<!-- | Time[s] for: | $D=1,N=1$ | $D=1, N=10$ | $D=1, N=100$ | $D=2, N=1$ | $D=2, N=10$ | $D=2, N=100$ | $D=3, N=1$ | $D=3, N=10$ | $D=3, N=100$ |$D=3, N=500$ |
 |------------------------|-------|--------|---------|------- |----------|---------|-------|--------|---------|---------
 | Brute Force Metropolis | 0.23  | 1.47   | 90.4    | 0.22   | 2.73     | 186     | 0.33   | 2.95   | 161    |  3990  |
 | Importance samlping    | 0.58  | 1.68   | 109     | 0.36   | 3.45     | 233     | 0.40   | 3.71   | 214    |  5280  |
-| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  |
+| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  | -->
 
-Table: <Total time to calculate the local energy for $\alpha = 0.5$ for the different systems(D: dimensions, N: number of particles) utilising both the Brute Force Metropolis sampling, Importance sampling (both calculated in the rust enviroment) and the analytical exact energy (calculated using python).> {#tbl:BF_vs_IM_VS_analytical}
+|  | **Brute force** | **Importance sampling** | **Analytic** |
+|:-| :---------: | :-----------------: | :------: |
+| $D=1, N=1$ | $0.23$ | $0.58$ | $0.0$ |
+| $D=1, N=10$ | $1.47$ | $1.68$ | $0.0$ |
+| $D=1, N=100$ | $90.4$ | $109$ | $0.016$ |
+| $D=2, N=1$ | $0.22$ | $0.36$ | $0.0$ |
+| $D=2, N=10$ | $2.73$ | $3.45$ | $0.0041$ |
+| $D=2, N=100$ | $186$ | $233$ | $0.009$ |
+| $D=3, N=1$ | $0.33$ | $0.40$ | $0.0$ |
+| $D=3, N=10$ | $2.95$ | $3.71$ | $0.001$ |
+| $D=3, N=100$ | $161$ | $214$ | $0.004$ |
+| $D=3, N=500$ | $3990$ | $5280$ | $0.02$ |
+
+Table: Total time to calculate the local energy for $\alpha = 0.5$ with the specified parameters: $D$ dimensions and $N$ number of particles. Times are presented for the brute force Metropolis algorithm, the importance sampling algorithm and the analytical exact energy (the first two in Rust, the latter in Python). {#tbl:BF_vs_IM_VS_analytical}
 
 ## Finding the optimal $\alpha$
 
