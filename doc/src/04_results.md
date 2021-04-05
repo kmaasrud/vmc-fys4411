@@ -7,19 +7,35 @@ In order to test our algorithm for both the brute force and the importance sampl
 \begin{figure}[ht]%
   \centerfloat
   \captionsetup[subfigure]{labelformat=empty}
-   \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_1N/EnergyAlpha_BF_1D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_10N/EnergyAlpha_BF_1D_10N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/1D_100N/EnergyAlpha_BF_1D_100N.png}}\\
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_1N/EnergyAlpha_BF_2D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_10N/EnergyAlpha_BF_2D_10N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/2D_100N/EnergyAlpha_BF_2D_100N.png}}\\
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_1N/EnergyAlpha_BF_3D_1N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_10N/EnergyAlpha_BF_3D_10N.png}}
-  \subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_100N/EnergyAlpha_BF_3D_100N.png}}
-  %\subfloat[]{\includegraphics[scale=.3]{assets/plots/ana_vs_num/3D_500N/EnergyAlpha_BF_3D_500N.png}}
-  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$ (500 for 3D only - because of long computational time)  and for $\dim= 1,2,3$. The results are the means over simulations run on 8 CPU cores simultaneously. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
-  \label{fig:BF_vs_IM_VS_analytical}
+   \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_1N/EnergyAlpha_BF_1D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_10N/EnergyAlpha_BF_1D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/1D_100N/EnergyAlpha_BF_1D_100N.png}}
+  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$  and for $\dim= 1$. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
+  \label{fig:BF_vs_IM_VS_analytical_1D}
 \end{figure}
+
+
+\begin{figure}[ht]%
+  \centerfloat
+  \captionsetup[subfigure]{labelformat=empty}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_1N/EnergyAlpha_BF_2D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_10N/EnergyAlpha_BF_2D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/2D_100N/EnergyAlpha_BF_2D_100N.png}}
+  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100$  and for $\dim= 2$. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
+  \label{fig:BF_vs_IM_VS_analytical_2D}
+\end{figure}
+
+\begin{figure}[ht]%
+  \centerfloat
+  \captionsetup[subfigure]{labelformat=empty}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_1N/EnergyAlpha_BF_3D_1N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_10N/EnergyAlpha_BF_3D_10N.png}}\\
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_100N/EnergyAlpha_BF_3D_100N.png}}
+  \subfloat[]{\includegraphics[scale=.5]{assets/plots/ana_vs_num/3D_500N/EnergyAlpha_BF_3D_500N.png}}
+  \caption{Local energy (in units of $\hbar\omega_\text{ho}$), found at $N=1,10,100, 500$ (500 for 3D only - because of long computational time)  and for $\dim= 3$. The system is non-interacting and the values are calculated with both the brute force method, importance sampling and analytically.}
+  \label{fig:BF_vs_IM_VS_analytical_3D}
+\end{figure}
+
 
 The total elapsed times of the three methods evaluating the simple Gaussian wave function are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
 
