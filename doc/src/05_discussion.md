@@ -1,8 +1,18 @@
 # Discussion
 
 ## Numerical solver compared to analytical solutions {-}
+### Local energy {-}
+The local energy for different alphas are shown in the figures{@fig:BF_vs_IM_VS_analytical_1D}, {@fig:BF_vs_IM_VS_analytical_2D} and {@fig:BF_vs_IM_VS_analytical_3D}. The plots originates from caluclations utilizing the Brute Force Metropolis, Importance Sampling and analytically for the three dimensions and different number of particles. 
 
-### Performance
+All the systems has one common point, namely $\alpha = 0.5$. The two numerical methods have, for most systems, an energy minima at this point, which is expected. 
+
+Increasing the size of the sytem (higher number of dimensions and particles) the energy approaches a more linear dependency of alpha.  The Importance Sampling method is aproaching linearity faster than the Brute Force method. A possible explenation is decreasing accuracy for an increasing size of the system, because the shape of the energy as a function of alpha is expected to be a parabola. However, as can be seen, the two numerical methods are also approaching the analytical values for the energy for an increased size of the system. 
+
+Overall the analytical calulated energy is approximatly linear. However, the expresson for the local energy (eq. {@eq:local-energy-gauss-scaled}) is proportional to $\alpha^2$. It is expected to be a parobola with an energy minima at $\alpha = 0.5$. Guessing there is something wrong with setup of the particle positions. 
+
+
+
+### Performance {-}
 To measue computational efficency of the Brute Force Metropolis and Importance Sampling methods, time for calculating energy for a specific alpha (here $\alpha = 0.5$) was measured. The times are listed in Table {@tbl:BF_vs_IM_VS_analytical}. It should be kept in mind that not all the time used for the calculations , especially for the analytic and low dimensions and few particle measurments as they are quite fast. In the mentioned cases, writing to files, may be a small, but not insignificant part of the measurment. 
     
 Hence looking at a more overall picture, as expected, the times increases proportionaly with the number of dimensions and particles.  The Brute Force Metropolis method is for all the systems studied faster than the Importance sampling method. For the larger systems $D = 2,3$ and $N = 10 - 500$ the speedup is approximately 20 - 25 % for the Brute Force Metropolis algorithm. 
