@@ -8,4 +8,4 @@ The solver is written in Rust (source code in `src`), and the statistical analys
 
 Building on this, we've got the `Metropolis` trait located inside `metropolis.rs`, which describes an interface that is able to produce a Metropolis step. This trait is realised in the two structs `BruteForceMetropolis` and `ImportanceMetropolis`. Finally, located in `montecarlo.rs`, our Monte Carlo solver leverages this trait to perform an integration over the desired quantities.
 
-The above are used to produce our results in the `produce_output.rs` file. Here we've defined a collection of functions that produce different types of outputs to suit our needs. Also worth mentioning is the `threadpool.rs` file, which contains a few handy functions to simplify parallelization.
+The above are used to produce our results in the `produce_output.rs` and `create_output.rs` file. Here we've defined a collection of functions that produce different types of outputs to suit our needs. Also worth mentioning is the `threadpool.rs` file, which contains a few handy functions to simplify parallelization.

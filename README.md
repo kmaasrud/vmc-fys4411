@@ -1,5 +1,3 @@
-**!!NOTE!!**: This project is not done yet! We're working as hard as we can to finish it ASAP, but we need a bit more time...
-
 <h1 align="center">VMC for bosonic systems</h1>
 
 <p align="center"> by <a href="https://github.com/annasro">Anna Stray Rongve</a>, <a href="https://github.com/kmaasrud">Knut Magnus Aasrud</a> and <a href="https://github.com/amundmr">Amund Midtgard Raniseth</a></p>
