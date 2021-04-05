@@ -98,7 +98,7 @@ Raniseth}
 \maketitle
 
 \begin{abstract}
-
+We use Rust to develop a ground state solver for bosonic systems in an elliptical harmonic trap, utilizing the variational principle, Monte Carlo integration and two different implementations of the Metropolis-Hastings algorithm. The results are compared against each other and analytical solutions for the corresponding systems. The solver gives the desired results, but shows instability for the importance sampling Metropolis algorithm.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -716,11 +716,11 @@ Gaussian wave function are listed in the table
 \ref{tbl:BF_vs_IM_VS_analytical} below.
 
 \begin{longtable}[]{@{}lccc@{}}
-\caption{Total time to calculate the local energy for \(\alpha = 0.5\)
-with the specified parameters: \(D\) dimensions and \(N\) number of
-particles. Times are presented for the brute force Metropolis algorithm,
-the importance sampling algorithm and the analytical exact energy (the
-first two in Rust, the latter in Python).
+\caption{Total time (in seconds) to calculate the local energy for
+\(\alpha = 0.5\) with the specified parameters: \(D\) dimensions and
+\(N\) number of particles. Computation times are presented for the brute
+force Metropolis algorithm, the importance sampling algorithm and the
+analytical exact energy (the first two in Rust, the latter in Python).
 \label{tbl:BF_vs_IM_VS_analytical}}\tabularnewline
 \toprule
 & \textbf{Brute force} & \textbf{Importance sampling} &
@@ -868,15 +868,15 @@ solutions}\label{numerical-solver-compared-to-analytical-solutions}}
 analytical solutions}
 
 \hypertarget{local-energy}{%
-\subsubsection{Local energy}\label{local-energy}}
+\subsubsection*{Local energy}\label{local-energy}}
+\addcontentsline{toc}{subsubsection}{Local energy}
 
-The local energy for different alphas are shown in the
-figures\ref{fig:BF_vs_IM_VS_analytical_1D},
-\ref{fig:BF_vs_IM_VS_analytical_2D} and
-\ref{fig:BF_vs_IM_VS_analytical_3D}. The plots originates from
+The local energy for different alphas are shown in the figures
+\ref{fig:BF_vs_IM_VS_analytical_1D}, \ref{fig:BF_vs_IM_VS_analytical_2D}
+and \ref{fig:BF_vs_IM_VS_analytical_3D}. The plots originates from
 caluclations utilizing the Brute Force Metropolis, Importance Sampling
-and analytically for the three dimensions and different number of
-particles.
+and the analytical expression for the three dimensions and different
+number of particles.
 
 All the systems has one common point, namely \(\alpha = 0.5\). The two
 numerical methods have, for most systems, an energy minima at this
@@ -902,32 +902,34 @@ particle positions.
 \subsubsection*{Performance}\label{performance}}
 \addcontentsline{toc}{subsubsection}{Performance}
 
-To measue computational efficency of the Brute Force Metropolis and
-Importance Sampling methods, time for calculating energy for a specific
-alpha (here \(\alpha = 0.5\)) was measured. The times are listed in
-Table \ref{tbl:BF_vs_IM_VS_analytical}. It should be kept in mind that
-not all the time used for the calculations , especially for the analytic
-and low dimensions and few particle measurments as they are quite fast.
-In the mentioned cases, writing to files, may be a small, but not
-insignificant part of the measurment.
+To measure the computational efficiency of the brute force Metropolis
+and importance sampling algorithms, the elapsed time when calculating
+energy for a specific \(\alpha\) (here \(\alpha = 0.5\)) was measured.
+The times are listed in table \ref{tbl:BF_vs_IM_VS_analytical}. Its
+worth noting that especially for the analytical calculations in lower
+dimensions, writing to file and overhead from the Python runtime might
+have affected the timing, as these calculations are very quick.
 
-Hence looking at a more overall picture, as expected, the times
-increases proportionaly with the number of dimensions and particles. The
-Brute Force Metropolis method is for all the systems studied faster than
-the Importance sampling method. For the larger systems \(D = 2,3\) and
-\(N = 10 - 500\) the speedup is approximately 20 - 25 \% for the Brute
-Force Metropolis algorithm.
+Looking at the greater picture, the computing time increased
+proportionally with the number of dimensions and particles, as expected.
+The brute force Metropolis method was faster than the importance
+sampling method in all the measured computations. For the larger systems
+of \(D = 2\) and \(3\), as well as \(N = 10\) to \(500\), the speedup is
+approximately \(20- 25\%\) for the brute force Metropolis algorithm.
 
-The results from the analytical measurment is another story. As can be
-seen, it is of orders of magnitude faster that the two numerical
-methods. In the columns where the time is \(0.0\)s the computation was
-too fast to even get a measurment. As the systems were calculated using
-different setups/algorithms and because of a high inaccuracy in the
-measurment, no further conclusions will be drawn from this result.
-However, it is important to point out the fact in having analytical
-expression for the local energy, will give a significant calculation
-speedup. It is the exception rather than the rule, having the analytical
-expression.
+The results from the analytical measurement is another story. It is
+orders of magnitude faster that the two numerical methods, as shown in
+table \ref{tbl:BF_vs_IM_VS_analytical}. In the columns where the
+computation time is \(0.0\) s, the computation was too fast to even get
+a proper measurement. As the systems were calculated using different
+setups/algorithms and because of a high inaccuracy in the measurment, no
+further conclusions will be drawn from this result. However, it is
+important to point out the fact that having an analytical expression for
+the local energy will by it's nature give a significant calculation
+speedup - seeing as we can simplify for whatever property we are looking
+for. Having an analytical expression is an exception rather than a rule,
+so for more complicated quantum mechanical systems, this would not be a
+viable solution.
 
 \hypertarget{brute-force-or-importance-sampling}{%
 \subsection*{Brute force or importance
@@ -972,6 +974,15 @@ dimensionality.
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
+
+Our variational Monte Carlo solver was successfully implemented and
+finds the desired variational parameter \(\alpha\) per the specified
+bosonic system, which is in accordance with the analytical solution.
+Even though the solver provides correct results by utilizing importance
+sampling in our Metropolis-Hastings algorithm, we experience
+inconsistencies, slowdowns and errors with this method that were not
+expected. This is emphasized as a topic of improvement for further
+reports.
 
 \clearpage
 \appendix

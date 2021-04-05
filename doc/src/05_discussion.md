@@ -2,7 +2,7 @@
 
 ## Numerical solver compared to analytical solutions {-}
 ### Local energy {-}
-The local energy for different alphas are shown in the figures{@fig:BF_vs_IM_VS_analytical_1D}, {@fig:BF_vs_IM_VS_analytical_2D} and {@fig:BF_vs_IM_VS_analytical_3D}. The plots originates from caluclations utilizing the Brute Force Metropolis, Importance Sampling and analytically for the three dimensions and different number of particles. 
+The local energy for different alphas are shown in the figures {@fig:BF_vs_IM_VS_analytical_1D}, {@fig:BF_vs_IM_VS_analytical_2D} and {@fig:BF_vs_IM_VS_analytical_3D}. The plots originates from caluclations utilizing the Brute Force Metropolis, Importance Sampling and the analytical expression for the three dimensions and different number of particles. 
 
 All the systems has one common point, namely $\alpha = 0.5$. The two numerical methods have, for most systems, an energy minima at this point, which is expected. 
 
