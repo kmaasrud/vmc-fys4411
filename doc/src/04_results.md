@@ -43,6 +43,10 @@ The total elapsed times of the three methods evaluating the simple Gaussian wave
 | $D=3, N=500$ | $3990$ | $5280$ | $0.02$ |
 
 Table: Total time to calculate the local energy for $\alpha = 0.5$ with the specified parameters: $D$ dimensions and $N$ number of particles. Times are presented for the brute force Metropolis algorithm, the importance sampling algorithm and the analytical exact energy (the first two in Rust, the latter in Python). {#tbl:BF_vs_IM_VS_analytical}
+=======
+| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  |
+
+>>>>>>> Stashed changes
 
 ## Finding the optimal $\alpha$
 
