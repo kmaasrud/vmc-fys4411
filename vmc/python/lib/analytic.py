@@ -33,20 +33,20 @@ def AnalyticLocalEnergy(alpha, dim, N, StepSize):
         
         for i in range(0, N):
             r1 += r[i,0]**2
-        E = N*alpha*dim + (0.5*omega*omega - 2.0*alpha*alpha)*(r1)
+        E = N*alpha*dim + (0.5 - 2.0*alpha**2)*(r1)
     if dim == 2:
         
         for i in range(0, N):
             r1 += r[i,0]**2
             r2 += r[i,1]**2
-        E = N*alpha*dim + (0.5*omega*omega - 2*alpha*alpha)*(r1 + r2)
+        E = N*alpha*dim + (0.5 - 2.0*alpha**2)*(r1 + r2)
     if dim == 3:
         
         for i in range(0, N):
             r1 += r[i,0]**2
             r2 += r[i,1]**2
             r3 += r[i,2]**2
-        E = N*alpha*dim + (0.5*omega*omega - 2*alpha*alpha)*(r1 + r2 + r3)
+        E = N*alpha*dim + (0.5 - 2.0*alpha**2)*(r1 + r2 + r3)
         
 
     return E

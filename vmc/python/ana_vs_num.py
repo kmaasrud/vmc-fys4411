@@ -14,7 +14,7 @@ import time
 import matplotlib.pyplot as plt
 plt.style.use("seaborn")
 
-dim = 3
+dim = 1
 N = 100
 
 
