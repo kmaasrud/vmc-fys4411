@@ -2,6 +2,13 @@
 
 ## Numerical solver compared to analytical solutions {-}
 
+### Performance
+To measue computational efficency of the Brute Force Metropolis and Importance Sampling methods, time for calculating energy for a specific alpha (here $\alpha = 0.5$) was measured. The times are listed in Table {@tbl:BF_vs_IM_VS_analytical}. It should be kept in mind that not all the time used for the calculations , especially for the analytic and low dimensions and few particle measurments as they are quite fast. In the mentioned cases, writing to files, may be a small, but not insignificant part of the measurment. 
+
+Hence looking at a more overall picture, as expected, the times increases proportionaly with the number of dimensions and particles.  The Brute Force Metropolis method is for all the systems studied faster than the Importance sampling method. For the larger systems $D = 2,3$ and $N = 10 - 500$ the speedup is approximately 20 - 25 % for the Brute Force Metropolis algorithm. 
+
+The results from the analytical measurment is another story. As can be seen, it is of orders of magnitude faster that the two numerical methods. In the columns where the time is $0.0$s the computation was too fast to even get a measurment. As the systems were calculated using different setups/algorithms and because of a high inaccuracy in the measurment, no further conclusions will be drawn from this result. However, it is important to point out the fact in having analytical expression for the local energy, will give a significant calculation speedup. It is the exception rather than the rule, having the analytical expression. 
+
 ## Brute force or importance sampling {-}
 
 In our testing, the brute force Metropolis algorithm generally produced better results, especially in terms of convergence, when employing steepest gradient descent. This was surprising, and not in tune with our expectations. The cause here is probably a poor implementation. We reach the desired results by using importance sampling, but it's apparent that we loose some accuracy throughout the algoritm. For further improving this solver, this is the first issue that needs to be tackled, in order to minimize the amount of Monte Carlo cycles needed to produce a confident result.

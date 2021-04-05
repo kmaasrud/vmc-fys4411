@@ -1,4 +1,9 @@
-#Compare energy vs. alpha analytic vs. bruteforce/importance 
+
+"""
+Calculates the analytic local energy for a set of alphas and then plots the energy for the analytic, 
+Brute Force Metropolis and Importance sampling algorithms. There is also a setup for plotting the time
+used for the three mentioned methods. 
+"""
 from lib import analytic as ana
 from lib import pathmaker as pth
 from lib.blocking import block
@@ -10,7 +15,7 @@ import matplotlib.pyplot as plt
 plt.style.use("seaborn")
 
 dim = 3
-N = 500
+N = 100
 
 
 save_folder = f"../plots/ana_vs_num/{dim}D_{N}N/"
@@ -22,7 +27,7 @@ pth.pathmaker(save_folder)
 bruteforce = os.path.join(data_folder, "BruteForceMetropolis.csv")
 importance = os.path.join(data_folder, "ImportanceMetropolis.csv")
 
-"""
+
 #bruteforce:
 df_BF = pd.read_csv(bruteforce)
 energy_BF = df_BF["Energy"].values.tolist()
@@ -46,7 +51,6 @@ print(f"Time used IM: {sum_time_IM}")
 [float(i)/2 for i in time_BF]
 [float(i)/2 for i in time_IM]
 
-"""
 
 #analytic
 alphas = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8]
@@ -74,7 +78,7 @@ x = np.array(analytical['Energy'].values.tolist())
 std = np.sqrt(var)
 data ={'Mean':[mean], 'STDev':[std]}
 frame = pd.DataFrame(data,index=['Values'])
-
+"""
 
 #plots:
 #analytic vs. bruteforce
@@ -98,52 +102,3 @@ plt.ylabel("Time[s]")
 plt.legend(loc = 'best', prop = {'size':13}, frameon = True)
 plt.savefig(os.path.join(save_folder, f"TimeAlpha_IM_BF_ANA_{dim}D_{N}N.png"))
 plt.clf()
-
-dim = 3
-particles = [1, 10 , 100]
-for N in particles:
-
-    data_folder = f"../data/ana_vs_num/{dim}D_{N}N/"
-    pth.pathmaker(data_folder)
-    
-    bruteforce = os.path.join(data_folder, "BruteForceMetropolis.csv")
-    importance = os.path.join(data_folder, "ImportanceMetropolis.csv")
-
-    #bruteforce:
-    df_BF = pd.read_csv(bruteforce)
-    energy_BF = df_BF["Energy"].values.tolist()
-    alpha_BF = df_BF["Alpha"].values.tolist()
-    time_BF = df_BF["Time"].values.tolist()
-
-    #importance:
-    df_IM = pd.read_csv(importance)
-    energy_IM = df_IM["Energy"].values.tolist()
-    alpha_IM = df_IM["Alpha"].values.tolist()
-    time_IM = df_IM["Time"].values.tolist()
-
-    if N == 1:
-         time_IM = [(float(i)/(2.0*1000.0)) for i in time_IM]
-         time_BF = [(float(i)/(2.0*1000.0)) for i in time_BF]
-    else:
-        [float(i) for i in time_IM]
-        [(float(i)/(2)) for i in time_BF]
-
-    [float(i) for i in energy_BF];[float(i) for i in alpha_BF]
-    [float(i) for i in alpha_IM];[float(i) for i in energy_IM]
-
-time_alpha05_IM = [396.7327/1000, 3.71734, 214.5140022]
-N = [1,10,100]
-plt.semilogy(N,time_alpha05_IM, label=f"Importace salpling")
-
-time_alpha05_BF = [327.4202/1000, 2.9494078, 160.5524742]
-plt.semilogy(N,time_alpha05_BF, label=f"Brute Force")
-
-save_folder = f"../plots/ana_vs_num/{dim}D_allN/"
-pth.pathmaker(save_folder)
-
-plt.title(r"$CPU_{time}$" +  "system comparison" + f"({dim}D and 1, 10, and 100 particles)")
-plt.xlabel("Particles")
-plt.ylabel("Time[s]")
-plt.legend(loc = 'best', prop = {'size':13}, frameon = True)
-plt.savefig(os.path.join(save_folder, f"Time_log_{dim}D_allN.png"))
-plt.clf() """

@@ -27,10 +27,9 @@ The time used for the two different methods for the simpele Gaussian wavefunctio
 |------------------------|-------|--------|---------|------- |----------|---------|-------|--------|---------|---------
 | Brute Force Metropolis | 0.23  | 1.47   | 90.4    | 0.22   | 2.73     | 186     | 0.33   | 2.95   | 161    |  3990  |
 | Importance samlping    | 0.58  | 1.68   | 109     | 0.36   | 3.45     | 233     | 0.40   | 3.71   | 214    |  5280  |
-| Analytic               | 0.0   | 0.0    | 0.01561 | 0.0   | 0.0041    | 0.0088  | 0.0    | 0.001  |  0.004 | 0.02  |
+| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  |
 
-Table: <Total time to calculate the local energy for $\alpha = 0.5$ for the different systems(D: dimensions, N: number of particles) utilising both the Brute Force Metropolis sampling, Importance sampling and the analytical\exact energy.> {#tbl:BF_vs_IM_VS_analytical}
-
+Table: <Total time to calculate the local energy for $\alpha = 0.5$ for the different systems(D: dimensions, N: number of particles) utilising both the Brute Force Metropolis sampling, Importance sampling (both calculated in the rust enviroment) and the analytical\exact energy (calculated using python).> {#tbl:BF_vs_IM_VS_analytical}
 
 ## Finding the optimal $\alpha$
 
