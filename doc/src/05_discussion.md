@@ -8,7 +8,7 @@ All the systems have one common point, namely $\alpha = 0.5$. The two numerical 
 
 Increasing the size of the system (higher number of dimensions and particles) the energy approaches a more linear dependency with regards to $\alpha$. The importance sampling method approaches linearity faster than the brute force method. A possible explanation for this, is that we get decreasing accuracy at increasing $N$, because the shape of the energy as a function of $\alpha$ is expected to be convex. However, as can be seen, the two numerical methods are also approaching the analytical values for the energy for an increased size of the system. 
 
-Overall the analytically calulated energy is approximately linear. However, the expresson for the local energy {@eq:local-energy-gauss-scaled} is proportional to $\alpha^2$. It is expected to be convex with an energy minima at $\alpha = 0.5$. Our guess is that there is something wrong with setup of the particle positions, but we have not the time to further investigate that in this report.
+Overall the analytically calulated energy is approximately linear. However, the expresson for the local energy {@eq:local-energy-gauss-scaled} is proportional to $\alpha^2$. It is expected to be convex with an energy minima at $\alpha = 0.5$. The most probable reason is that there is something wrong with setup of the particle positions, but we have not the time to further investigate that in this report.
 
 ### Performance {-}
 
