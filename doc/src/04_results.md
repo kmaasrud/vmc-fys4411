@@ -23,11 +23,6 @@ In order to test our algorithm for both the brute force and the importance sampl
 
 The total elapsed times of the three methods evaluating the simple Gaussian wave function are listed in the table {@tbl:BF_vs_IM_VS_analytical} below. 
 
-<!-- | Time[s] for: | $D=1,N=1$ | $D=1, N=10$ | $D=1, N=100$ | $D=2, N=1$ | $D=2, N=10$ | $D=2, N=100$ | $D=3, N=1$ | $D=3, N=10$ | $D=3, N=100$ |$D=3, N=500$ |
-|------------------------|-------|--------|---------|------- |----------|---------|-------|--------|---------|---------
-| Brute Force Metropolis | 0.23  | 1.47   | 90.4    | 0.22   | 2.73     | 186     | 0.33   | 2.95   | 161    |  3990  |
-| Importance samlping    | 0.58  | 1.68   | 109     | 0.36   | 3.45     | 233     | 0.40   | 3.71   | 214    |  5280  |
-| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  | -->
 
 |  | **Brute force** | **Importance sampling** | **Analytic** |
 |:-| :---------: | :-----------------: | :------: |
@@ -43,10 +38,6 @@ The total elapsed times of the three methods evaluating the simple Gaussian wave
 | $D=3, N=500$ | $3990$ | $5280$ | $0.02$ |
 
 Table: Total time to calculate the local energy for $\alpha = 0.5$ with the specified parameters: $D$ dimensions and $N$ number of particles. Times are presented for the brute force Metropolis algorithm, the importance sampling algorithm and the analytical exact energy (the first two in Rust, the latter in Python). {#tbl:BF_vs_IM_VS_analytical}
-=======
-| Analytic               | 0.0   | 0.0    | 0.016    | 0.0   | 0.0041   | 0.009  | 0.0    | 0.001  |  0.004 | 0.02  |
-
->>>>>>> Stashed changes
 
 ## Finding the optimal $\alpha$
 
